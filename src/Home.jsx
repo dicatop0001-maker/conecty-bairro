@@ -128,6 +128,28 @@ function Home() {
         a.neighborhood.toLowerCase().trim() === userNeighborhood.toLowerCase().trim())
     )
     setActiveAuctions([...sameN, ...otherN])
+  }const requestUserGPS = () => {
+        if (!navigator.geolocation) return
+              navigator.geolocation.getCurrentPosition(
+                      async (pos) => {
+                                const lat = pos.coords.latitude
+                                          const lng = pos.coords.longitude
+                                                    setUserLat(lat)
+                                                              setUserLng(lng)
+                                                                        try {
+                                                                                    const res = await fetch(
+                                                                                                  `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`,
+                                                                                      { headers: { 'Accept-Language': 'pt-BR,pt;q=0.9' } }
+                                                                                                )
+                                                                                                const data = await res.json()
+                                                                                                            const addr = data.address || {}
+                                                                                                                        const bairro = addr.suburb || addr.neighbourhood || addr.quarter || addr.residential || addr.district || addr.village || ''
+                                                                                                                                    if (bairro) setUserNeighborhood(bairro)
+                                                                          } catch (e) {}
+                      },
+                      () => {},
+                { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+                    )
   }, [auctions, userNeighborhood])
 
   useEffect(() => {
@@ -327,7 +349,7 @@ function Home() {
             Busca por bairro
           </button>
           <button onClick={handleHorarioOnibus} style={{ width: '100%', padding: '10px 24px', background: 'rgba(59,130,246,0.7)', color: 'white', border: '2px solid rgba(147,197,253,0.8)', borderRadius: '30px', fontSize: 'clamp(13px, 2vw, 17px)', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            🚌 Horário de Ônibus
+            🚌 {userNeighborhood ? `Horário de Ônibus - Bairro ${userNeighborhood}` : 'Horário de Ônibus'}
           </button>
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
             {[{val:'',label:'Todos'},{val:'veiculos',label:'Veículos'},{val:'eletronicos',label:'Eletrônicos'},{val:'objetos',label:'Objetos'},{val:'moveis',label:'Móveis'},{val:'imoveis',label:'Imóveis'},{val:'outros',label:'Outros'},{val:'servicos',label:'Prestador de Serviços'}].map(cat => (
