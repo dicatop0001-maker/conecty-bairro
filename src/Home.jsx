@@ -5,62 +5,62 @@ import BottomBar from './BottomBar'
 import SponsorSlot from './SponsorSlot'
 
 const blinkStyle = `
-  @keyframes blink-text { 50% { opacity: 0.15; } }
-  @keyframes bounce-arrow { 50% { transform: translateY(8px); } }
+@keyframes blink-text { 50% { opacity: 0.15; } }
+@keyframes bounce-arrow { 50% { transform: translateY(8px); } }
 
-  .lj-placa {
-    width: 100%;
-    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #1d4ed8 100%);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    border-bottom: 4px solid #3b82f6;
-    padding: 0;
-    box-sizing: border-box;
-  }
+.lj-placa {
+  width: 100%;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #1d4ed8 100%);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  border-bottom: 4px solid #3b82f6;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+.lj-logo-wrap {
+  width: 100%;
+  cursor: pointer;
+  overflow: visible;
+  line-height: normal;
+  padding: 8px 16px;
+  box-sizing: border-box;
+}
+
+.lj-logo-img {
+  width: 100%;
+  max-width: 720px;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.35));
+}
+
+.lj-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  padding: 4px 8px 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
   .lj-logo-wrap {
-    width: 100%;
-    cursor: pointer;
     overflow: visible;
+    padding: 6px 10px;
     line-height: normal;
-    padding: 8px 16px;
-    box-sizing: border-box;
   }
-
   .lj-logo-img {
-    width: 100%;
-    max-width: 720px;
-    display: block;
+    max-width: 100%;
     margin: 0 auto;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.35));
+    display: block;
   }
-
   .lj-slots-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 6px;
-    padding: 4px 8px 12px;
-    width: 100%;
-    box-sizing: border-box;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    padding: 4px 6px 10px;
   }
-
-  @media (max-width: 600px) {
-    .lj-logo-wrap {
-      overflow: visible;
-      padding: 6px 10px;
-      line-height: normal;
-    }
-    .lj-logo-img {
-      max-width: 100%;
-      margin: 0 auto;
-      display: block;
-    }
-    .lj-slots-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 5px;
-      padding: 4px 6px 10px;
-    }
-  }
+}
 `
 
 function getTimeLeft(endsAt) {
@@ -125,10 +125,10 @@ function Home() {
     )
     const otherN = filtered.filter(a =>
       !(userNeighborhood && a.neighborhood &&
-        a.neighborhood.toLowerCase().trim() === userNeighborhood.toLowerCase().trim())
+      a.neighborhood.toLowerCase().trim() === userNeighborhood.toLowerCase().trim())
     )
+    setActiveAuctions([...sameN, ...otherN])
   }, [auctions, userNeighborhood])
-
 
   useEffect(() => {
     if (searchCity.length >= 2) {
@@ -138,6 +138,7 @@ function Home() {
       setFilteredCities([])
     }
   }, [searchCity, allCities])
+
   const requestUserGPS = () => {
     if (!navigator.geolocation) return
     navigator.geolocation.getCurrentPosition(
@@ -236,8 +237,8 @@ function Home() {
   }
 
   const handleHorarioOnibus = () => {
-    const query = encodeURIComponent('horÃÂÃÂÃÂÃÂ¡rio de ÃÂÃÂÃÂÃÂ´nibus ' + (userNeighborhood ? userNeighborhood + ' ' + userCity : userCity));
-    window.open('https://www.google.com/search?q=' + query, '_blank');
+    const query = encodeURIComponent('horario de onibus ' + (userNeighborhood ? userNeighborhood + ' ' + userCity : userCity))
+    window.open('https://www.google.com/search?q=' + query, '_blank')
   }
 
   const bairrosDisponiveis = [...new Set(
@@ -266,19 +267,22 @@ function Home() {
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
       <style>{blinkStyle}</style>
+
+      {/* HEADER / PLACA */}
       <div className="lj-placa">
         <div className="lj-logo-wrap" onClick={() => navigate('/home')}>
-          <img src="/logo-conecty.png" alt="Conecty" className="lj-logo-img" />
+          <img src="/logo-conecty.png" alt="Conecty Bairro" className="lj-logo-img" />
         </div>
         <div className="lj-slots-grid">
           {allSlots.map(slot => (
             <SponsorSlot key={slot} slot={slot} city={userCity} sponsorData={sponsors[slot] || null} onRefresh={loadSponsors} userId={user.id} userLat={userLat} userLng={userLng} />
           ))}
         </div>
-        
       </div>
+
+      {/* LOCATION INFO */}
       <div style={{ padding: '20px 20px 10px', textAlign: 'center' }}>
-        <h3 className="location-title" style={{ color: 'white', fontSize: 'clamp(32px, 7vw, 60px)', fontWeight: 'bold', margin: '0 0 4px 0' }}>
+        <h3 style={{ color: 'white', fontSize: 'clamp(32px, 7vw, 60px)', fontWeight: 'bold', margin: '0 0 4px 0' }}>
           {userCity} - {userState}
         </h3>
         {userNeighborhood && (
@@ -294,7 +298,7 @@ function Home() {
             </div>
             {buscaTab === 'bairro' && (
               <div>
-                <p style={{ color: '#666', fontSize: '13px', marginBottom: '10px', textAlign: 'left' }}>Bairros com anÃÂÃÂÃÂÃÂºncios em <strong>{userCity}</strong>:</p>
+                <p style={{ color: '#666', fontSize: '13px', marginBottom: '10px', textAlign: 'left' }}>Bairros com anuncios em <strong>{userCity}</strong>:</p>
                 <input type="text" value={searchBairro} onChange={e => setSearchBairro(e.target.value)} placeholder="Filtrar bairro..." style={{ width: '100%', padding: '10px 14px', border: '2px solid #e2e8f0', borderRadius: '10px', fontSize: '15px', marginBottom: '10px', boxSizing: 'border-box' }} />
                 {bairrosFiltrados.length === 0 && (
                   <p style={{ textAlign: 'center', color: '#aaa', fontSize: '14px', padding: '10px 0' }}>{bairrosDisponiveis.length === 0 ? 'Nenhum bairro cadastrado ainda.' : 'Nenhum bairro encontrado.'}</p>
@@ -328,31 +332,47 @@ function Home() {
           </div>
         )}
       </div>
+
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px 40px' }}>
+
+        {/* ACTION BUTTONS */}
         <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <button onClick={() => navigate('/anuncio')} style={{ width: '100%', padding: 'clamp(16px, 3vw, 25px)', background: '#f97316', color: 'white', border: 'none', borderRadius: '15px', fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 'bold', cursor: 'pointer' }}>CRIAR SEU ANÃÂÃÂÃÂÃÂNCIO</button>
-          <button onClick={() => navigate('/novo')} style={{ width: '100%', padding: 'clamp(16px, 3vw, 25px)', background: '#4CAF50', color: 'white', border: 'none', borderRadius: '15px', fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 'bold', cursor: 'pointer' }}>CRIAR SEU LEILÃÂÃÂÃÂÃÂO</button>
+          <button onClick={() => navigate('/anuncio')} style={{ width: '100%', padding: 'clamp(16px, 3vw, 25px)', background: '#f97316', color: 'white', border: 'none', borderRadius: '15px', fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 'bold', cursor: 'pointer' }}>CRIAR SEU ANUNCIO</button>
+          <button onClick={() => navigate('/novo')} style={{ width: '100%', padding: 'clamp(16px, 3vw, 25px)', background: '#4CAF50', color: 'white', border: 'none', borderRadius: '15px', fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 'bold', cursor: 'pointer' }}>CRIAR SEU LEILAO</button>
         </div>
-        <h2 style={{ color: 'white', fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 'bold', marginBottom: '16px' }}>
-          Busque itens para venda e leilÃÂÃÂÃÂÃÂµes ativos no seu bairro{userNeighborhood && <span style={{ fontSize: '16px', fontWeight: '400', opacity: 0.85, marginLeft: '10px' }}>bairro {userNeighborhood} primeiro</span>}
+
+        {/* SECTION TITLE */}
+        <h2 style={{ color: 'white', fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 'bold', marginBottom: '12px' }}>
+          Busque itens para venda e leiloes ativos no seu bairro
+          {userNeighborhood && <span style={{ fontSize: '16px', fontWeight: '400', opacity: 0.85, marginLeft: '10px' }}>bairro {userNeighborhood} primeiro</span>}
         </h2>
-        <button onClick={handleHorarioOnibus} style={{ width: '100%', padding: '12px 24px', marginBottom: '16px', background: 'rgba(59,130,246,0.7)', color: 'white', border: '2px solid rgba(147,197,253,0.8)', borderRadius: '30px', fontSize: 'clamp(13px, 2vw, 17px)', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-          🚌 {userNeighborhood ? `Horário de Ônibus - Bairro ${userNeighborhood}` : 'Horário de Ônibus'}
+
+        {/* BUS SCHEDULE BUTTON - below title, outside h2 */}
+        <button
+          onClick={handleHorarioOnibus}
+          style={{ width: '100%', padding: '12px 24px', marginBottom: '16px', background: 'rgba(59,130,246,0.7)', color: 'white', border: '2px solid rgba(147,197,253,0.8)', borderRadius: '30px', fontSize: 'clamp(14px, 2vw, 18px)', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+        >
+          {'🚌'} {userNeighborhood ? 'Horario de Onibus - Bairro ' + userNeighborhood : 'Horario de Onibus'}
         </button>
+
+        {/* SEARCH FILTERS PANEL */}
         <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '16px', padding: '14px 16px', marginBottom: '24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <button onClick={() => setShowBuscaPanel(!showBuscaPanel)} style={{ width: '100%', padding: '10px 24px', background: showBuscaPanel ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.25)', color: 'white', border: '2px solid rgba(255,255,255,0.8)', borderRadius: '30px', fontSize: 'clamp(13px, 2vw, 17px)', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             Busca por bairro
           </button>
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            {[{val:'',label:'Todos'},{val:'veiculos',label:'VeÃÂÃÂÃÂÃÂ­culos'},{val:'eletronicos',label:'EletrÃÂÃÂÃÂÃÂ´nicos'},{val:'objetos',label:'Objetos'},{val:'moveis',label:'MÃÂÃÂÃÂÃÂ³veis'},{val:'imoveis',label:'ImÃÂÃÂÃÂÃÂ³veis'},{val:'outros',label:'Outros'},{val:'servicos',label:'Prestador de ServiÃÂÃÂÃÂÃÂ§os'}].map(cat => (
+            {[{val:'',label:'Todos'},{val:'veiculos',label:'Veiculos'},{val:'eletronicos',label:'Eletronicos'},{val:'objetos',label:'Objetos'},{val:'moveis',label:'Moveis'},{val:'imoveis',label:'Imoveis'},{val:'outros',label:'Outros'},{val:'servicos',label:'Prestador de Servicos'}].map(cat => (
               <button key={cat.val} onClick={() => setSelectedCategory(cat.val)} style={{ padding: '5px 11px', borderRadius: '20px', border: selectedCategory === cat.val ? '2px solid white' : '2px solid rgba(255,255,255,0.4)', background: selectedCategory === cat.val ? '#1e3a8a' : 'rgba(255,255,255,0.15)', color: 'white', fontWeight: selectedCategory === cat.val ? 'bold' : 'normal', fontSize: '11px', cursor: 'pointer', whiteSpace: 'nowrap' }}>{cat.label}</button>
             ))}
           </div>
         </div>
+
         {loading ? (
           <div style={{ textAlign: 'center', padding: '40px', color: 'white', fontSize: '20px' }}>Carregando...</div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+
+            {/* SPONSOR ADS */}
             {activeSponsorAds.map(sp => (
               <div key={'sp-' + sp.id} onClick={() => sp.link_url ? window.open(sp.link_url, '_blank') : null} style={{ background: 'linear-gradient(135deg, #fff7ed, #fef3c7)', borderRadius: '15px', overflow: 'hidden', cursor: sp.link_url ? 'pointer' : 'default', boxShadow: '0 0 0 3px #f97316, 0 8px 24px rgba(0,0,0,0.18)', position: 'relative' }}>
                 <div style={{ position: 'absolute', top: '8px', left: '8px', background: '#f97316', color: 'white', padding: '3px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>PATROCINADOR</div>
@@ -374,6 +394,8 @@ function Home() {
                 </div>
               </div>
             ))}
+
+            {/* AUCTION CARDS */}
             {displayedAuctions.map(auction => {
               const timeLeft = getTimeLeft(auction.ends_at)
               const isAnuncio = auction.tipo === 'anuncio' || !auction.ends_at
@@ -382,7 +404,8 @@ function Home() {
               const bairroLabel = (auction.neighborhood && auction.neighborhood.trim() !== '')
                 ? auction.neighborhood : auction.city
               return (
-                <div key={auction.id} onClick={() => navigate('/leilao/' + auction.id)} style={{ background: 'white', borderRadius: '15px', overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s', boxShadow: isSameN ? '0 0 0 3px #f97316, 0 8px 24px rgba(0,0,0,0.18)' : '0 4px 12px rgba(0,0,0,0.1)' }}
+                <div key={auction.id} onClick={() => navigate('/leilao/' + auction.id)}
+                  style={{ background: 'white', borderRadius: '15px', overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s', boxShadow: isSameN ? '0 0 0 3px #f97316, 0 8px 24px rgba(0,0,0,0.18)' : '0 4px 12px rgba(0,0,0,0.1)' }}
                   onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.03)' }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }}>
                   <div style={{ position: 'relative', height: '190px', overflow: 'hidden', backgroundColor: '#f1f5f9' }}>
@@ -393,12 +416,12 @@ function Home() {
                       </div>
                     )}
                     {isAnuncio && (
-                      <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(249,115,22,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>ANÃÂÃÂÃÂÃÂNCIO</div>
+                      <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(249,115,22,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>ANUNCIO</div>
                     )}
                   </div>
                   <div style={{ padding: '14px 16px' }}>
                     <h3 style={{ margin: '0 0 4px 0', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: '1.3', color: '#1a202c' }}>{auction.title}</h3>
-                    <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '2px' }}>{isAnuncio ? 'PreÃÂÃÂÃÂÃÂ§o' : 'Lance atual'}</div>
+                    <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '2px' }}>{isAnuncio ? 'Preco' : 'Lance atual'}</div>
                     <div style={{ fontSize: 'clamp(20px, 3vw, 26px)', fontWeight: 'bold', color: isAnuncio ? '#f97316' : '#667eea' }}>
                       R$ {parseFloat(auction.current_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </div>
@@ -407,7 +430,7 @@ function Home() {
                         {bairroLabel}
                       </span>
                       {isSameN && (
-                        <span style={{ background: '#f97316', color: 'white', fontSize: '11px', fontWeight: 'bold', padding: '3px 10px', borderRadius: '20px' }}>Perto de vocÃÂÃÂÃÂÃÂª</span>
+                        <span style={{ background: '#f97316', color: 'white', fontSize: '11px', fontWeight: 'bold', padding: '3px 10px', borderRadius: '20px' }}>Perto de voce</span>
                       )}
                     </div>
                   </div>
@@ -416,94 +439,58 @@ function Home() {
             })}
           </div>
         )}
+
         {!loading && displayedAuctions.length === 0 && activeSponsorAds.length === 0 && (
           <div style={{ textAlign: 'center', padding: '60px', background: 'rgba(255,255,255,0.1)', borderRadius: '15px' }}>
             {selectedCategory === 'servicos' ? (
               <>
-                <div style={{ fontSize: '56px', marginBottom: '12px' }}>ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ§</div>
+                <div style={{ fontSize: '56px', marginBottom: '12px' }}>&#128295;</div>
                 <p style={{ color: 'white', fontSize: '22px', fontWeight: 'bold', marginBottom: '8px' }}>
-                  Nenhum prestador de serviÃÂÃÂÃÂÃÂ§o em {userCity}{userNeighborhood ? ' ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ ' + userNeighborhood : ''}
+                  Nenhum prestador de servico em {userCity}{userNeighborhood ? ' - ' + userNeighborhood : ''}
                 </p>
                 <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '16px', marginTop: '8px' }}>
-                  Seja o primeiro a anunciar seus serviÃÂÃÂÃÂÃÂ§os nessa cidade!
+                  Seja o primeiro a anunciar seus servicos nessa cidade!
                 </p>
                 <div style={{ margin: '18px auto 0', maxWidth: '480px', background: 'rgba(255,255,255,0.15)', borderRadius: '12px', padding: '16px 20px', textAlign: 'left' }}>
-                  <p style={{ color: '#fbbf24', fontWeight: 'bold', fontSize: '15px', margin: '0 0 8px 0' }}>ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ¸ Dica importante para prestadores:</p>
-                  <p style={{ color: 'white', fontSize: '14px', margin: '0 0 6px 0' }}>ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¢ Adicione <strong>fotos do seu trabalho</strong> ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ anÃÂÃÂÃÂÃÂºncios com fotos atraem muito mais clientes!</p>
-                  <p style={{ color: 'white', fontSize: '14px', margin: '0 0 6px 0' }}>ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¢ Coloque seu <strong>nome, telefone/WhatsApp</strong> e horÃÂÃÂÃÂÃÂ¡rio de atendimento na descriÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ£o.</p>
-                  <p style={{ color: 'white', fontSize: '14px', margin: '0' }}>ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¢ Descreva bem o serviÃÂÃÂÃÂÃÂ§o que vocÃÂÃÂÃÂÃÂª oferece.</p>
+                  <p style={{ color: '#fbbf24', fontWeight: 'bold', fontSize: '15px', margin: '0 0 8px 0' }}>Dica importante para prestadores:</p>
+                  <p style={{ color: 'white', fontSize: '14px', margin: '0 0 6px 0' }}>- Adicione <strong>fotos do seu trabalho</strong> - anuncios com fotos atraem muito mais clientes!</p>
+                  <p style={{ color: 'white', fontSize: '14px', margin: '0 0 6px 0' }}>- Coloque seu <strong>nome, telefone/WhatsApp</strong> e horario de atendimento na descricao.</p>
+                  <p style={{ color: 'white', fontSize: '14px', margin: '0' }}>- Descreva bem o servico que voce oferece.</p>
                 </div>
                 <button onClick={() => navigate('/anuncio')} style={{ marginTop: '22px', padding: '14px 32px', background: '#f97316', color: 'white', border: 'none', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}>
-                  ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ¢ Anunciar meu ServiÃÂÃÂÃÂÃÂ§o
+                  Anunciar meu Servico
                 </button>
               </>
             ) : selectedCategory !== '' ? (
               <>
-                <div style={{ fontSize: '48px', marginBottom: '12px' }}>ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ</div>
+                <div style={{ fontSize: '48px', marginBottom: '12px' }}>&#128269;</div>
                 <p style={{ color: 'white', fontSize: '22px', fontWeight: 'bold' }}>
-                  Nenhum anÃÂÃÂÃÂÃÂºncio nessa categoria em {userCity}{userNeighborhood ? ' ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ ' + userNeighborhood : ''}
+                  Nenhum anuncio nessa categoria em {userCity}{userNeighborhood ? ' - ' + userNeighborhood : ''}
                 </p>
                 <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '16px', marginTop: '10px' }}>
-                  Seja o primeiro a criar um anÃÂÃÂÃÂÃÂºncio nesta categoria!
+                  Seja o primeiro a criar um anuncio nesta categoria!
                 </p>
                 <button onClick={() => navigate('/anuncio')} style={{ marginTop: '18px', padding: '14px 32px', background: '#f97316', color: 'white', border: 'none', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}>
-                  ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ¢ Criar AnÃÂÃÂÃÂÃÂºncio
+                  Criar Anuncio
                 </button>
               </>
             ) : (
               <>
-                <div style={{ fontSize: '48px', marginBottom: '12px' }}>ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¸ÃÂÃÂ</div>
-                <p style={{ color: 'white', fontSize: '22px', fontWeight: 'bold' }}>Nenhum anÃÂÃÂÃÂÃÂºncio ativo em {userCity}{userNeighborhood ? ' ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ ' + userNeighborhood : ''}</p>
-                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '16px', marginTop: '10px' }}>Seja o primeiro a criar um anÃÂÃÂÃÂÃÂºncio na sua cidade!</p>
+                <div style={{ fontSize: '48px', marginBottom: '12px' }}>&#127961;</div>
+                <p style={{ color: 'white', fontSize: '22px', fontWeight: 'bold' }}>Nenhum anuncio ativo em {userCity}{userNeighborhood ? ' - ' + userNeighborhood : ''}</p>
+                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '16px', marginTop: '10px' }}>Seja o primeiro a criar um anuncio na sua cidade!</p>
               </>
             )}
           </div>
         )}
       </div>
-            {lightboxImg && (
-                        <div
-                                    onClick={() => setLightboxImg(null)}
-                                                style={{
-                                                              position:'fixed',top:0,left:0,right:0,bottom:0,
-                                                                            background:'rgba(0,0,0,0.95)',
-                                                                                          zIndex:9999,
-                                                                                                        display:'flex',
-                                                                                                                      alignItems:'center',
-                                                                                                                                    justifyContent:'center',
-                                                                                                                                                  cursor:'zoom-out',
-                                                                                                                                                                padding:'0'
-                                                                                                                                                                            }}
-                                                                                                                                                                                      >
-                                                                                                                                                                                                  <img
-                                                                                                                                                                                                                src={lightboxImg}
-                                                                                                                                                                                                                              alt="Foto ampliada"
-                                                                                                                                                                                                                                            onClick={e => e.stopPropagation()}
-                                                                                                                                                                                                                                                          style={{
-                                                                                                                                                                                                                                                                          maxWidth:'100vw',
-                                                                                                                                                                                                                                                                                          maxHeight:'100vh',
-                                                                                                                                                                                                                                                                                                          width:'auto',
-                                                                                                                                                                                                                                                                                                                          height:'auto',
-                                                                                                                                                                                                                                                                                                                                          objectFit:'contain',
-                                                                                                                                                                                                                                                                                                                                                          display:'block',
-                                                                                                                                                                                                                                                                                                                                                                          borderRadius:'0',
-                                                                                                                                                                                                                                                                                                                                                                                          boxShadow:'none',
-                                                                                                                                                                                                                                                                                                                                                                                                          cursor:'default'
-                                                                                                                                                                                                                                                                                                                                                                                                                        }}
-                                                                                                                                                                                                                                                                                                                                                                                                                                    />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                <button
-                                                                                                                                                                                                                                                                                                                                                                                                                                                              onClick={() => setLightboxImg(null)}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                            style={{
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            position:'absolute',top:'16px',right:'16px',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            background:'rgba(255,255,255,0.15)',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            border:'none',color:'white',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            fontSize:'28px',width:'48px',height:'48px',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            borderRadius:'50%',cursor:'pointer',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            fontWeight:'bold',lineHeight:'1',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            display:'flex',alignItems:'center',justifyContent:'center'
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          }}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      >ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ</button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        )}
+
+      {lightboxImg && (
+        <div onClick={() => setLightboxImg(null)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.95)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'zoom-out', padding: '0' }}>
+          <img src={lightboxImg} alt="Foto ampliada" onClick={e => e.stopPropagation()} style={{ maxWidth: '100vw', maxHeight: '100vh', width: 'auto', height: 'auto', objectFit: 'contain', display: 'block', cursor: 'default' }} />
+          <button onClick={() => setLightboxImg(null)} style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '28px', width: '48px', height: '48px', borderRadius: '50%', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>X</button>
+        </div>
+      )}
       <BottomBar user={user} onLogout={handleLogout} />
     </div>
   )
