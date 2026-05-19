@@ -352,18 +352,214 @@ function Home() {
           onClick={handleHorarioOnibus}
           style={{ width: '100%', padding: '12px 24px', marginBottom: '16px', background: 'rgba(59,130,246,0.7)', color: 'white', border: '2px solid rgba(147,197,253,0.8)', borderRadius: '30px', fontSize: 'clamp(14px, 2vw, 18px)', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
         >
-          {'🚌'} {userNeighborhood ? 'Horario de Onibus - Bairro ' + userNeighborhood : 'Horario de Onibus'}
+          {'ð'} {userNeighborhood ? 'Horario de Onibus - Bairro ' + userNeighborhood : 'Horario de Onibus'}
         </button>
 
         {/* SEARCH FILTERS PANEL */}
-        <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '16px', padding: '14px 16px', marginBottom: '24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <button onClick={() => setShowBuscaPanel(!showBuscaPanel)} style={{ width: '100%', padding: '10px 24px', background: showBuscaPanel ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.25)', color: 'white', border: '2px solid rgba(255,255,255,0.8)', borderRadius: '30px', fontSize: 'clamp(13px, 2vw, 17px)', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            Busca por bairro
+        {/* SEARCH FILTERS PANEL - Modern Gradient Style */}
+        <div style={{ marginBottom: '24px' }}>
+          {/* Busca por bairro - full width modern pill button */}
+          <button
+            onClick={() => setShowBuscaPanel(!showBuscaPanel)}
+            style={{
+              width: '100%',
+              padding: '14px 24px',
+              marginBottom: '14px',
+              background: showBuscaPanel
+                ? 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)'
+                : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '50px',
+              fontSize: 'clamp(15px, 2.5vw, 18px)',
+              fontWeight: '800',
+              cursor: 'pointer',
+              letterSpacing: '0.5px',
+              boxShadow: '0 4px 18px rgba(102,126,234,0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              transition: 'transform 0.15s, box-shadow 0.15s'
+            }}
+          >
+            {showBuscaPanel ? '📍' : '🔍'} Busca por bairro
           </button>
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            {[{val:'',label:'Todos'},{val:'veiculos',label:'Veiculos'},{val:'eletronicos',label:'Eletronicos'},{val:'objetos',label:'Objetos'},{val:'moveis',label:'Moveis'},{val:'imoveis',label:'Imoveis'},{val:'outros',label:'Outros'},{val:'servicos',label:'Prestador de Servicos'}].map(cat => (
-              <button key={cat.val} onClick={() => setSelectedCategory(cat.val)} style={{ padding: '5px 11px', borderRadius: '20px', border: selectedCategory === cat.val ? '2px solid white' : '2px solid rgba(255,255,255,0.4)', background: selectedCategory === cat.val ? '#1e3a8a' : 'rgba(255,255,255,0.15)', color: 'white', fontWeight: selectedCategory === cat.val ? 'bold' : 'normal', fontSize: '11px', cursor: 'pointer', whiteSpace: 'nowrap' }}>{cat.label}</button>
-            ))}
+
+          {/* Category filter buttons - grid layout */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+            gap: '10px',
+          }}>
+            <button
+              key={''}
+              onClick={() => setSelectedCategory('')}
+              style={{
+                padding: 'clamp(10px, 2vw, 14px) 8px',
+                borderRadius: '50px',
+                border: selectedCategory === '' ? '3px solid white' : '2px solid transparent',
+                background: 'linear-gradient(135deg, #f97316 0%, #ef4444 100%)',
+                color: 'white',
+                fontWeight: selectedCategory === '' ? '900' : '700',
+                fontSize: 'clamp(12px, 1.8vw, 15px)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxShadow: selectedCategory === ''
+                  ? '0 4px 16px rgba(249,115,22,0.45), 0 0 0 2px white'
+                  : '0 3px 10px rgba(249,115,22,0.45)',
+                transform: selectedCategory === '' ? 'scale(1.06)' : 'scale(1)',
+                transition: 'transform 0.15s, box-shadow 0.15s',
+                letterSpacing: '0.3px'
+              }}
+            >Todos</button>
+            <button
+              key={'veiculos'}
+              onClick={() => setSelectedCategory('veiculos')}
+              style={{
+                padding: 'clamp(10px, 2vw, 14px) 8px',
+                borderRadius: '50px',
+                border: selectedCategory === 'veiculos' ? '3px solid white' : '2px solid transparent',
+                background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                color: 'white',
+                fontWeight: selectedCategory === 'veiculos' ? '900' : '700',
+                fontSize: 'clamp(12px, 1.8vw, 15px)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxShadow: selectedCategory === 'veiculos'
+                  ? '0 4px 16px rgba(59,130,246,0.45), 0 0 0 2px white'
+                  : '0 3px 10px rgba(59,130,246,0.45)',
+                transform: selectedCategory === 'veiculos' ? 'scale(1.06)' : 'scale(1)',
+                transition: 'transform 0.15s, box-shadow 0.15s',
+                letterSpacing: '0.3px'
+              }}
+            >Veiculos</button>
+            <button
+              key={'eletronicos'}
+              onClick={() => setSelectedCategory('eletronicos')}
+              style={{
+                padding: 'clamp(10px, 2vw, 14px) 8px',
+                borderRadius: '50px',
+                border: selectedCategory === 'eletronicos' ? '3px solid white' : '2px solid transparent',
+                background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+                color: 'white',
+                fontWeight: selectedCategory === 'eletronicos' ? '900' : '700',
+                fontSize: 'clamp(12px, 1.8vw, 15px)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxShadow: selectedCategory === 'eletronicos'
+                  ? '0 4px 16px rgba(139,92,246,0.45), 0 0 0 2px white'
+                  : '0 3px 10px rgba(139,92,246,0.45)',
+                transform: selectedCategory === 'eletronicos' ? 'scale(1.06)' : 'scale(1)',
+                transition: 'transform 0.15s, box-shadow 0.15s',
+                letterSpacing: '0.3px'
+              }}
+            >Eletronicos</button>
+            <button
+              key={'objetos'}
+              onClick={() => setSelectedCategory('objetos')}
+              style={{
+                padding: 'clamp(10px, 2vw, 14px) 8px',
+                borderRadius: '50px',
+                border: selectedCategory === 'objetos' ? '3px solid white' : '2px solid transparent',
+                background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
+                color: 'white',
+                fontWeight: selectedCategory === 'objetos' ? '900' : '700',
+                fontSize: 'clamp(12px, 1.8vw, 15px)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxShadow: selectedCategory === 'objetos'
+                  ? '0 4px 16px rgba(236,72,153,0.45), 0 0 0 2px white'
+                  : '0 3px 10px rgba(236,72,153,0.45)',
+                transform: selectedCategory === 'objetos' ? 'scale(1.06)' : 'scale(1)',
+                transition: 'transform 0.15s, box-shadow 0.15s',
+                letterSpacing: '0.3px'
+              }}
+            >Objetos</button>
+            <button
+              key={'moveis'}
+              onClick={() => setSelectedCategory('moveis')}
+              style={{
+                padding: 'clamp(10px, 2vw, 14px) 8px',
+                borderRadius: '50px',
+                border: selectedCategory === 'moveis' ? '3px solid white' : '2px solid transparent',
+                background: 'linear-gradient(135deg, #10b981 0%, #065f46 100%)',
+                color: 'white',
+                fontWeight: selectedCategory === 'moveis' ? '900' : '700',
+                fontSize: 'clamp(12px, 1.8vw, 15px)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxShadow: selectedCategory === 'moveis'
+                  ? '0 4px 16px rgba(16,185,129,0.45), 0 0 0 2px white'
+                  : '0 3px 10px rgba(16,185,129,0.45)',
+                transform: selectedCategory === 'moveis' ? 'scale(1.06)' : 'scale(1)',
+                transition: 'transform 0.15s, box-shadow 0.15s',
+                letterSpacing: '0.3px'
+              }}
+            >Moveis</button>
+            <button
+              key={'imoveis'}
+              onClick={() => setSelectedCategory('imoveis')}
+              style={{
+                padding: 'clamp(10px, 2vw, 14px) 8px',
+                borderRadius: '50px',
+                border: selectedCategory === 'imoveis' ? '3px solid white' : '2px solid transparent',
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                color: 'white',
+                fontWeight: selectedCategory === 'imoveis' ? '900' : '700',
+                fontSize: 'clamp(12px, 1.8vw, 15px)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxShadow: selectedCategory === 'imoveis'
+                  ? '0 4px 16px rgba(245,158,11,0.45), 0 0 0 2px white'
+                  : '0 3px 10px rgba(245,158,11,0.45)',
+                transform: selectedCategory === 'imoveis' ? 'scale(1.06)' : 'scale(1)',
+                transition: 'transform 0.15s, box-shadow 0.15s',
+                letterSpacing: '0.3px'
+              }}
+            >Imoveis</button>
+            <button
+              key={'outros'}
+              onClick={() => setSelectedCategory('outros')}
+              style={{
+                padding: 'clamp(10px, 2vw, 14px) 8px',
+                borderRadius: '50px',
+                border: selectedCategory === 'outros' ? '3px solid white' : '2px solid transparent',
+                background: 'linear-gradient(135deg, #06b6d4 0%, #0e7490 100%)',
+                color: 'white',
+                fontWeight: selectedCategory === 'outros' ? '900' : '700',
+                fontSize: 'clamp(12px, 1.8vw, 15px)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxShadow: selectedCategory === 'outros'
+                  ? '0 4px 16px rgba(6,182,212,0.45), 0 0 0 2px white'
+                  : '0 3px 10px rgba(6,182,212,0.45)',
+                transform: selectedCategory === 'outros' ? 'scale(1.06)' : 'scale(1)',
+                transition: 'transform 0.15s, box-shadow 0.15s',
+                letterSpacing: '0.3px'
+              }}
+            >Outros</button>
+            <button
+              key={'servicos'}
+              onClick={() => setSelectedCategory('servicos')}
+              style={{
+                padding: 'clamp(10px, 2vw, 14px) 8px',
+                borderRadius: '50px',
+                border: selectedCategory === 'servicos' ? '3px solid white' : '2px solid transparent',
+                background: 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)',
+                color: 'white',
+                fontWeight: selectedCategory === 'servicos' ? '900' : '700',
+                fontSize: 'clamp(12px, 1.8vw, 15px)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxShadow: selectedCategory === 'servicos'
+                  ? '0 4px 16px rgba(239,68,68,0.45), 0 0 0 2px white'
+                  : '0 3px 10px rgba(239,68,68,0.45)',
+                transform: selectedCategory === 'servicos' ? 'scale(1.06)' : 'scale(1)',
+                transition: 'transform 0.15s, box-shadow 0.15s',
+                letterSpacing: '0.3px'
+              }}
+            >Servicos</button>
           </div>
         </div>
 
