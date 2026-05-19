@@ -347,13 +347,6 @@ function Home() {
           {userNeighborhood && <span style={{ fontSize: '16px', fontWeight: '400', opacity: 0.85, marginLeft: '10px' }}>bairro {userNeighborhood} primeiro</span>}
         </h2>
 
-        {/* BUS SCHEDULE BUTTON - below title, outside h2 */}
-        <button
-          onClick={handleHorarioOnibus}
-          style={{ width: '100%', padding: '12px 24px', marginBottom: '16px', background: 'rgba(59,130,246,0.7)', color: 'white', border: '2px solid rgba(147,197,253,0.8)', borderRadius: '30px', fontSize: 'clamp(14px, 2vw, 18px)', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-        >
-          {'ð'} {userNeighborhood ? 'Horario de Onibus - Bairro ' + userNeighborhood : 'Horario de Onibus'}
-        </button>
 
         {/* SEARCH FILTERS PANEL */}
         {/* SEARCH FILTERS PANEL - Modern Gradient Style */}
@@ -562,6 +555,33 @@ function Home() {
             >Servicos</button>
           </div>
         </div>
+
+        {/* BUS SCHEDULE BUTTON - below Outros and Servicos category buttons */}
+        <button
+          onClick={handleHorarioOnibus}
+          style={{
+            width: '100%',
+            padding: '14px 24px',
+            marginBottom: '20px',
+            background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #0ea5e9 100%)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '50px',
+            fontSize: 'clamp(14px, 2.5vw, 18px)',
+            fontWeight: '800',
+            cursor: 'pointer',
+            letterSpacing: '0.5px',
+            boxShadow: '0 4px 18px rgba(59,130,246,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            transition: 'transform 0.15s, box-shadow 0.15s'
+          }}
+        >
+          {'🚌'} {userNeighborhood ? 'Horario de Onibus - Bairro ' + userNeighborhood : 'Horario de Onibus'}
+        </button>
+
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '40px', color: 'white', fontSize: '20px' }}>Carregando...</div>
