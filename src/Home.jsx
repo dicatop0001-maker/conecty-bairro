@@ -236,7 +236,7 @@ function Home() {
   }
 
   const handleHorarioOnibus = () => {
-    const query = encodeURIComponent('horÃÂÃÂ¡rio de ÃÂÃÂ´nibus ' + (userNeighborhood ? userNeighborhood + ' ' + userCity : userCity));
+    const query = encodeURIComponent('horÃÂÃÂÃÂÃÂ¡rio de ÃÂÃÂÃÂÃÂ´nibus ' + (userNeighborhood ? userNeighborhood + ' ' + userCity : userCity));
     window.open('https://www.google.com/search?q=' + query, '_blank');
   }
 
@@ -294,7 +294,7 @@ function Home() {
             </div>
             {buscaTab === 'bairro' && (
               <div>
-                <p style={{ color: '#666', fontSize: '13px', marginBottom: '10px', textAlign: 'left' }}>Bairros com anÃÂÃÂºncios em <strong>{userCity}</strong>:</p>
+                <p style={{ color: '#666', fontSize: '13px', marginBottom: '10px', textAlign: 'left' }}>Bairros com anÃÂÃÂÃÂÃÂºncios em <strong>{userCity}</strong>:</p>
                 <input type="text" value={searchBairro} onChange={e => setSearchBairro(e.target.value)} placeholder="Filtrar bairro..." style={{ width: '100%', padding: '10px 14px', border: '2px solid #e2e8f0', borderRadius: '10px', fontSize: '15px', marginBottom: '10px', boxSizing: 'border-box' }} />
                 {bairrosFiltrados.length === 0 && (
                   <p style={{ textAlign: 'center', color: '#aaa', fontSize: '14px', padding: '10px 0' }}>{bairrosDisponiveis.length === 0 ? 'Nenhum bairro cadastrado ainda.' : 'Nenhum bairro encontrado.'}</p>
@@ -330,22 +330,21 @@ function Home() {
       </div>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px 40px' }}>
         <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <button onClick={() => navigate('/anuncio')} style={{ width: '100%', padding: 'clamp(16px, 3vw, 25px)', background: '#f97316', color: 'white', border: 'none', borderRadius: '15px', fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 'bold', cursor: 'pointer' }}>CRIAR SEU ANÃÂÃÂNCIO</button>
-          <button onClick={() => navigate('/novo')} style={{ width: '100%', padding: 'clamp(16px, 3vw, 25px)', background: '#4CAF50', color: 'white', border: 'none', borderRadius: '15px', fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 'bold', cursor: 'pointer' }}>CRIAR SEU LEILÃÂÃÂO</button>
+          <button onClick={() => navigate('/anuncio')} style={{ width: '100%', padding: 'clamp(16px, 3vw, 25px)', background: '#f97316', color: 'white', border: 'none', borderRadius: '15px', fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 'bold', cursor: 'pointer' }}>CRIAR SEU ANÃÂÃÂÃÂÃÂNCIO</button>
+          <button onClick={() => navigate('/novo')} style={{ width: '100%', padding: 'clamp(16px, 3vw, 25px)', background: '#4CAF50', color: 'white', border: 'none', borderRadius: '15px', fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 'bold', cursor: 'pointer' }}>CRIAR SEU LEILÃÂÃÂÃÂÃÂO</button>
         </div>
         <h2 style={{ color: 'white', fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 'bold', marginBottom: '16px' }}>
-          Busque itens para venda e leilÃÂÃÂµes ativos no seu bairro{userNeighborhood && <span style={{ fontSize: '16px', fontWeight: '400', opacity: 0.85, marginLeft: '10px' }}>bairro {userNeighborhood} primeiro</span>}
+          Busque itens para venda e leilÃÂÃÂÃÂÃÂµes ativos no seu bairro{userNeighborhood && <span style={{ fontSize: '16px', fontWeight: '400', opacity: 0.85, marginLeft: '10px' }}>bairro {userNeighborhood} primeiro</span>}
         </h2>
         <button onClick={handleHorarioOnibus} style={{ width: '100%', padding: '12px 24px', marginBottom: '16px', background: 'rgba(59,130,246,0.7)', color: 'white', border: '2px solid rgba(147,197,253,0.8)', borderRadius: '30px', fontSize: 'clamp(13px, 2vw, 17px)', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-          ð {userNeighborhood ? `HorÃ¡rio de Ãnibus - Bairro ${userNeighborhood}` : 'HorÃ¡rio de Ãnibus'}
+          🚌 {userNeighborhood ? `Horário de Ônibus - Bairro ${userNeighborhood}` : 'Horário de Ônibus'}
         </button>
         <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '16px', padding: '14px 16px', marginBottom: '24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <button onClick={() => setShowBuscaPanel(!showBuscaPanel)} style={{ width: '100%', padding: '10px 24px', background: showBuscaPanel ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.25)', color: 'white', border: '2px solid rgba(255,255,255,0.8)', borderRadius: '30px', fontSize: 'clamp(13px, 2vw, 17px)', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             Busca por bairro
           </button>
-          </button>
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            {[{val:'',label:'Todos'},{val:'veiculos',label:'VeÃÂÃÂ­culos'},{val:'eletronicos',label:'EletrÃÂÃÂ´nicos'},{val:'objetos',label:'Objetos'},{val:'moveis',label:'MÃÂÃÂ³veis'},{val:'imoveis',label:'ImÃÂÃÂ³veis'},{val:'outros',label:'Outros'},{val:'servicos',label:'Prestador de ServiÃÂÃÂ§os'}].map(cat => (
+            {[{val:'',label:'Todos'},{val:'veiculos',label:'VeÃÂÃÂÃÂÃÂ­culos'},{val:'eletronicos',label:'EletrÃÂÃÂÃÂÃÂ´nicos'},{val:'objetos',label:'Objetos'},{val:'moveis',label:'MÃÂÃÂÃÂÃÂ³veis'},{val:'imoveis',label:'ImÃÂÃÂÃÂÃÂ³veis'},{val:'outros',label:'Outros'},{val:'servicos',label:'Prestador de ServiÃÂÃÂÃÂÃÂ§os'}].map(cat => (
               <button key={cat.val} onClick={() => setSelectedCategory(cat.val)} style={{ padding: '5px 11px', borderRadius: '20px', border: selectedCategory === cat.val ? '2px solid white' : '2px solid rgba(255,255,255,0.4)', background: selectedCategory === cat.val ? '#1e3a8a' : 'rgba(255,255,255,0.15)', color: 'white', fontWeight: selectedCategory === cat.val ? 'bold' : 'normal', fontSize: '11px', cursor: 'pointer', whiteSpace: 'nowrap' }}>{cat.label}</button>
             ))}
           </div>
@@ -394,12 +393,12 @@ function Home() {
                       </div>
                     )}
                     {isAnuncio && (
-                      <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(249,115,22,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>ANÃÂÃÂNCIO</div>
+                      <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(249,115,22,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>ANÃÂÃÂÃÂÃÂNCIO</div>
                     )}
                   </div>
                   <div style={{ padding: '14px 16px' }}>
                     <h3 style={{ margin: '0 0 4px 0', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: '1.3', color: '#1a202c' }}>{auction.title}</h3>
-                    <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '2px' }}>{isAnuncio ? 'PreÃÂÃÂ§o' : 'Lance atual'}</div>
+                    <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '2px' }}>{isAnuncio ? 'PreÃÂÃÂÃÂÃÂ§o' : 'Lance atual'}</div>
                     <div style={{ fontSize: 'clamp(20px, 3vw, 26px)', fontWeight: 'bold', color: isAnuncio ? '#f97316' : '#667eea' }}>
                       R$ {parseFloat(auction.current_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </div>
@@ -408,7 +407,7 @@ function Home() {
                         {bairroLabel}
                       </span>
                       {isSameN && (
-                        <span style={{ background: '#f97316', color: 'white', fontSize: '11px', fontWeight: 'bold', padding: '3px 10px', borderRadius: '20px' }}>Perto de vocÃÂÃÂª</span>
+                        <span style={{ background: '#f97316', color: 'white', fontSize: '11px', fontWeight: 'bold', padding: '3px 10px', borderRadius: '20px' }}>Perto de vocÃÂÃÂÃÂÃÂª</span>
                       )}
                     </div>
                   </div>
@@ -421,41 +420,41 @@ function Home() {
           <div style={{ textAlign: 'center', padding: '60px', background: 'rgba(255,255,255,0.1)', borderRadius: '15px' }}>
             {selectedCategory === 'servicos' ? (
               <>
-                <div style={{ fontSize: '56px', marginBottom: '12px' }}>ÃÂ°ÃÂÃÂÃÂ§</div>
+                <div style={{ fontSize: '56px', marginBottom: '12px' }}>ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ§</div>
                 <p style={{ color: 'white', fontSize: '22px', fontWeight: 'bold', marginBottom: '8px' }}>
-                  Nenhum prestador de serviÃÂÃÂ§o em {userCity}{userNeighborhood ? ' ÃÂ¢ÃÂÃÂ ' + userNeighborhood : ''}
+                  Nenhum prestador de serviÃÂÃÂÃÂÃÂ§o em {userCity}{userNeighborhood ? ' ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ ' + userNeighborhood : ''}
                 </p>
                 <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '16px', marginTop: '8px' }}>
-                  Seja o primeiro a anunciar seus serviÃÂÃÂ§os nessa cidade!
+                  Seja o primeiro a anunciar seus serviÃÂÃÂÃÂÃÂ§os nessa cidade!
                 </p>
                 <div style={{ margin: '18px auto 0', maxWidth: '480px', background: 'rgba(255,255,255,0.15)', borderRadius: '12px', padding: '16px 20px', textAlign: 'left' }}>
-                  <p style={{ color: '#fbbf24', fontWeight: 'bold', fontSize: '15px', margin: '0 0 8px 0' }}>ÃÂ°ÃÂÃÂÃÂ¸ Dica importante para prestadores:</p>
-                  <p style={{ color: 'white', fontSize: '14px', margin: '0 0 6px 0' }}>ÃÂ¢ÃÂÃÂ¢ Adicione <strong>fotos do seu trabalho</strong> ÃÂ¢ÃÂÃÂ anÃÂÃÂºncios com fotos atraem muito mais clientes!</p>
-                  <p style={{ color: 'white', fontSize: '14px', margin: '0 0 6px 0' }}>ÃÂ¢ÃÂÃÂ¢ Coloque seu <strong>nome, telefone/WhatsApp</strong> e horÃÂÃÂ¡rio de atendimento na descriÃÂÃÂ§ÃÂÃÂ£o.</p>
-                  <p style={{ color: 'white', fontSize: '14px', margin: '0' }}>ÃÂ¢ÃÂÃÂ¢ Descreva bem o serviÃÂÃÂ§o que vocÃÂÃÂª oferece.</p>
+                  <p style={{ color: '#fbbf24', fontWeight: 'bold', fontSize: '15px', margin: '0 0 8px 0' }}>ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ¸ Dica importante para prestadores:</p>
+                  <p style={{ color: 'white', fontSize: '14px', margin: '0 0 6px 0' }}>ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¢ Adicione <strong>fotos do seu trabalho</strong> ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ anÃÂÃÂÃÂÃÂºncios com fotos atraem muito mais clientes!</p>
+                  <p style={{ color: 'white', fontSize: '14px', margin: '0 0 6px 0' }}>ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¢ Coloque seu <strong>nome, telefone/WhatsApp</strong> e horÃÂÃÂÃÂÃÂ¡rio de atendimento na descriÃÂÃÂÃÂÃÂ§ÃÂÃÂÃÂÃÂ£o.</p>
+                  <p style={{ color: 'white', fontSize: '14px', margin: '0' }}>ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ¢ Descreva bem o serviÃÂÃÂÃÂÃÂ§o que vocÃÂÃÂÃÂÃÂª oferece.</p>
                 </div>
                 <button onClick={() => navigate('/anuncio')} style={{ marginTop: '22px', padding: '14px 32px', background: '#f97316', color: 'white', border: 'none', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}>
-                  ÃÂ°ÃÂÃÂÃÂ¢ Anunciar meu ServiÃÂÃÂ§o
+                  ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ¢ Anunciar meu ServiÃÂÃÂÃÂÃÂ§o
                 </button>
               </>
             ) : selectedCategory !== '' ? (
               <>
-                <div style={{ fontSize: '48px', marginBottom: '12px' }}>ÃÂ°ÃÂÃÂÃÂ</div>
+                <div style={{ fontSize: '48px', marginBottom: '12px' }}>ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ</div>
                 <p style={{ color: 'white', fontSize: '22px', fontWeight: 'bold' }}>
-                  Nenhum anÃÂÃÂºncio nessa categoria em {userCity}{userNeighborhood ? ' ÃÂ¢ÃÂÃÂ ' + userNeighborhood : ''}
+                  Nenhum anÃÂÃÂÃÂÃÂºncio nessa categoria em {userCity}{userNeighborhood ? ' ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ ' + userNeighborhood : ''}
                 </p>
                 <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '16px', marginTop: '10px' }}>
-                  Seja o primeiro a criar um anÃÂÃÂºncio nesta categoria!
+                  Seja o primeiro a criar um anÃÂÃÂÃÂÃÂºncio nesta categoria!
                 </p>
                 <button onClick={() => navigate('/anuncio')} style={{ marginTop: '18px', padding: '14px 32px', background: '#f97316', color: 'white', border: 'none', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}>
-                  ÃÂ°ÃÂÃÂÃÂ¢ Criar AnÃÂÃÂºncio
+                  ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ¢ Criar AnÃÂÃÂÃÂÃÂºncio
                 </button>
               </>
             ) : (
               <>
-                <div style={{ fontSize: '48px', marginBottom: '12px' }}>ÃÂ°ÃÂÃÂÃÂÃÂ¯ÃÂ¸ÃÂ</div>
-                <p style={{ color: 'white', fontSize: '22px', fontWeight: 'bold' }}>Nenhum anÃÂÃÂºncio ativo em {userCity}{userNeighborhood ? ' ÃÂ¢ÃÂÃÂ ' + userNeighborhood : ''}</p>
-                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '16px', marginTop: '10px' }}>Seja o primeiro a criar um anÃÂÃÂºncio na sua cidade!</p>
+                <div style={{ fontSize: '48px', marginBottom: '12px' }}>ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯ÃÂÃÂ¸ÃÂÃÂ</div>
+                <p style={{ color: 'white', fontSize: '22px', fontWeight: 'bold' }}>Nenhum anÃÂÃÂÃÂÃÂºncio ativo em {userCity}{userNeighborhood ? ' ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ ' + userNeighborhood : ''}</p>
+                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '16px', marginTop: '10px' }}>Seja o primeiro a criar um anÃÂÃÂÃÂÃÂºncio na sua cidade!</p>
               </>
             )}
           </div>
@@ -502,7 +501,7 @@ function Home() {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             fontWeight:'bold',lineHeight:'1',
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             display:'flex',alignItems:'center',justifyContent:'center'
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           }}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      >ÃÂ¢ÃÂÃÂ</button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      >ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ</button>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 </div>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         )}
       <BottomBar user={user} onLogout={handleLogout} />
