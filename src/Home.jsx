@@ -352,7 +352,7 @@ function Home() {
           onClick={handleHorarioOnibus}
           style={{ width: '100%', padding: '12px 24px', marginBottom: '16px', background: 'rgba(59,130,246,0.7)', color: 'white', border: '2px solid rgba(147,197,253,0.8)', borderRadius: '30px', fontSize: 'clamp(14px, 2vw, 18px)', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
         >
-          {'ð'} {userNeighborhood ? 'Horario de Onibus - Bairro ' + userNeighborhood : 'Horario de Onibus'}
+          {'🚌'} {userNeighborhood ? 'Horario de Onibus - Bairro ' + userNeighborhood : 'Horario de Onibus'}
         </button>
 
         {/* SEARCH FILTERS PANEL */}
@@ -383,7 +383,7 @@ function Home() {
               transition: 'transform 0.15s, box-shadow 0.15s'
             }}
           >
-            {showBuscaPanel ? '📍' : '🔍'} Busca por bairro
+            {showBuscaPanel ? 'ð' : 'ð'} Busca por bairro
           </button>
 
           {/* Category filter buttons - grid layout */}
