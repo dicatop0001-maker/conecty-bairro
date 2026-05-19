@@ -73,8 +73,8 @@ function Vitrine() {
         flexWrap: 'wrap'
       }}>
         <img
-          src="/logo-leilao.png"
-          alt="Zap Bairro"
+          src="/logo-conecty.png"
+          alt="Conecty Bairro"
           style={{ height: '52px', objectFit: 'contain', borderRadius: '8px', cursor: 'pointer' }}
           onClick={() => navigate('/vitrine')}
         />
