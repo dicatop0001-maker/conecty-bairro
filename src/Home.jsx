@@ -244,7 +244,7 @@ function Home() {
   }
 
   const handleHorarioOnibus = () => {
-    const query = encodeURIComponent('horário de ônibus ' + userCity);
+    const query = encodeURIComponent('horário de ônibus ' + (userNeighborhood ? userNeighborhood + ' ' + userCity : userCity));
     window.open('https://www.google.com/search?q=' + query, '_blank');
   }
 
