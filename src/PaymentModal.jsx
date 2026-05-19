@@ -10,7 +10,7 @@ function PaymentModal({ user, auction, amount, plan, onClose, onSuccess }) {
     setLoading(true)
     // SIMULACAO — Gerar PIX fake
     setTimeout(() => {
-      const fakePixCode = '00020126580014br.gov.bcb.pix0136' + Math.random().toString(36).substring(7) + '52040000530398654040' + amount.toFixed(2) + '5802BR5925LANCE JA LEILOES6014PONTA GROSSA62070503***63041D3A'
+      const fakePixCode = '00020126580014br.gov.bcb.pix0136' + Math.random().toString(36).substring(7) + '52040000530398654040' + amount.toFixed(2) + '5802BR5925CONECTY BAIRRO6014PONTA GROSSA62070503***63041D3A'
       setPixCode(fakePixCode)
       setLoading(false)
       setPaymentProcessing(true)
