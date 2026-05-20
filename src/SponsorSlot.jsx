@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import ReactDOM from 'react-dom'
 import { supabase } from './supabaseClient'
 
 const PIX_KEY = 'dicatop0001@gmail.com'
@@ -64,7 +65,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
         if (isReserved) {
             return (
               <div style={{ textAlign: 'center', padding: '4px' }}>
-                <div style={{ fontSize: '20px', marginBottom: '4px' }}>🟡</div>
+                <div style={{ fontSize: '20px', marginBottom: '4px' }}>ð¡</div>
                 <div style={{ fontSize: '11px', fontWeight: '800', color: '#92400e' }}>Reservado</div>
                 <div style={{ fontSize: '9px', color: '#b45309' }}>Aguard. aprovacao</div>
               </div>
@@ -274,7 +275,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
         if (isReserved) {
             return (
               <div style={{ textAlign: 'center', padding: '4px' }}>
-                <div style={{ fontSize: '20px', marginBottom: '4px' }}>🟡</div>
+                <div style={{ fontSize: '20px', marginBottom: '4px' }}>ð¡</div>
                 <div style={{ fontSize: '11px', fontWeight: '800', color: '#92400e' }}>Reservado</div>
                 <div style={{ fontSize: '9px', color: '#b45309' }}>Aguard. aprovacao</div>
               </div>
@@ -283,7 +284,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
         if (isActive && !isOwner && !dentroDoRaio()) {
                 return (
                           <div style={{ textAlign: 'center', padding: '4px' }}>
-                                      <div style={{ fontSize: '22px', marginBottom: '4px' }}>⭐</div>
+                                      <div style={{ fontSize: '22px', marginBottom: '4px' }}>â­</div>
                                       <div style={{ fontSize: '11px', fontWeight: '800', color: '#1e3a8a', lineHeight: '1.4' }}>Patrocinador</div>
                                       <div style={{ fontSize: '11px', fontWeight: '700', color: '#f97316' }}>Clique aqui!</div>
                           </div>
@@ -347,7 +348,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
     
         return (
                 <div style={{ textAlign: 'center', padding: '4px' }}>
-                        <div style={{ fontSize: '22px', marginBottom: '4px' }}>⭐</div>
+                        <div style={{ fontSize: '22px', marginBottom: '4px' }}>â­</div>
                         <div style={{ fontSize: '11px', fontWeight: '800', color: '#1e3a8a', lineHeight: '1.4' }}>Patrocinador</div>
                         <div style={{ fontSize: '11px', fontWeight: '700', color: '#f97316' }}>Clique aqui!</div>
                 </div>
@@ -400,7 +401,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                 {renderSlotContent()}
                               </div>
                         
-                          {showModal && (
+                          {showModal && ReactDOM.createPortal(
                                   <div
                                               style={{
                                                             position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
@@ -413,7 +414,8 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                                           background: 'white', borderRadius: '20px', padding: '28px',
                                                           maxWidth: '460px', width: '100%',
                                                           boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
-                                                          maxHeight: '92vh', overflowY: 'auto', position: 'relative'
+                                                          maxHeight: '90vh', overflowY: 'auto', position: 'relative',
+                                                          WebkitOverflowScrolling: 'touch'
                                             }}>
                                                         <button
                                                                         onClick={() => setShowModal(false)}
@@ -421,7 +423,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                                                                           position: 'absolute', top: '14px', right: '18px',
                                                                                           background: 'none', border: 'none', fontSize: '22px', cursor: 'pointer', color: '#888'
                                                                           }}
-                                                                      >✕</button>
+                                                                      >â</button>
                                             
                                               {/* STEP: PLAN */}
                                               {step === 'plan' && (
@@ -433,7 +435,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                                                             <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
                                                                               {[
                                                               { type: 'monthly', label: 'Mensal', price: 'R$ 50,00', sub: 'por mes' },
-                                                              { type: 'yearly', label: 'Anual', price: 'R$ 400,00', sub: 'por ano — economize R$ 200!' }
+                                                              { type: 'yearly', label: 'Anual', price: 'R$ 400,00', sub: 'por ano â economize R$ 200!' }
                                                                                 ].map(p => (
                                                                                                       <div
                                                                                                                               key={p.type}
@@ -456,11 +458,11 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                                                             </div>
                                                                             <div style={{ background: '#f8fafc', borderRadius: '10px', padding: '12px', marginBottom: '16px', fontSize: '12px', color: '#374151' }}>
                                                                                               <div style={{ fontWeight: '700', marginBottom: '5px' }}>O que voce recebe:</div>
-                                                                                              <div>✅ Logo/foto do estabelecimento no espaco</div>
-                                                                                              <div>✅ Ate 5 super ofertas exclusivas</div>
-                                                                                              <div>✅ Link clicavel para seu site ou rede social</div>
-                                                                                              <div>✅ Visibilidade exclusiva para clientes proximos</div>
-                                                                                              <div>✅ Edite seu espaco quando quiser</div>
+                                                                                              <div>â Logo/foto do estabelecimento no espaco</div>
+                                                                                              <div>â Ate 5 super ofertas exclusivas</div>
+                                                                                              <div>â Link clicavel para seu site ou rede social</div>
+                                                                                              <div>â Visibilidade exclusiva para clientes proximos</div>
+                                                                                              <div>â Edite seu espaco quando quiser</div>
                                                                             </div>
                                                                             <button
                                                                                                 onClick={() => setStep('pix')}
@@ -471,7 +473,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                                                                                                       fontSize: '15px', fontWeight: '800', cursor: 'pointer'
                                                                                                   }}
                                                                                               >
-                                                                                              Contratar plano {planLabel} — R$ {planPrice},00
+                                                                                              Contratar plano {planLabel} â R$ {planPrice},00
                                                                             </button>
                                                             </div>
                                                         )}
@@ -481,7 +483,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                                             <div>
                                                                             <h2 style={{ margin: '0 0 6px', fontSize: '20px', color: '#1a202c' }}>Pagamento via Pix</h2>
                                                                             <p style={{ color: '#666', fontSize: '13px', marginBottom: '16px' }}>
-                                                                                              Plano {planLabel} — <strong>R$ {planPrice},00</strong>
+                                                                                              Plano {planLabel} â <strong>R$ {planPrice},00</strong>
                                                                             </p>
                                                                             <div style={{ background: '#f0fdf4', border: '2px solid #16a34a', borderRadius: '14px', padding: '16px', marginBottom: '14px', textAlign: 'center' }}>
                                                                                               <div style={{ fontSize: '12px', color: '#374151', marginBottom: '8px', fontWeight: '600' }}>Chave Pix:</div>
@@ -505,13 +507,13 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                                                                                                     onClick={() => setStep('plan')}
                                                                                                                     style={{ flex: 1, padding: '14px', background: 'white', color: '#374151', border: '2px solid #64748b', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', fontSize: '15px' }}
                                                                                                                   >
-                                                                                                                  ← Voltar
+                                                                                                                  â Voltar
                                                                                                 </button>
                                                                                               <button
                                                                                                                     onClick={() => { setSubmitError(''); setStep('form') }}
                                                                                                                     style={{ flex: 2, padding: '14px', background: 'linear-gradient(135deg, #16a34a, #15803d)', color: 'white', border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: '800', fontSize: '16px', boxShadow: '0 4px 14px rgba(22,163,74,0.35)' }}
                                                                                                                   >
-                                                                                                                  ✅ Ja paguei
+                                                                                                                  â Ja paguei
                                                                                                 </button>
                                                                             </div>
                                                             </div>
@@ -649,7 +651,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                                               {/* Mensagem de erro */}
                                                               {submitError && (
                                                                                 <div style={{ background: '#fee2e2', border: '2px solid #f87171', borderRadius: '10px', padding: '10px', marginBottom: '14px', fontSize: '13px', color: '#b91c1c', fontWeight: '600', textAlign: 'center' }}>
-                                                                                                    ⚠️ {submitError}
+                                                                                                    â ï¸ {submitError}
                                                                                 </div>
                                                                             )}
                                                             
@@ -660,7 +662,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                                                                                           onClick={() => setStep('pix')}
                                                                                                           style={{ flex: 1, padding: '14px', background: 'white', color: '#374151', border: '2px solid #64748b', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', fontSize: '15px' }}
                                                                                                         >
-                                                                                                        ← Voltar
+                                                                                                        â Voltar
                                                                                     </button>
                                                                                               )}
                                                                                               <button
@@ -676,7 +678,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                                                                                                                             letterSpacing: '0.3px'
                                                                                                                       }}
                                                                                                                   >
-                                                                                                {saving ? '⏳ Salvando...' : isOwner ? '💾 Salvar alteracoes' : '📤 Enviar cadastro'}
+                                                                                                {saving ? 'â³ Salvando...' : isOwner ? 'ð¾ Salvar alteracoes' : 'ð¤ Enviar cadastro'}
                                                                                                 </button>
                                                                             </div>
                                                             </div>
@@ -685,7 +687,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                               {/* STEP: SUCCESS */}
                                               {step === 'success' && (
                                                             <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                                                                            <div style={{ fontSize: '56px', marginBottom: '14px' }}>🎉</div>
+                                                                            <div style={{ fontSize: '56px', marginBottom: '14px' }}>ð</div>
                                                                             <h2 style={{ color: '#15803d', marginBottom: '8px' }}>
                                                                               {isOwner ? 'Alteracoes salvas!' : 'Cadastro enviado!'}
                                                                             </h2>
@@ -695,7 +697,7 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                                                             {!isOwner && (
                                                                               <div style={{marginBottom:'12px'}}>
                                                                                 <a href="https://wa.me/5542988880353?text=Ola!%20Fiz%20o%20cadastro%20no%20Conecty%20Bairro%20como%20patrocinador.%20Segue%20o%20comprovante." target="_blank" rel="noopener noreferrer" style={{ display:'inline-block', padding:'12px 20px', background:'linear-gradient(135deg,#25D366,#128C7E)', color:'white', borderRadius:'12px', fontSize:'14px', fontWeight:'800', textDecoration:'none' }}>
-                                                                                  📱 Enviar Comprovante via WhatsApp
+                                                                                  ð± Enviar Comprovante via WhatsApp
                                                                                 </a>
                                                                               </div>
                                                                             )}
@@ -709,13 +711,13 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                                         )}
                                             </div>
                                   </div>
-                              )}
+                          , document.body)}
 
-                        {ownerModal && (
+                        {ownerModal && ReactDOM.createPortal(
                           <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.7)',zIndex:3000,display:'flex',alignItems:'center',justifyContent:'center',padding:'16px'}}
                             onClick={e => {if(e.target===e.currentTarget){setOwnerModal(false);setOwnerVerified(false);setOwnerEmailInput('')}}}>
                             <div style={{background:'white',borderRadius:'16px',padding:'28px 24px',maxWidth:'420px',width:'100%',boxShadow:'0 20px 60px rgba(0,0,0,0.3)'}}>
-                              <h3 style={{margin:'0 0 8px',color:'#1e3a8a',fontSize:'18px'}}>🟡 Slot Reservado</h3>
+                              <h3 style={{margin:'0 0 8px',color:'#1e3a8a',fontSize:'18px'}}>ð¡ Slot Reservado</h3>
                               {!ownerVerified ? (
                                 <div>
                                   <p style={{color:'#374151',fontSize:'14px',marginBottom:'16px'}}>Para ver os detalhes e aprovar/rejeitar, confirme seu e-mail de administrador.</p>
@@ -730,17 +732,17 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                                   <div style={{background:'#f8fafc',borderRadius:'10px',padding:'14px',marginBottom:'16px',fontSize:'13px',color:'#374151',lineHeight:'1.8'}}>
                                     <div><strong>Negocio:</strong> {sponsorData && sponsorData.sponsor_name}</div>
                                     <div><strong>E-mail:</strong> {sponsorData && sponsorData.contact_email}</div>
-                                    <div><strong>Telefone:</strong> {(sponsorData && sponsorData.contact_phone) || '—'}</div>
+                                    <div><strong>Telefone:</strong> {(sponsorData && sponsorData.contact_phone) || 'â'}</div>
                                     <div><strong>Cidade:</strong> {city}</div>
                                     <div><strong>Slot:</strong> {slot}</div>
                                     <div><strong>Plano:</strong> {sponsorData && sponsorData.plan_type === 'monthly' ? 'Mensal R$ 50' : 'Anual R$ 400'}</div>
                                   </div>
                                   <div style={{display:'flex',gap:'8px',flexDirection:'column'}}>
                                     <button onClick={handleOwnerApprove} disabled={ownerApproving} style={{padding:'12px',background:'linear-gradient(135deg,#16a34a,#15803d)',color:'white',border:'none',borderRadius:'10px',fontWeight:'800',cursor:'pointer',fontSize:'14px'}}>
-                                      {ownerApproving ? 'Aprovando...' : '✅ Aprovar e Ativar Patrocinador'}
+                                      {ownerApproving ? 'Aprovando...' : 'â Aprovar e Ativar Patrocinador'}
                                     </button>
                                     <button onClick={handleOwnerReject} disabled={ownerApproving} style={{padding:'12px',background:'linear-gradient(135deg,#dc2626,#b91c1c)',color:'white',border:'none',borderRadius:'10px',fontWeight:'800',cursor:'pointer',fontSize:'14px'}}>
-                                      ❌ Rejeitar e Remover Reserva
+                                      â Rejeitar e Remover Reserva
                                     </button>
                                     <button onClick={()=>{setOwnerModal(false);setOwnerVerified(false);setOwnerEmailInput('')}} style={{padding:'10px',background:'#f3f4f6',color:'#374151',border:'none',borderRadius:'8px',cursor:'pointer'}}>Fechar</button>
                                   </div>
@@ -748,21 +750,21 @@ function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, user
                               )}
                             </div>
                           </div>
-                        )}
+                        , document.body)}
 
-      {appNotification && (
+      {appNotification && ReactDOM.createPortal(
         <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.5)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center',padding:'16px'}}>
           <div style={{background:'white',borderRadius:'16px',padding:'24px',maxWidth:'380px',width:'100%',boxShadow:'0 20px 60px rgba(0,0,0,0.4)',textAlign:'center'}}>
-            <div style={{fontSize:'48px',marginBottom:'12px'}}>📱</div>
+            <div style={{fontSize:'48px',marginBottom:'12px'}}>ð±</div>
             <h3 style={{color:'#15803d',marginBottom:'8px',fontSize:'18px'}}>Cadastro Enviado!</h3>
             <p style={{color:'#374151',fontSize:'13px',lineHeight:'1.6',marginBottom:'16px'}}>{appNotification}</p>
             <a href="https://wa.me/5542988880353?text=Ola!%20Fiz%20o%20cadastro%20no%20Conecty%20Bairro%20como%20patrocinador.%20Segue%20o%20comprovante." target="_blank" rel="noopener noreferrer" style={{display:'block',padding:'12px',background:'linear-gradient(135deg,#25D366,#128C7E)',color:'white',borderRadius:'10px',textDecoration:'none',fontWeight:'800',fontSize:'14px',marginBottom:'10px'}}>
-              📲 Enviar Comprovante via WhatsApp
+              ð² Enviar Comprovante via WhatsApp
             </a>
             <button onClick={()=>setAppNotification(null)} style={{padding:'10px 24px',background:'#667eea',color:'white',border:'none',borderRadius:'10px',cursor:'pointer',fontWeight:'700'}}>OK, Entendi!</button>
           </div>
         </div>
-      )}
+      , document.body)}
                         </div>
                       )
                     }
