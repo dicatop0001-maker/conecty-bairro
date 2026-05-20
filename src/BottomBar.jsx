@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import Notifications from './Notifications'
 
-function BottomBar({ user, onLogout, onAdminOpen }) {
+function BottomBar({ user, onLogout, onAdminOpen, showAdminBtn }) {
   const navigate = useNavigate()
 
   const btnStyle = {
@@ -16,7 +16,7 @@ function BottomBar({ user, onLogout, onAdminOpen }) {
     cursor: 'pointer',
     fontSize: 'clamp(9px, 2vw, 12px)',
     fontWeight: '600',
-    padding: '6px 10px',
+    padding: '6px 8px',
     borderRadius: '8px',
     transition: 'background 0.15s'
   }
@@ -59,13 +59,15 @@ function BottomBar({ user, onLogout, onAdminOpen }) {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Notifications user={user} bottomBar />
         </div>
-        <button style={{ ...btnStyle, color: '#94a3b8' }} onClick={() => onAdminOpen && onAdminOpen()} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
-          <span style={iconStyle}>⚙️</span>
-          <span>Admin</span>
-        </button>
-        <button style={{ ...btnStyle, color: '#fca5a5' }} onClick={onLogout} onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(239,68,68,0.2)' }} onMouseLeave={hoverOut}>
-          <span style={iconStyle}>🚪</span>
-          <span>Sair</span>
+        {showAdminBtn && (
+          <button style={{ ...btnStyle, color: '#94a3b8' }} onClick={() => onAdminOpen && onAdminOpen()} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
+            <span style={iconStyle}>⚙️</span>
+            <span>Admin</span>
+          </button>
+        )}
+        <button style={{ ...btnStyle, color: '#86efac' }} onClick={() => navigate('/perfil')} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
+          <span style={iconStyle}>👤</span>
+          <span>Perfil</span>
         </button>
       </nav>
     </div>
