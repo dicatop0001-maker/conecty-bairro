@@ -274,11 +274,6 @@ function Home(){
       </div>
 
       <div className='cb-blue'>
-        <div className='cb-slots'>
-          {[1,2,3,4,5,6].map(n=>(
-            <SponsorSlot key={n} slotNumber={n} city={userCity} sponsorData={sponsors[n]||null} userEmail={user?.email} onUpdate={loadSponsors}/>
-          ))}
-        </div>
 
         <div className='cb-cols'>
           <div>
@@ -357,6 +352,13 @@ function Home(){
           style={{width:'100%',padding:'14px 20px',marginBottom:'14px',background:'linear-gradient(135deg,#1e40af 0%,#3b82f6 50%,#0ea5e9 100%)',color:'#fff',border:'none',borderRadius:'50px',fontSize:'clamp(14px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',boxShadow:'0 4px 18px rgba(59,130,246,0.5)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
           🚌 {userNeighborhood?'Horário de Ônibus • '+userNeighborhood:'Horário de Ônibus'}
         </button>
+
+        {/* 6 SPONSOR SLOTS */}
+        <div style={{display:'grid',gridTemplateColumns:'repeat(6,1fr)',gap:'6px',marginBottom:'14px'}}>
+          {[1,2,3,4,5,6].map(n=>(
+            <SponsorSlot key={n} slotNumber={n} city={userCity} sponsorData={sponsors[n]||null} userEmail={user?.email} onUpdate={loadSponsors}/>
+          ))}
+        </div>
         {activeSponsorAds.length>0&&(
           <div style={{marginBottom:'14px'}}>
             <h3 style={{color:'#fff',fontSize:'clamp(13px,2vw,17px)',marginBottom:'8px',fontWeight:'800'}}>⭐ Patrocinadores do Seu Bairro</h3>
