@@ -380,7 +380,7 @@ function Home() {
                 ? 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)'
                 : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               color: 'white',
-              border: 'none',
+              border: '1px solid rgba(255,255,255,0.55)',
               borderRadius: '50px',
               fontSize: 'clamp(15px, 2.5vw, 18px)',
               fontWeight: '800',
@@ -409,7 +409,7 @@ function Home() {
               style={{
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
-                border: selectedCategory === '' ? '3px solid white' : '2px solid transparent',
+                border: selectedCategory === '' ? '3px solid white' : '1px solid rgba(255,255,255,0.55)',
                 background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === '' ? '900' : '700',
@@ -430,7 +430,7 @@ function Home() {
               style={{
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
-                border: selectedCategory === 'veiculos' ? '3px solid white' : '2px solid transparent',
+                border: selectedCategory === 'veiculos' ? '3px solid white' : '1px solid rgba(255,255,255,0.55)',
                 background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'veiculos' ? '900' : '700',
@@ -451,7 +451,7 @@ function Home() {
               style={{
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
-                border: selectedCategory === 'eletronicos' ? '3px solid white' : '2px solid transparent',
+                border: selectedCategory === 'eletronicos' ? '3px solid white' : '1px solid rgba(255,255,255,0.55)',
                 background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'eletronicos' ? '900' : '700',
@@ -472,7 +472,7 @@ function Home() {
               style={{
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
-                border: selectedCategory === 'objetos' ? '3px solid white' : '2px solid transparent',
+                border: selectedCategory === 'objetos' ? '3px solid white' : '1px solid rgba(255,255,255,0.55)',
                 background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'objetos' ? '900' : '700',
@@ -493,7 +493,7 @@ function Home() {
               style={{
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
-                border: selectedCategory === 'moveis' ? '3px solid white' : '2px solid transparent',
+                border: selectedCategory === 'moveis' ? '3px solid white' : '1px solid rgba(255,255,255,0.55)',
                 background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'moveis' ? '900' : '700',
@@ -514,7 +514,7 @@ function Home() {
               style={{
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
-                border: selectedCategory === 'imoveis' ? '3px solid white' : '2px solid transparent',
+                border: selectedCategory === 'imoveis' ? '3px solid white' : '1px solid rgba(255,255,255,0.55)',
                 background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'imoveis' ? '900' : '700',
@@ -535,7 +535,7 @@ function Home() {
               style={{
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
-                border: selectedCategory === 'outros' ? '3px solid white' : '2px solid transparent',
+                border: selectedCategory === 'outros' ? '3px solid white' : '1px solid rgba(255,255,255,0.55)',
                 background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'outros' ? '900' : '700',
@@ -556,7 +556,7 @@ function Home() {
               style={{
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
-                border: selectedCategory === 'servicos' ? '3px solid white' : '2px solid transparent',
+                border: selectedCategory === 'servicos' ? '3px solid white' : '1px solid rgba(255,255,255,0.55)',
                 background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'servicos' ? '900' : '700',
@@ -643,7 +643,7 @@ function Home() {
                   onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.03)' }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }}>
                   <div style={{ position: 'relative', height: '190px', overflow: 'hidden', backgroundColor: '#f1f5f9' }}>
-                    <img src={auction.images && auction.images[0] ? auction.images[0] : ''} alt="" onClick={e => { e.stopPropagation(); if (auction.images && auction.images[0]) setLightboxImg(auction.images[0]) }} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', cursor: 'zoom-in' }} onError={e => { e.target.style.display = 'none' }} />
+                    <img src={auction.images && auction.images[0] ? auction.images[0] : ''} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={e => { e.target.style.display = 'none' }} />
                     {timeLeft && !isAnuncio && (
                       <div style={{ position: 'absolute', top: '8px', left: '8px', background: timeLeft.urgent ? 'rgba(220,38,38,0.95)' : 'rgba(30,58,138,0.92)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>
                         {timeLeft.label}
@@ -653,7 +653,7 @@ function Home() {
                       <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(249,115,22,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>ANUNCIO</div>
                     )}
                     {!isAnuncio && (
-                      <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(22,163,74,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>LEILÃO</div>
+                      <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(22,163,74,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>LEILÃO</div>
                     )}
                   </div>
                   <div style={{ padding: '14px 16px' }}>
