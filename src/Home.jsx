@@ -5,6 +5,153 @@ import BottomBar from './BottomBar'
 import SponsorSlot from './SponsorSlot'
 import AdminPanel from './AdminPanel'
 
+const blinkStyle = `
+@keyframes blink-text { 50% { opacity: 0.15; } }
+@keyframes bounce-arrow { 50% { transform: translateY(8px); } }
+@keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.lj-placa {
+  width: 100%;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #1d4ed8 100%);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  border-bottom: 4px solid #3b82f6;
+  padding: 0;
+  box-sizing: border-box;
+}
+.lj-logo-wrap {
+  width: 100%;
+  cursor: pointer;
+  overflow: visible;
+  line-height: normal;
+  padding: 8px 16px 2px;
+  box-sizing: border-box;
+}
+.lj-logo-img {
+  width: 100%;
+  max-width: 720px;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.35));
+}
+.lj-city-label {
+  text-align: center;
+  padding: 4px 16px 10px;
+  font-size: clamp(14px, 2.5vw, 20px);
+  font-weight: 800;
+  color: #4ade80;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+}
+.lj-cards-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 8px;
+  padding: 0 8px 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.lj-col-header {
+  text-align: center;
+  padding: 6px 4px;
+  font-size: clamp(11px, 2vw, 14px);
+  font-weight: 900;
+  color: white;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 8px 8px 0 0;
+}
+.lj-mini-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  max-height: 520px;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.3) transparent;
+}
+.lj-mini-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  position: relative;
+  animation: fade-in 0.3s ease;
+  flex-shrink: 0;
+}
+.lj-mini-card:active { transform: scale(0.97); }
+.lj-mini-card-img {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  display: block;
+  background: #e2e8f0;
+}
+.lj-mini-card-body {
+  padding: 6px 8px 6px;
+}
+.lj-mini-card-title {
+  font-size: clamp(11px, 1.8vw, 13px);
+  font-weight: 800;
+  color: #1a202c;
+  line-height: 1.25;
+  margin: 0 0 3px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.lj-mini-card-price {
+  font-size: clamp(12px, 2vw, 15px);
+  font-weight: bold;
+  margin: 0;
+}
+.lj-share-btn {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: rgba(0,0,0,0.55);
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  color: white;
+  z-index: 5;
+  transition: background 0.15s;
+}
+.lj-share-btn:hover { background: rgba(249,115,22,0.9); }
+.lj-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  padding: 4px 8px 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+@media (max-width: 600px) {
+  .lj-logo-wrap { overflow: visible; }
+  .lj-slots-grid { grid-template-columns: repeat(3, 1fr); }
+  .lj-mini-card-img { height: 75px; }
+}
+.busca-modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7); z-index: 3000;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 60px; overflow-y: auto;
+}
+.busca-modal {
+  background: white; border-radius: 18px; padding: 24px;
+  width: 90%; max-width: 480px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+`
+
 function getTimeLeft(endsAt) {
   if (!endsAt) return null
   const diff = new Date(endsAt) - new Date()
@@ -26,7 +173,6 @@ function Home() {
   const [userNeighborhood, setUserNeighborhood] = useState('')
   const [showBuscaModal, setShowBuscaModal] = useState(false)
   const [buscaTab, setBuscaTab] = useState('produto')
-  const [searchBairro, setSearchBairro] = useState('')
   const [searchCity, setSearchCity] = useState('')
   const [allCities, setAllCities] = useState([])
   const [filteredCities, setFilteredCities] = useState([])
@@ -149,7 +295,6 @@ function Home() {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) { navigate('/'); return }
     setUser(session.user)
-    // Check if user is a sponsor
     const { data: spData } = await supabase.from('sponsors').select('id,status').eq('email', session.user.email).limit(1)
     if (spData && spData.length > 0) setIsSponsor(true)
   }
@@ -203,7 +348,6 @@ function Home() {
     .filter(a => selectedCategory === '' || a.category === selectedCategory)
   const leiloes = activeAuctions.filter(a => a.tipo !== 'anuncio' && a.ends_at)
     .filter(a => selectedCategory === '' || a.category === selectedCategory)
-
   const isAdmin = user && user.email === 'dicatop0001@gmail.com'
   const showAdminBtn = isAdmin || isSponsor
 
@@ -211,24 +355,19 @@ function Home() {
     <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg, #1e3a8a 0%, #1e40af 40%, #1a56db 100%)', paddingBottom: '80px' }}>
       <style>{blinkStyle}</style>
 
-      {/* HEADER */}
       <div className='lj-placa'>
         <div className='lj-logo-wrap' onClick={() => window.scrollTo({top:0,behavior:'smooth'})}>
           <img src='/logo.png' alt='Conecty Bairro' className='lj-logo-img' />
         </div>
-        {/* CITY + BAIRRO IN GREEN */}
         <div className='lj-city-label'>
           {userCity}{userNeighborhood ? ' • ' + userNeighborhood : ''}
         </div>
-        {/* SPONSOR SLOTS */}
         <div className='lj-slots-grid'>
           {[1,2,3,4,5,6].map(n => (
             <SponsorSlot key={n} slotNumber={n} city={userCity} sponsorData={sponsors[n] || null} userEmail={user?.email} onUpdate={loadSponsors} />
           ))}
         </div>
-        {/* TWO COLUMNS: ANUNCIOS + LEILOES */}
         <div className='lj-cards-row'>
-          {/* ANUNCIOS COLUMN */}
           <div>
             <div className='lj-col-header' style={{background:'rgba(249,115,22,0.85)'}}>
               📦 Anúncios
@@ -257,7 +396,6 @@ function Home() {
               ))}
             </div>
           </div>
-          {/* LEILOES COLUMN */}
           <div>
             <div className='lj-col-header' style={{background:'rgba(22,163,74,0.85)'}}>
               🔨 Leilões
@@ -294,24 +432,12 @@ function Home() {
           </div>
         </div>
       </div>
-      {/* MAIN CONTENT */}
       <div style={{maxWidth:'900px',margin:'0 auto',padding:'16px 12px 40px'}}>
-        {/* BUSCA BUTTON */}
-        <button
-          onClick={() => setShowBuscaModal(true)}
-          style={{
-            width:'100%',padding:'16px 24px',marginBottom:'10px',
-            background:'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
-            color:'white',border:'none',borderRadius:'50px',
-            fontSize:'clamp(15px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',
-            letterSpacing:'0.5px',boxShadow:'0 4px 18px rgba(102,126,234,0.5)',
-            display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'
-          }}
-        >
+        <button onClick={() => setShowBuscaModal(true)}
+          style={{width:'100%',padding:'16px 24px',marginBottom:'10px',background:'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',color:'white',border:'none',borderRadius:'50px',fontSize:'clamp(15px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',letterSpacing:'0.5px',boxShadow:'0 4px 18px rgba(102,126,234,0.5)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
           🔍 Buscar: Produto, Serviço ou Leilão
           {userNeighborhood && <span style={{fontSize:'12px',opacity:0.85,fontWeight:'400'}}>({userNeighborhood})</span>}
         </button>
-        {/* CREATE BUTTONS */}
         <button onClick={() => navigate('/anuncio')}
           style={{width:'100%',padding:'clamp(14px,2.5vw,20px)',marginBottom:'10px',background:'#f97316',color:'white',border:'none',borderRadius:'15px',fontSize:'clamp(16px,2.5vw,22px)',fontWeight:'bold',cursor:'pointer',boxShadow:'0 4px 14px rgba(249,115,22,0.4)'}}>
           📢 CRIAR SEU ANÚNCIO
@@ -320,12 +446,10 @@ function Home() {
           style={{width:'100%',padding:'clamp(14px,2.5vw,20px)',marginBottom:'10px',background:'#16a34a',color:'white',border:'none',borderRadius:'15px',fontSize:'clamp(16px,2.5vw,22px)',fontWeight:'bold',cursor:'pointer',boxShadow:'0 4px 14px rgba(22,163,74,0.4)'}}>
           🔨 CRIAR SEU LEILÃO
         </button>
-        {/* BUS BUTTON */}
         <button onClick={handleHorarioOnibus}
           style={{width:'100%',padding:'14px 24px',marginBottom:'10px',background:'linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #0ea5e9 100%)',color:'white',border:'none',borderRadius:'50px',fontSize:'clamp(14px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',letterSpacing:'0.5px',boxShadow:'0 4px 18px rgba(59,130,246,0.5)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
           🚌 {userNeighborhood ? 'Horário de Ônibus - ' + userNeighborhood : 'Horário de Ônibus'}
         </button>
-        {/* CATEGORY FILTER */}
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(110px,1fr))',gap:'8px',marginBottom:'16px'}}>
           {[{v:'',l:'Todos'},{v:'veiculos',l:'Veículos'},{v:'eletronicos',l:'Eletrônicos'},{v:'objetos',l:'Objetos'},{v:'moveis',l:'Móveis'},{v:'imoveis',l:'Imóveis'},{v:'outros',l:'Outros'},{v:'servicos',l:'Serviços'}].map(cat => (
             <button key={cat.v} onClick={() => setSelectedCategory(cat.v)}
@@ -334,7 +458,6 @@ function Home() {
             </button>
           ))}
         </div>
-        {/* SPONSOR ADS */}
         {activeSponsorAds.length > 0 && (
           <div style={{marginBottom:'16px'}}>
             <h3 style={{color:'white',fontSize:'clamp(14px,2vw,18px)',marginBottom:'10px',fontWeight:'800'}}>⭐ Patrocinadores do Seu Bairro</h3>
@@ -369,7 +492,6 @@ function Home() {
           </div>
         )}
       </div>
-      {/* BUSCA MODAL */}
       {showBuscaModal && (
         <div className='busca-modal-overlay' onClick={() => setShowBuscaModal(false)}>
           <div className='busca-modal' onClick={e => e.stopPropagation()}>
@@ -377,7 +499,6 @@ function Home() {
               <h2 style={{margin:0,fontSize:'20px',color:'#1e3a8a',fontWeight:'900'}}>🔍 Buscar</h2>
               <button onClick={() => setShowBuscaModal(false)} style={{background:'none',border:'none',fontSize:'22px',cursor:'pointer',color:'#666'}}>×</button>
             </div>
-            {/* TABS: tipo de busca */}
             <div style={{display:'flex',gap:'8px',marginBottom:'16px',flexWrap:'wrap'}}>
               {[{v:'produto',l:'📦 Produto'},{v:'servico',l:'🔧 Serviço'},{v:'leilao',l:'🔨 Leilão'}].map(t => (
                 <button key={t.v} onClick={() => setBuscaTab(t.v)}
@@ -386,21 +507,19 @@ function Home() {
                 </button>
               ))}
             </div>
-            {/* SCOPE: bairro ou cidade */}
             <div style={{marginBottom:'16px'}}>
               <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>📍 Onde buscar?</p>
               <div style={{display:'flex',gap:'8px'}}>
-              <button onClick={() => { setSelectedCategory(buscaTab==='leilao'?'':buscaTab==='servico'?'servicos':buscaTab); if(userNeighborhood){setShowBuscaModal(false)} }}
+              <button onClick={() => { setSelectedCategory(buscaTab==='leilao'?'':buscaTab==='servico'?'servicos':buscaTab); setShowBuscaModal(false) }}
                 style={{flex:1,padding:'10px',borderRadius:'12px',background:'#f0fdf4',border:'2px solid #16a34a',color:'#15803d',fontWeight:'700',fontSize:'13px',cursor:'pointer'}}>
                 🏘️ Meu Bairro{userNeighborhood?' ('+userNeighborhood+')':''}
               </button>
               <button onClick={() => { setSelectedCategory(buscaTab==='leilao'?'':buscaTab==='servico'?'servicos':buscaTab); setShowBuscaModal(false) }}
                 style={{flex:1,padding:'10px',borderRadius:'12px',background:'#eff6ff',border:'2px solid #3b82f6',color:'#1d4ed8',fontWeight:'700',fontSize:'13px',cursor:'pointer'}}>
-                🏙️ Cidade toda{' ('+userCity+')'}
+                🏙️ Cidade ({userCity})
               </button>
               </div>
             </div>
-            {/* CIDADE SEARCH */}
             <div style={{marginBottom:'12px'}}>
               <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>🌎 Mudar cidade?</p>
               <input value={searchCity} onChange={e => setSearchCity(e.target.value)}
