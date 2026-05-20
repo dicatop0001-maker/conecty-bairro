@@ -140,45 +140,41 @@ function Home() {
   }, [searchCity, allCities])
 
   const requestUserGPS = () => {
-    const fetchBairroFromCoords = async (lat, lng) => {
+    const cached = localStorage.getItem('cb_neighborhood')
+    if (cached) setUserNeighborhood(cached)
+    const fetchBairro = async (lat, lng) => {
       try {
         const res = await fetch(
-          'https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lng + '&format=json&addressdetails=1',
+          'https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&addressdetails=1',
           { headers: { 'Accept-Language': 'pt-BR,pt;q=0.9' } }
         )
         const data = await res.json()
         const addr = data.address || {}
-        const bairro = addr.suburb || addr.neighbourhood || addr.quarter ||
-          addr.residential || addr.district || addr.village || addr.hamlet || ''
-        if (bairro) {
-          setUserNeighborhood(bairro)
-          localStorage.setItem('cb_neighborhood', bairro)
-        }
-      } catch (e) {}
+        const bairro = addr.suburb||addr.neighbourhood||addr.quarter||addr.residential||addr.district||addr.village||addr.hamlet||''
+        if (bairro) { setUserNeighborhood(bairro); localStorage.setItem('cb_neighborhood', bairro) }
+      } catch(e) {}
     }
-    const tryIPFallback = () => {
-      fetch('https://ipapi.co/json/')
-        .then(r => r.json())
-        .then(d => { if (d.latitude && d.longitude) fetchBairroFromCoords(d.latitude, d.longitude) })
-        .catch(() => {})
+    const ipFallback = () => {
+      fetch('https://ipapi.co/json/').then(r=>r.json())
+        .then(d=>{ if(d.latitude&&d.longitude) fetchBairro(d.latitude,d.longitude) })
+        .catch(()=>{})
     }
-    const cached = localStorage.getItem('cb_neighborhood')
-    if (cached) setUserNeighborhood(cached)
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => fetchBairroFromCoords(pos.coords.latitude, pos.coords.longitude),
-        () => {
-          navigator.geolocation.getCurrentPosition(
-            (pos) => fetchBairroFromCoords(pos.coords.latitude, pos.coords.longitude),
-            () => tryIPFallback(),
-            { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
-          )
-        },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-      )
-    } else {
-      tryIPFallback()
-    }
+    if (!navigator.geolocation) { ipFallback(); return }
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        setUserLat(pos.coords.latitude); setUserLng(pos.coords.longitude)
+        fetchBairro(pos.coords.latitude, pos.coords.longitude)
+        navigator.geolocation.clearWatch(watchId)
+      },
+      () => {
+        navigator.geolocation.getCurrentPosition(
+          (pos)=>fetchBairro(pos.coords.latitude,pos.coords.longitude),
+          ()=>ipFallback(),
+          { enableHighAccuracy:false, timeout:10000, maximumAge:60000 }
+        )
+      },
+      { enableHighAccuracy:true, timeout:15000, maximumAge:0 }
+    )
   }
 
   const loadBrazilianCities = async () => {
@@ -653,7 +649,7 @@ function Home() {
                       <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(249,115,22,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>ANUNCIO</div>
                     )}
                     {!isAnuncio && (
-                      <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(22,163,74,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>LEILÃO</div>
+                      <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(22,163,74,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>LEILÃÂO</div>
                     )}
                   </div>
                   <div style={{ padding: '14px 16px' }}>
