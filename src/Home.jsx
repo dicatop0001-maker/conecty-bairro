@@ -140,26 +140,32 @@ function Home() {
   }, [searchCity, allCities])
 
   const requestUserGPS = () => {
+    const cached = localStorage.getItem('cb_neighborhood')
+    if (cached) setUserNeighborhood(cached)
     if (!navigator.geolocation) return
+    const onSuccess = async (pos) => {
+      const lat = pos.coords.latitude
+      const lng = pos.coords.longitude
+      setUserLat(lat)
+      setUserLng(lng)
+      try {
+        const res = await fetch(
+          'https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lng + '&format=json&addressdetails=1',
+          { headers: { 'Accept-Language': 'pt-BR,pt;q=0.9' } }
+        )
+        const data = await res.json()
+        const addr = data.address || {}
+        const bairro = addr.suburb || addr.neighbourhood || addr.quarter || addr.residential || addr.district || addr.village || ''
+        if (bairro) {
+          setUserNeighborhood(bairro)
+          localStorage.setItem('cb_neighborhood', bairro)
+        }
+      } catch (e) {}
+    }
     navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const lat = pos.coords.latitude
-        const lng = pos.coords.longitude
-        setUserLat(lat)
-        setUserLng(lng)
-        try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`,
-            { headers: { 'Accept-Language': 'pt-BR,pt;q=0.9' } }
-          )
-          const data = await res.json()
-          const addr = data.address || {}
-          const bairro = addr.suburb || addr.neighbourhood || addr.quarter || addr.residential || addr.district || addr.village || ''
-          if (bairro) setUserNeighborhood(bairro)
-        } catch (e) {}
-      },
+      onSuccess,
       () => {},
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 300000 }
     )
   }
 
@@ -392,7 +398,7 @@ function Home() {
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
                 border: selectedCategory === '' ? '3px solid white' : '2px solid transparent',
-                background: 'linear-gradient(135deg, #f97316 0%, #ef4444 100%)',
+                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === '' ? '900' : '700',
                 fontSize: 'clamp(12px, 1.8vw, 15px)',
@@ -413,7 +419,7 @@ function Home() {
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
                 border: selectedCategory === 'veiculos' ? '3px solid white' : '2px solid transparent',
-                background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'veiculos' ? '900' : '700',
                 fontSize: 'clamp(12px, 1.8vw, 15px)',
@@ -434,7 +440,7 @@ function Home() {
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
                 border: selectedCategory === 'eletronicos' ? '3px solid white' : '2px solid transparent',
-                background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'eletronicos' ? '900' : '700',
                 fontSize: 'clamp(12px, 1.8vw, 15px)',
@@ -455,7 +461,7 @@ function Home() {
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
                 border: selectedCategory === 'objetos' ? '3px solid white' : '2px solid transparent',
-                background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
+                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'objetos' ? '900' : '700',
                 fontSize: 'clamp(12px, 1.8vw, 15px)',
@@ -476,7 +482,7 @@ function Home() {
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
                 border: selectedCategory === 'moveis' ? '3px solid white' : '2px solid transparent',
-                background: 'linear-gradient(135deg, #10b981 0%, #065f46 100%)',
+                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'moveis' ? '900' : '700',
                 fontSize: 'clamp(12px, 1.8vw, 15px)',
@@ -497,7 +503,7 @@ function Home() {
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
                 border: selectedCategory === 'imoveis' ? '3px solid white' : '2px solid transparent',
-                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'imoveis' ? '900' : '700',
                 fontSize: 'clamp(12px, 1.8vw, 15px)',
@@ -518,7 +524,7 @@ function Home() {
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
                 border: selectedCategory === 'outros' ? '3px solid white' : '2px solid transparent',
-                background: 'linear-gradient(135deg, #06b6d4 0%, #0e7490 100%)',
+                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'outros' ? '900' : '700',
                 fontSize: 'clamp(12px, 1.8vw, 15px)',
@@ -539,7 +545,7 @@ function Home() {
                 padding: 'clamp(10px, 2vw, 14px) 8px',
                 borderRadius: '50px',
                 border: selectedCategory === 'servicos' ? '3px solid white' : '2px solid transparent',
-                background: 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)',
+                background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
                 color: 'white',
                 fontWeight: selectedCategory === 'servicos' ? '900' : '700',
                 fontSize: 'clamp(12px, 1.8vw, 15px)',
