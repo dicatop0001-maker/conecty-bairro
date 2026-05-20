@@ -653,7 +653,7 @@ function Home() {
                       <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(249,115,22,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>ANUNCIO</div>
                     )}
                     {!isAnuncio && (
-                      <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(249,115,22,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>LEILÃO</div>
+                      <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(22,163,74,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>LEILÃO</div>
                     )}
                   </div>
                   <div style={{ padding: '14px 16px' }}>
