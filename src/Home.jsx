@@ -140,10 +140,6 @@ function Home() {
   }, [searchCity, allCities])
 
   const requestUserGPS = () => {
-    // 1) load from cache immediately for fast display
-    const cached = localStorage.getItem('cb_neighborhood')
-    if (cached) setUserNeighborhood(cached)
-    // 2) Try GPS geolocation (works on mobile with permission)
     const fetchBairroFromCoords = async (lat, lng) => {
       try {
         const res = await fetch(
@@ -160,38 +156,28 @@ function Home() {
         }
       } catch (e) {}
     }
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = pos.coords.latitude
-          const lng = pos.coords.longitude
-          setUserLat(lat)
-          setUserLng(lng)
-          fetchBairroFromCoords(lat, lng)
-        },
-        () => {
-          // GPS denied/failed - try IP geolocation fallback
-          fetch('https://ipapi.co/json/')
-            .then(r => r.json())
-            .then(d => {
-              if (d.latitude && d.longitude) {
-                fetchBairroFromCoords(d.latitude, d.longitude)
-              }
-            })
-            .catch(() => {})
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-      )
-    } else {
-      // No geolocation API - try IP fallback
+    const tryIPFallback = () => {
       fetch('https://ipapi.co/json/')
         .then(r => r.json())
-        .then(d => {
-          if (d.latitude && d.longitude) {
-            fetchBairroFromCoords(d.latitude, d.longitude)
-          }
-        })
+        .then(d => { if (d.latitude && d.longitude) fetchBairroFromCoords(d.latitude, d.longitude) })
         .catch(() => {})
+    }
+    const cached = localStorage.getItem('cb_neighborhood')
+    if (cached) setUserNeighborhood(cached)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => fetchBairroFromCoords(pos.coords.latitude, pos.coords.longitude),
+        () => {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => fetchBairroFromCoords(pos.coords.latitude, pos.coords.longitude),
+            () => tryIPFallback(),
+            { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+          )
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      )
+    } else {
+      tryIPFallback()
     }
   }
 
