@@ -652,6 +652,9 @@ function Home() {
                     {isAnuncio && (
                       <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(249,115,22,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>ANUNCIO</div>
                     )}
+                    {!isAnuncio && (
+                      <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(249,115,22,0.95)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', zIndex: 2 }}>LEILÃO</div>
+                    )}
                   </div>
                   <div style={{ padding: '14px 16px' }}>
                     <h3 style={{ margin: '0 0 4px 0', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: '1.3', color: '#1a202c' }}>{auction.title}</h3>
