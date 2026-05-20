@@ -269,7 +269,7 @@ function Home(){
       <style>{css}</style>
 
       <div className='cb-header'>
-        <img src='/logo.png' alt='Conecty Bairro' className='cb-logo' />
+        <img src='/logo-conecty.png' alt='Conecty Bairro' className='cb-logo' />
         <p className='cb-city'>{userCity}{userNeighborhood?' • '+userNeighborhood:''}</p>
       </div>
 
