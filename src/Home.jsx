@@ -3,6 +3,7 @@ import { supabase } from './supabaseClient'
 import { useNavigate } from 'react-router-dom'
 import BottomBar from './BottomBar'
 import SponsorSlot from './SponsorSlot'
+import AdminPanel from './AdminPanel'
 
 const blinkStyle = `
 @keyframes blink-text { 50% { opacity: 0.15; } }
@@ -79,6 +80,7 @@ function getTimeLeft(endsAt) {
 
 function Home() {
   const [user, setUser] = useState(null)
+  const [showAdmin, setShowAdmin] = useState(false)
   const [auctions, setAuctions] = useState([])
   const [activeAuctions, setActiveAuctions] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -724,7 +726,8 @@ function Home() {
           <button onClick={() => setLightboxImg(null)} style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '28px', width: '48px', height: '48px', borderRadius: '50%', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>X</button>
         </div>
       )}
-      <BottomBar user={user} onLogout={handleLogout} />
+      <BottomBar user={user} onLogout={handleLogout} onAdminOpen={() => setShowAdmin(true)} />
+      {showAdmin && <AdminPanel onClose={() => setShowAdmin(false)} />}
     </div>
   )
 }
