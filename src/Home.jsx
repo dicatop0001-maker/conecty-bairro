@@ -32,7 +32,12 @@ const css = `
   gap: 6px;
   padding: 10px 8px 8px;
 }
-@media(max-width:600px){ .cb-slots{ grid-template-columns:repeat(3,1fr); } }
+.cb-slots-main {
+  display: grid;
+  grid-template-columns: repeat(6,1fr);
+  gap: 6px;
+  margin-bottom: 14px;
+}
 .cb-cols {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -51,17 +56,19 @@ const css = `
 }
 .cb-strip {
   display: flex;
-  gap: 7px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding-bottom: 4px;
+  max-height: calc(3 * 152px);
 }
 .cb-strip::-webkit-scrollbar { display:none; }
 .cb-card {
-  flex: 0 0 calc(33.3% - 5px);
-  min-width: calc(33.3% - 5px);
+  flex: 0 0 auto;
+  width: 100%;
   background: #fff;
   border-radius: 10px;
   overflow: hidden;
@@ -73,12 +80,12 @@ const css = `
 .cb-card:active { transform:scale(0.97); }
 .cb-card-img {
   width: 100%;
-  height: 80px;
+  height: 90px;
   object-fit: cover;
   display: block;
   background: #e2e8f0;
 }
-.cb-card-body { padding: 5px 6px 22px; }
+.cb-card-body { padding: 5px 6px 24px; }
 .cb-card-title {
   font-size: clamp(10px,2vw,12px);
   font-weight: 800;
@@ -151,6 +158,12 @@ const css = `
   border-radius:12px;overflow:hidden;
   box-shadow:0 0 0 3px #f97316,0 6px 18px rgba(0,0,0,0.15);
   position:relative;cursor:pointer;
+}
+@media(max-width:600px){
+  .cb-slots { grid-template-columns: repeat(3,1fr); }
+  .cb-slots-main { grid-template-columns: repeat(3,1fr); }
+  .cb-strip { max-height: calc(3 * 148px); }
+  .cb-card-img { height: 80px; }
 }
 `
 
@@ -354,7 +367,7 @@ function Home(){
         </button>
 
         {/* 6 SPONSOR SLOTS */}
-        <div style={{display:'grid',gridTemplateColumns:'repeat(6,1fr)',gap:'6px',marginBottom:'14px'}}>
+        <div className='cb-slots-main'>
           {[1,2,3,4,5,6].map(n=>(
             <SponsorSlot key={n} slotNumber={n} city={userCity} sponsorData={sponsors[n]||null} userEmail={user?.email} onUpdate={loadSponsors}/>
           ))}
