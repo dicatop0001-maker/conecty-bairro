@@ -1,3 +1,10 @@
+import { useState, useEffect } from 'react'
+import { supabase } from './supabaseClient'
+import { useNavigate } from 'react-router-dom'
+import BottomBar from './BottomBar'
+import SponsorSlot from './SponsorSlot'
+import AdminPanel from './AdminPanel'
+
 function getTimeLeft(endsAt) {
   if (!endsAt) return null
   const diff = new Date(endsAt) - new Date()
