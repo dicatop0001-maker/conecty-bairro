@@ -33,6 +33,9 @@ address: ''
 const [saving, setSaving] = useState(false)
 const [logoPreview, setLogoPreview] = useState(null)
 const [uploadingLogo, setUploadingLogo] = useState(false)
+const [voucherUrl, setVoucherUrl] = useState('')
+const [uploadingVoucher, setUploadingVoucher] = useState(false)
+const voucherInputRef = useRef(null)
 const [geoStatus, setGeoStatus] = useState('')
 const [sponsorLat, setSponsorLat] = useState(null)
 const [sponsorLng, setSponsorLng] = useState(null)
@@ -116,6 +119,26 @@ alert('Erro ao fazer upload: ' + error.message)
 setUploadingLogo(false)
 }
 
+const handleVoucherUpload = async (e) => {
+const file = e.target.files[0]
+if (!file) return
+setUploadingVoucher(true)
+const ext = file.name.split('.').pop()
+const fileName = 'voucher_' + city + '_' + slot + '_' + Date.now() + '.' + ext
+const { error } = await supabase.storage
+.from('auction-images')
+.upload(fileName, file, { upsert: true })
+if (!error) {
+const { data: urlData } = supabase.storage
+.from('auction-images')
+.getPublicUrl(fileName)
+setVoucherUrl(urlData.publicUrl)
+} else {
+alert('Erro ao fazer upload do comprovante: ' + error.message)
+}
+setUploadingVoucher(false)
+}
+
 const geocodeAddress = async (address) => {
 if (!address || address.trim().length < 5) {
 alert('Digite um endereco valido!')
@@ -196,6 +219,7 @@ contact_email: form.email.trim(),
 contact_phone: form.phone ? form.phone.trim() : '',
 link_url: form.link_url ? form.link_url.trim() : '',
 offer_text: form.offers.filter(o => o && o.trim() !== '').join('\n'),
+voucher_url: voucherUrl || null,
 expires_at: expiresDate.toISOString(),
 }
 
@@ -598,6 +622,25 @@ placeholder={'Oferta ' + (i + 1) + ': Ex: 10% OFF na primeira compra!'}
 style={{ width: '100%', padding: '8px 11px', border: '2px solid #fca5a5', borderRadius: '8px', fontSize: '12px', boxSizing: 'border-box' }}
 />
 </div>))}
+</div>
+
+// Comprovante de pagamento
+<div style={{ marginBottom: '14px', background: '#f0fdf4', border: '2px solid #86efac', borderRadius: '12px', padding: '12px' }}>
+<label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#15803d', marginBottom: '6px' }}>
+🧾 Comprovante de pagamento (foto/print do Pix)
+</label>
+{voucherUrl && (
+<div style={{ marginBottom: '8px', textAlign: 'center' }}>
+<img src={voucherUrl} alt='comprovante' style={{ maxWidth: '100%', maxHeight: '120px', objectFit: 'contain', borderRadius: '8px', border: '2px solid #86efac' }} />
+<div style={{ fontSize: '11px', color: '#15803d', fontWeight: '700', marginTop: '4px' }}>✅ Comprovante enviado!</div>
+</div>
+)}
+<input ref={voucherInputRef} type='file' accept='image/*,application/pdf' onChange={handleVoucherUpload} style={{ display: 'none' }} />
+<button onClick={() => voucherInputRef.current && voucherInputRef.current.click()} disabled={uploadingVoucher}
+style={{ width: '100%', padding: '9px', background: uploadingVoucher ? '#aaa' : voucherUrl ? '#16a34a' : '#0ea5e9', color: 'white', border: 'none', borderRadius: '8px', cursor: uploadingVoucher ? 'not-allowed' : 'pointer', fontSize: '13px', fontWeight: '700' }}>
+{uploadingVoucher ? 'Enviando...' : voucherUrl ? '🔄 Trocar comprovante' : '📸 Enviar foto do comprovante'}
+</button>
+<div style={{ fontSize: '11px', color: '#15803d', marginTop: '6px' }}>Envie a foto/print do comprovante Pix para agilizar a aprovacao.</div>
 </div>
 {isPending && !isOwner && (
 <div style={{ background: '#fef3c7', border: '2px solid #fbbf24', borderRadius: '10px', padding: '10px', marginBottom: '14px', textAlign: 'center' }}>
