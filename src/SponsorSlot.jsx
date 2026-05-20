@@ -288,7 +288,7 @@ return (
 src={sponsorData.logo_url}
 alt={sponsorData.sponsor_name}
 style={{ width: '100%', maxHeight: '55px', objectFit: 'contain', borderRadius: '6px', marginBottom: '3px' }}
-/>))}
+/>)}
 <div style={{ fontWeight: '800', fontSize: '11px', color: '#1e3a8a', marginBottom: '2px', lineHeight: '1.2' }}>
 {sponsorData.sponsor_name}
 </div>
