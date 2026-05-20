@@ -61,7 +61,7 @@ return calcDistKm(userLat, userLng, sponsorData.lat, sponsorData.lng) <= RAIO_KM
 }
 
 const handleSponsorClick = () => {
-if (isReserved) { setOwnerModal(true); return }
+if (isPending && !isOwner) { setOwnerModal(true); return }
 if (isActive && !isOwner && !dentroDoRaio()) {
 setStep('plan'); setShowModal(true); return
 }
@@ -188,7 +188,7 @@ expiresDate.setMonth(expiresDate.getMonth() + expiresMonths)
 const payload = {
 city,
 slot: (['L1','L2','L3','R1','R2','R3'].indexOf(slot) + 1) || 1,
-status: (isOwner && isActive) ? 'active' : 'reserved',
+status: (isOwner && isActive) ? 'active' : 'pending',
 plan_type: planType === 'monthly' ? 'monthly' : 'yearly',
 plan_price: planPrice,
 sponsor_name: form.name.trim(),
@@ -340,12 +340,12 @@ const successMsg = isOwner
 
 const slotBg = isActive
 ? (isOwner || dentroDoRaio() ? '#fffbeb' : 'rgba(255,255,255,0.08)')
-: isReserved ? '#fef9c3'
+: isPending ? '#fef9c3'
 : isPending ? '#fef3c7' : 'rgba(255,255,255,0.12)'
 
 const slotBorder = isActive
 ? (isOwner || dentroDoRaio() ? '2px solid #fbbf24' : '2px dashed #94a3b8')
-: isReserved ? '2px solid #f59e0b'
+: isPending ? '2px solid #f59e0b'
 : isPending ? '2px dashed #d97706' : '2px dashed #94a3b8'
 
 return (
