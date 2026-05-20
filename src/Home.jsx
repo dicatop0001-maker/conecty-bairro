@@ -5,426 +5,333 @@ import BottomBar from './BottomBar'
 import SponsorSlot from './SponsorSlot'
 import AdminPanel from './AdminPanel'
 
-const blinkStyle = `
-@keyframes blink-text { 50% { opacity: 0.15; } }
-@keyframes bounce-arrow { 50% { transform: translateY(8px); } }
-@keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-.lj-placa {
+const css = `
+.cb-header {
+  background: #ffffff;
   width: 100%;
-  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #1d4ed8 100%);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-  border-bottom: 4px solid #3b82f6;
-  padding: 0;
   box-sizing: border-box;
-}
-.lj-logo-wrap {
-  width: 100%;
-  cursor: pointer;
-  overflow: visible;
-  line-height: normal;
-  padding: 8px 16px 2px;
-  box-sizing: border-box;
-}
-.lj-logo-img {
-  width: 100%;
-  max-width: 720px;
-  display: block;
-  margin: 0 auto;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.35));
-}
-.lj-city-label {
+  padding: 8px 16px 10px;
   text-align: center;
-  padding: 4px 16px 10px;
-  font-size: clamp(14px, 2.5vw, 20px);
-  font-weight: 800;
-  color: #4ade80;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
 }
-.lj-cards-row {
+.cb-logo { width:100%; max-width:340px; display:block; margin:0 auto; }
+.cb-city {
+  font-size: clamp(15px,3vw,22px);
+  font-weight: 900;
+  color: #16a34a;
+  margin: 4px 0 0;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+.cb-blue {
+  background: linear-gradient(160deg,#1e3a8a 0%,#1e40af 50%,#1d4ed8 100%);
+  width: 100%; box-sizing: border-box;
+}
+.cb-slots {
+  display: grid;
+  grid-template-columns: repeat(6,1fr);
+  gap: 6px;
+  padding: 10px 8px 8px;
+}
+@media(max-width:600px){ .cb-slots{ grid-template-columns:repeat(3,1fr); } }
+.cb-cols {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0 8px;
-  padding: 0 8px 10px;
-  width: 100%;
-  box-sizing: border-box;
+  gap: 8px;
+  padding: 0 8px 12px;
 }
-.lj-col-header {
+.cb-col-head {
   text-align: center;
-  padding: 6px 4px;
-  font-size: clamp(11px, 2vw, 14px);
+  font-size: clamp(11px,2.5vw,14px);
   font-weight: 900;
-  color: white;
-  letter-spacing: 1px;
+  color: #fff;
   text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 6px 4px;
   border-radius: 8px 8px 0 0;
 }
-.lj-mini-cards {
+.cb-strip {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  overflow-y: auto;
-  max-height: 520px;
+  gap: 7px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
   padding-bottom: 4px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.3) transparent;
 }
-.lj-mini-card {
-  background: white;
+.cb-strip::-webkit-scrollbar { display:none; }
+.cb-card {
+  flex: 0 0 calc(33.3% - 5px);
+  min-width: calc(33.3% - 5px);
+  background: #fff;
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  border: 1px solid rgba(255,255,255,0.2);
+  scroll-snap-align: start;
   position: relative;
-  animation: fade-in 0.3s ease;
-  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
 }
-.lj-mini-card:active { transform: scale(0.97); }
-.lj-mini-card-img {
+.cb-card:active { transform:scale(0.97); }
+.cb-card-img {
   width: 100%;
-  height: 90px;
+  height: 80px;
   object-fit: cover;
   display: block;
   background: #e2e8f0;
 }
-.lj-mini-card-body {
-  padding: 6px 8px 6px;
-}
-.lj-mini-card-title {
-  font-size: clamp(11px, 1.8vw, 13px);
+.cb-card-body { padding: 5px 6px 22px; }
+.cb-card-title {
+  font-size: clamp(10px,2vw,12px);
   font-weight: 800;
   color: #1a202c;
-  line-height: 1.25;
-  margin: 0 0 3px 0;
+  margin: 0 0 3px;
+  line-height: 1.2;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.lj-mini-card-price {
-  font-size: clamp(12px, 2vw, 15px);
-  font-weight: bold;
+.cb-card-price {
+  font-size: clamp(11px,2vw,13px);
+  font-weight: 700;
   margin: 0;
 }
-.lj-share-btn {
+.cb-badge {
   position: absolute;
-  bottom: 6px;
-  right: 6px;
-  background: rgba(0,0,0,0.55);
-  border: none;
+  top: 4px; right: 4px;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 2px 5px;
+  border-radius: 10px;
+  color: #fff;
+  z-index: 3;
+}
+.cb-timer {
+  position: absolute;
+  top: 4px; left: 4px;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 2px 5px;
+  border-radius: 10px;
+  color: #fff;
+  z-index: 3;
+}
+.cb-share {
+  position: absolute;
+  bottom: 4px; right: 4px;
+  width: 22px; height: 22px;
   border-radius: 50%;
-  width: 26px;
-  height: 26px;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: #fff;
+  font-size: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 13px;
-  color: white;
   z-index: 5;
-  transition: background 0.15s;
 }
-.lj-share-btn:hover { background: rgba(249,115,22,0.9); }
-.lj-slots-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-  padding: 4px 8px 12px;
-  width: 100%;
-  box-sizing: border-box;
+.cb-share:hover { background: rgba(249,115,22,0.9); }
+.cb-main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 14px 12px 40px;
 }
-@media (max-width: 600px) {
-  .lj-logo-wrap { overflow: visible; }
-  .lj-slots-grid { grid-template-columns: repeat(3, 1fr); }
-  .lj-mini-card-img { height: 75px; }
+.cb-overlay {
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.7);z-index:3000;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:60px;overflow-y:auto;
 }
-.busca-modal-overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.7); z-index: 3000;
-  display: flex; align-items: flex-start; justify-content: center;
-  padding-top: 60px; overflow-y: auto;
+.cb-modal {
+  background:#fff;border-radius:18px;padding:22px;
+  width:90%;max-width:480px;box-shadow:0 8px 32px rgba(0,0,0,0.4);
 }
-.busca-modal {
-  background: white; border-radius: 18px; padding: 24px;
-  width: 90%; max-width: 480px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+.cb-sp-card {
+  background:linear-gradient(135deg,#fff7ed,#fef3c7);
+  border-radius:12px;overflow:hidden;
+  box-shadow:0 0 0 3px #f97316,0 6px 18px rgba(0,0,0,0.15);
+  position:relative;cursor:pointer;
 }
 `
 
-function getTimeLeft(endsAt) {
-  if (!endsAt) return null
-  const diff = new Date(endsAt) - new Date()
-  if (diff <= 0) return { label: 'Encerrado', urgent: true }
-  const h = Math.floor(diff / 3600000)
-  const m = Math.floor((diff % 3600000) / 60000)
-  if (h < 24) return { label: h + 'h ' + m + 'm', urgent: h < 2 }
-  return { label: Math.floor(h / 24) + 'd', urgent: false }
+function getTimeLeft(endsAt){
+  if(!endsAt)return null
+  const diff=new Date(endsAt)-new Date()
+  if(diff<=0)return{label:'Encerrado',urgent:true}
+  const h=Math.floor(diff/3600000)
+  const m=Math.floor((diff%3600000)/60000)
+  if(h<24)return{label:h+'h '+m+'m',urgent:h<2}
+  return{label:Math.floor(h/24)+'d',urgent:false}
 }
 
-function Home() {
-  const [user, setUser] = useState(null)
-  const [showAdmin, setShowAdmin] = useState(false)
-  const [auctions, setAuctions] = useState([])
-  const [activeAuctions, setActiveAuctions] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState('')
-  const [userCity, setUserCity] = useState('Ponta Grossa')
-  const [userState, setUserState] = useState('PR')
-  const [userNeighborhood, setUserNeighborhood] = useState('')
-  const [showBuscaModal, setShowBuscaModal] = useState(false)
-  const [buscaTab, setBuscaTab] = useState('produto')
-  const [searchCity, setSearchCity] = useState('')
-  const [allCities, setAllCities] = useState([])
-  const [filteredCities, setFilteredCities] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [sponsors, setSponsors] = useState({})
-  const [userLat, setUserLat] = useState(null)
-  const [userLng, setUserLng] = useState(null)
-  const [activeSponsorAds, setActiveSponsorAds] = useState([])
-  const [lightboxImg, setLightboxImg] = useState(null)
-  const [isSponsor, setIsSponsor] = useState(false)
-  const navigate = useNavigate()
+function Home(){
+  const[user,setUser]=useState(null)
+  const[showAdmin,setShowAdmin]=useState(false)
+  const[auctions,setAuctions]=useState([])
+  const[activeAuctions,setActiveAuctions]=useState([])
+  const[selCat,setSelCat]=useState('')
+  const[userCity,setUserCity]=useState('Ponta Grossa')
+  const[userState,setUserState]=useState('PR')
+  const[userNeighborhood,setUserNeighborhood]=useState('')
+  const[showBusca,setShowBusca]=useState(false)
+  const[buscaTab,setBuscaTab]=useState('produto')
+  const[searchCity,setSearchCity]=useState('')
+  const[allCities,setAllCities]=useState([])
+  const[filteredCities,setFilteredCities]=useState([])
+  const[loading,setLoading]=useState(true)
+  const[sponsors,setSponsors]=useState({})
+  const[userLat,setUserLat]=useState(null)
+  const[userLng,setUserLng]=useState(null)
+  const[activeSponsorAds,setActiveSponsorAds]=useState([])
+  const[lightboxImg,setLightboxImg]=useState(null)
+  const[isSponsor,setIsSponsor]=useState(false)
+  const navigate=useNavigate()
 
-  useEffect(() => {
-    checkUser()
-    detectLocation()
-    loadBrazilianCities()
-    requestUserGPS()
-  }, [])
+  useEffect(()=>{
+    checkUser(); detectLocation(); loadBrazilianCities(); requestUserGPS()
+  },[])
+  useEffect(()=>{ if(user){loadAuctions();loadSponsors()} },[user,userCity])
+  useEffect(()=>{
+    const n=new Date()
+    const f=auctions.filter(a=>(a.status==='active'||!a.status)&&(a.tipo==='anuncio'||!a.ends_at||new Date(a.ends_at)>n))
+    const sN=f.filter(a=>userNeighborhood&&a.neighborhood&&a.neighborhood.toLowerCase().trim()===userNeighborhood.toLowerCase().trim())
+    const oN=f.filter(a=>!(userNeighborhood&&a.neighborhood&&a.neighborhood.toLowerCase().trim()===userNeighborhood.toLowerCase().trim()))
+    setActiveAuctions([...sN,...oN])
+  },[auctions,userNeighborhood])
+  useEffect(()=>{
+    if(searchCity.length>=2){
+      setFilteredCities(allCities.filter(c=>c.nome.toLowerCase().includes(searchCity.toLowerCase())).slice(0,50))
+    } else setFilteredCities([])
+  },[searchCity,allCities])
 
-  useEffect(() => {
-    if (user) { loadAuctions(); loadSponsors() }
-  }, [user, userCity])
-
-  useEffect(() => {
-    const n = new Date()
-    const filtered = auctions.filter(a =>
-      (a.status === 'active' || !a.status) &&
-      (a.tipo === 'anuncio' || !a.ends_at || new Date(a.ends_at) > n)
-    )
-    const sameN = filtered.filter(a =>
-      userNeighborhood && a.neighborhood &&
-      a.neighborhood.toLowerCase().trim() === userNeighborhood.toLowerCase().trim()
-    )
-    const otherN = filtered.filter(a =>
-      !(userNeighborhood && a.neighborhood &&
-      a.neighborhood.toLowerCase().trim() === userNeighborhood.toLowerCase().trim())
-    )
-    setActiveAuctions([...sameN, ...otherN])
-  }, [auctions, userNeighborhood])
-
-  useEffect(() => {
-    if (searchCity.length >= 2) {
-      setFilteredCities(allCities.filter(c =>
-        c.nome.toLowerCase().includes(searchCity.toLowerCase())).slice(0, 50))
-    } else { setFilteredCities([]) }
-  }, [searchCity, allCities])
-
-  const requestUserGPS = () => {
-    const cached = localStorage.getItem('cb_neighborhood')
-    if (cached) setUserNeighborhood(cached)
-    const fetchBairro = async (lat, lng) => {
-      try {
-        const res = await fetch(
-          'https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&addressdetails=1',
-          { headers: { 'Accept-Language': 'pt-BR,pt;q=0.9' } }
-        )
-        const data = await res.json()
-        const addr = data.address || {}
-        const bairro = addr.suburb||addr.neighbourhood||addr.quarter||addr.residential||addr.district||addr.village||addr.hamlet||''
-        if (bairro) { setUserNeighborhood(bairro); localStorage.setItem('cb_neighborhood', bairro) }
-      } catch(e) {}
+  const requestUserGPS=()=>{
+    const cached=localStorage.getItem('cb_neighborhood')
+    if(cached)setUserNeighborhood(cached)
+    const fetchBairro=async(lat,lng)=>{
+      try{
+        const res=await fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&addressdetails=1',{headers:{'Accept-Language':'pt-BR,pt;q=0.9'}})
+        const d=await res.json()
+        const addr=d.address||{}
+        const b=addr.suburb||addr.neighbourhood||addr.quarter||addr.residential||addr.district||addr.village||addr.hamlet||''
+        if(b){setUserNeighborhood(b);localStorage.setItem('cb_neighborhood',b)}
+      }catch(e){}
     }
-    const ipFallback = () => {
-      fetch('https://ipapi.co/json/').then(r=>r.json())
-        .then(d=>{ if(d.latitude&&d.longitude) fetchBairro(d.latitude,d.longitude) })
-        .catch(()=>{})
-    }
-    if (!navigator.geolocation) { ipFallback(); return }
-    const watchId = navigator.geolocation.watchPosition(
-      (pos) => {
-        setUserLat(pos.coords.latitude); setUserLng(pos.coords.longitude)
-        fetchBairro(pos.coords.latitude, pos.coords.longitude)
-        navigator.geolocation.clearWatch(watchId)
-      },
-      () => {
-        navigator.geolocation.getCurrentPosition(
-          (pos)=>fetchBairro(pos.coords.latitude,pos.coords.longitude),
-          ()=>ipFallback(),
-          { enableHighAccuracy:false, timeout:10000, maximumAge:60000 }
-        )
-      },
-      { enableHighAccuracy:true, timeout:15000, maximumAge:0 }
+    const ipFB=()=>fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{if(d.latitude&&d.longitude)fetchBairro(d.latitude,d.longitude)}).catch(()=>{})
+    if(!navigator.geolocation){ipFB();return}
+    const wId=navigator.geolocation.watchPosition(
+      pos=>{setUserLat(pos.coords.latitude);setUserLng(pos.coords.longitude);fetchBairro(pos.coords.latitude,pos.coords.longitude);navigator.geolocation.clearWatch(wId)},
+      ()=>navigator.geolocation.getCurrentPosition(pos=>fetchBairro(pos.coords.latitude,pos.coords.longitude),()=>ipFB(),{enableHighAccuracy:false,timeout:10000,maximumAge:60000}),
+      {enableHighAccuracy:true,timeout:15000,maximumAge:0}
     )
   }
 
-  const loadBrazilianCities = async () => {
-    try {
-      const r = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/municipios?orderBy=nome')
-      setAllCities(await r.json())
-    } catch (e) {}
+  const loadBrazilianCities=async()=>{
+    try{const r=await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/municipios?orderBy=nome');setAllCities(await r.json())}catch(e){}
   }
-
-  function haversineKm(lat1, lng1, lat2, lng2) {
-    const R = 6371
-    const dLat = (lat2 - lat1) * Math.PI / 180
-    const dLng = (lng2 - lng1) * Math.PI / 180
-    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+  function haversineKm(la1,lo1,la2,lo2){const R=6371;const dL=(la2-la1)*Math.PI/180;const dl=(lo2-lo1)*Math.PI/180;const a=Math.sin(dL/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dl/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))}
+  const loadSponsors=async()=>{
+    const{data}=await supabase.from('sponsors').select('*').eq('city',userCity)
+    if(data){const map={};const ads=[];data.forEach(s=>{map[s.slot]=s;if(s.status==='active'){if(!userLat||!s.lat||haversineKm(userLat,userLng,s.lat,s.lng)<=2)ads.push(s)}});setSponsors(map);setActiveSponsorAds(ads)}
   }
-
-  const loadSponsors = async () => {
-    const { data } = await supabase.from('sponsors').select('*').eq('city', userCity)
-    if (data) {
-      const map = {}
-      const ads = []
-      data.forEach(s => {
-        map[s.slot] = s
-        if (s.status === 'active') {
-          if (!userLat || !s.lat || haversineKm(userLat, userLng, s.lat, s.lng) <= 2) {
-            ads.push(s)
-          }
-        }
-      })
-      setSponsors(map)
-      setActiveSponsorAds(ads)
-    }
-  }
-
-  const checkUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) { navigate('/'); return }
+  const checkUser=async()=>{
+    const{data:{session}}=await supabase.auth.getSession()
+    if(!session){navigate('/');return}
     setUser(session.user)
-    const { data: spData } = await supabase.from('sponsors').select('id,status').eq('email', session.user.email).limit(1)
-    if (spData && spData.length > 0) setIsSponsor(true)
+    const{data:sp}=await supabase.from('sponsors').select('id').eq('email',session.user.email).limit(1)
+    if(sp&&sp.length>0)setIsSponsor(true)
   }
-
-  const detectLocation = async () => {
-    try {
-      const r = await fetch('https://ipapi.co/json/')
-      const d = await r.json()
-      if (d.city) { setUserCity(d.city); setUserState(d.region_code || 'BR') }
-    } catch (e) {}
+  const detectLocation=async()=>{
+    try{const r=await fetch('https://ipapi.co/json/');const d=await r.json();if(d.city){setUserCity(d.city);setUserState(d.region_code||'BR')}}catch(e){}
   }
-
-  const loadAuctions = async () => {
+  const loadAuctions=async()=>{
     setLoading(true)
-    const { data } = await supabase.from('auctions').select('*').eq('city', userCity).order('created_at', { ascending: false })
-    if (data) setAuctions(data)
+    const{data}=await supabase.from('auctions').select('*').eq('city',userCity).order('created_at',{ascending:false})
+    if(data)setAuctions(data)
     setLoading(false)
   }
-
-  const handleCitySelect = (city) => {
-    setUserCity(city.nome)
-    setUserState(city.microrregiao.mesorregiao.UF.sigla)
-    setUserNeighborhood('')
-    setShowBuscaModal(false)
-    setSearchCity('')
-  }
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    navigate('/')
-  }
-
-  const handleHorarioOnibus = () => {
-    const bairroParam = userNeighborhood || userCity
-    const url = 'https://www.google.com/maps/search/ponto+de+onibus+' + encodeURIComponent(bairroParam)
-    window.open(url, '_blank')
-  }
-
-  const handleShare = (e, item) => {
+  const handleCitySelect=city=>{setUserCity(city.nome);setUserState(city.microrregiao.mesorregiao.UF.sigla);setUserNeighborhood('');setShowBusca(false);setSearchCity('')}
+  const handleLogout=async()=>{await supabase.auth.signOut();navigate('/')}
+  const handleBus=()=>window.open('https://www.google.com/maps/search/ponto+de+onibus+'+encodeURIComponent(userNeighborhood||userCity),'_blank')
+  const handleShare=(e,item)=>{
     e.stopPropagation()
-    const url = window.location.origin + '/leilao/' + item.id
-    const text = item.title + ' - R$ ' + parseFloat(item.current_price || 0).toLocaleString('pt-BR', {minimumFractionDigits:2})
-    if (navigator.share) {
-      navigator.share({ title: item.title, text: text, url: url }).catch(()=>{})
-    } else {
-      navigator.clipboard.writeText(url).then(()=>alert('Link copiado!')).catch(()=>alert('Link: ' + url))
-    }
+    const url=window.location.origin+'/leilao/'+item.id
+    if(navigator.share)navigator.share({title:item.title,url}).catch(()=>{})
+    else navigator.clipboard.writeText(url).then(()=>alert('Link copiado!')).catch(()=>alert('Link: '+url))
   }
 
-  const anuncios = activeAuctions.filter(a => a.tipo === 'anuncio' || !a.ends_at)
-    .filter(a => selectedCategory === '' || a.category === selectedCategory)
-  const leiloes = activeAuctions.filter(a => a.tipo !== 'anuncio' && a.ends_at)
-    .filter(a => selectedCategory === '' || a.category === selectedCategory)
-  const isAdmin = user && user.email === 'dicatop0001@gmail.com'
-  const showAdminBtn = isAdmin || isSponsor
+  const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCat===''||a.category===selCat))
+  const leiloes=activeAuctions.filter(a=>a.tipo!=='anuncio'&&a.ends_at&&(selCat===''||a.category===selCat))
+  const isAdmin=user&&user.email==='dicatop0001@gmail.com'
+  const showAdminBtn=isAdmin||isSponsor
 
-  return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg, #1e3a8a 0%, #1e40af 40%, #1a56db 100%)', paddingBottom: '80px' }}>
-      <style>{blinkStyle}</style>
+  return(
+    <div style={{minHeight:'100vh',background:'linear-gradient(160deg,#1e3a8a 0%,#1e40af 40%,#1a56db 100%)',paddingBottom:'80px'}}>
+      <style>{css}</style>
 
-      <div className='lj-placa'>
-        <div className='lj-logo-wrap' onClick={() => window.scrollTo({top:0,behavior:'smooth'})}>
-          <img src='/logo.png' alt='Conecty Bairro' className='lj-logo-img' />
-        </div>
-        <div className='lj-city-label'>
-          {userCity}{userNeighborhood ? ' • ' + userNeighborhood : ''}
-        </div>
-        <div className='lj-slots-grid'>
-          {[1,2,3,4,5,6].map(n => (
-            <SponsorSlot key={n} slotNumber={n} city={userCity} sponsorData={sponsors[n] || null} userEmail={user?.email} onUpdate={loadSponsors} />
+      <div className='cb-header'>
+        <img src='/logo.png' alt='Conecty Bairro' className='cb-logo' />
+        <p className='cb-city'>{userCity}{userNeighborhood?' • '+userNeighborhood:''}</p>
+      </div>
+
+      <div className='cb-blue'>
+        <div className='cb-slots'>
+          {[1,2,3,4,5,6].map(n=>(
+            <SponsorSlot key={n} slotNumber={n} city={userCity} sponsorData={sponsors[n]||null} userEmail={user?.email} onUpdate={loadSponsors}/>
           ))}
         </div>
-        <div className='lj-cards-row'>
+
+        <div className='cb-cols'>
           <div>
-            <div className='lj-col-header' style={{background:'rgba(249,115,22,0.85)'}}>
-              📦 Anúncios
-            </div>
-            <div className='lj-mini-cards'>
-              {loading ? (
-                <div style={{color:'rgba(255,255,255,0.7)',fontSize:'12px',padding:'12px',textAlign:'center'}}>Carregando...</div>
-              ) : anuncios.length === 0 ? (
-                <div style={{color:'rgba(255,255,255,0.6)',fontSize:'12px',padding:'12px',textAlign:'center'}}>Nenhum anúncio</div>
-              ) : anuncios.map(item => (
-                <div key={item.id} className='lj-mini-card' onClick={() => navigate('/leilao/' + item.id)}>
+            <div className='cb-col-head' style={{background:'rgba(249,115,22,0.85)'}}>ANÚNCIOS</div>
+            <div className='cb-strip'>
+              {loading?(
+                <div style={{color:'rgba(255,255,255,0.7)',fontSize:'12px',padding:'10px'}}>Carregando...</div>
+              ):anuncios.length===0?(
+                <div style={{color:'rgba(255,255,255,0.6)',fontSize:'12px',padding:'10px'}}>Nenhum anúncio</div>
+              ):anuncios.map(item=>(
+                <div key={item.id} className='cb-card' onClick={()=>navigate('/leilao/'+item.id)}>
                   <div style={{position:'relative'}}>
-                    <div style={{background:'rgba(249,115,22,0.9)',color:'white',fontSize:'9px',fontWeight:'bold',padding:'2px 7px',position:'absolute',top:'5px',right:'5px',borderRadius:'10px',zIndex:3}}>ANÚNCIO</div>
-                    {item.images && item.images[0] ? (
-                      <img src={item.images[0]} alt='' className='lj-mini-card-img' onError={e=>{e.target.style.display='none'}} />
-                    ) : (
-                      <div style={{height:'90px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'24px'}}>🖼️</div>
+                    <div className='cb-badge' style={{background:'rgba(249,115,22,0.92)'}}>ANÚNCIO</div>
+                    {item.images&&item.images[0]?(
+                      <img src={item.images[0]} alt='' className='cb-card-img' onError={e=>{e.target.style.display='none'}}/>
+                    ):(
+                      <div style={{height:'80px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'20px'}}>🖼️</div>
                     )}
                   </div>
-                  <div className='lj-mini-card-body'>
-                    <p className='lj-mini-card-title'>{item.title}</p>
-                    <p className='lj-mini-card-price' style={{color:'#f97316'}}>R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</p>
+                  <div className='cb-card-body'>
+                    <p className='cb-card-title'>{item.title}</p>
+                    <p className='cb-card-price' style={{color:'#f97316'}}>R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</p>
                   </div>
-                  <button className='lj-share-btn' onClick={e=>handleShare(e,item)} title='Compartilhar'>🔗</button>
+                  <button className='cb-share' onClick={e=>handleShare(e,item)} title='Compartilhar'>🔗</button>
                 </div>
               ))}
             </div>
           </div>
           <div>
-            <div className='lj-col-header' style={{background:'rgba(22,163,74,0.85)'}}>
-              🔨 Leilões
-            </div>
-            <div className='lj-mini-cards'>
-              {loading ? (
-                <div style={{color:'rgba(255,255,255,0.7)',fontSize:'12px',padding:'12px',textAlign:'center'}}>Carregando...</div>
-              ) : leiloes.length === 0 ? (
-                <div style={{color:'rgba(255,255,255,0.6)',fontSize:'12px',padding:'12px',textAlign:'center'}}>Nenhum leilão</div>
-              ) : leiloes.map(item => {
-                const tl = getTimeLeft(item.ends_at)
-                return (
-                  <div key={item.id} className='lj-mini-card' onClick={() => navigate('/leilao/' + item.id)}>
+            <div className='cb-col-head' style={{background:'rgba(22,163,74,0.85)'}}>LEILÕES</div>
+            <div className='cb-strip'>
+              {loading?(
+                <div style={{color:'rgba(255,255,255,0.7)',fontSize:'12px',padding:'10px'}}>Carregando...</div>
+              ):leiloes.length===0?(
+                <div style={{color:'rgba(255,255,255,0.6)',fontSize:'12px',padding:'10px'}}>Nenhum leilão</div>
+              ):leiloes.map(item=>{
+                const tl=getTimeLeft(item.ends_at)
+                return(
+                  <div key={item.id} className='cb-card' onClick={()=>navigate('/leilao/'+item.id)}>
                     <div style={{position:'relative'}}>
-                      <div style={{background:'rgba(22,163,74,0.9)',color:'white',fontSize:'9px',fontWeight:'bold',padding:'2px 7px',position:'absolute',top:'5px',right:'5px',borderRadius:'10px',zIndex:3}}>LEILÃO</div>
-                      {tl && (
-                        <div style={{background:tl.urgent?'rgba(220,38,38,0.9)':'rgba(30,58,138,0.85)',color:'white',fontSize:'9px',fontWeight:'bold',padding:'2px 7px',position:'absolute',top:'5px',left:'5px',borderRadius:'10px',zIndex:3}}>{tl.label}</div>
-                      )}
-                      {item.images && item.images[0] ? (
-                        <img src={item.images[0]} alt='' className='lj-mini-card-img' onError={e=>{e.target.style.display='none'}} />
-                      ) : (
-                        <div style={{height:'90px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'24px'}}>🔨</div>
+                      <div className='cb-badge' style={{background:'rgba(22,163,74,0.92)'}}>LEILÃO</div>
+                      {tl&&<div className='cb-timer' style={{background:tl.urgent?'rgba(220,38,38,0.9)':'rgba(30,58,138,0.85)'}}>{tl.label}</div>}
+                      {item.images&&item.images[0]?(
+                        <img src={item.images[0]} alt='' className='cb-card-img' onError={e=>{e.target.style.display='none'}}/>
+                      ):(
+                        <div style={{height:'80px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'20px'}}>🔨</div>
                       )}
                     </div>
-                    <div className='lj-mini-card-body'>
-                      <p className='lj-mini-card-title'>{item.title}</p>
-                      <p className='lj-mini-card-price' style={{color:'#16a34a'}}>R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</p>
+                    <div className='cb-card-body'>
+                      <p className='cb-card-title'>{item.title}</p>
+                      <p className='cb-card-price' style={{color:'#16a34a'}}>R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</p>
                     </div>
-                    <button className='lj-share-btn' onClick={e=>handleShare(e,item)} title='Compartilhar'>🔗</button>
+                    <button className='cb-share' onClick={e=>handleShare(e,item)} title='Compartilhar'>🔗</button>
                   </div>
                 )
               })}
@@ -432,123 +339,102 @@ function Home() {
           </div>
         </div>
       </div>
-      <div style={{maxWidth:'900px',margin:'0 auto',padding:'16px 12px 40px'}}>
-        <button onClick={() => setShowBuscaModal(true)}
-          style={{width:'100%',padding:'16px 24px',marginBottom:'10px',background:'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',color:'white',border:'none',borderRadius:'50px',fontSize:'clamp(15px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',letterSpacing:'0.5px',boxShadow:'0 4px 18px rgba(102,126,234,0.5)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
+      <div className='cb-main'>
+        <button onClick={()=>setShowBusca(true)}
+          style={{width:'100%',padding:'15px 20px',marginBottom:'10px',background:'linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#a855f7 100%)',color:'#fff',border:'none',borderRadius:'50px',fontSize:'clamp(14px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',boxShadow:'0 4px 18px rgba(102,126,234,0.5)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
           🔍 Buscar: Produto, Serviço ou Leilão
-          {userNeighborhood && <span style={{fontSize:'12px',opacity:0.85,fontWeight:'400'}}>({userNeighborhood})</span>}
+          {userNeighborhood&&<span style={{fontSize:'12px',opacity:0.85,fontWeight:'400'}}>({userNeighborhood})</span>}
         </button>
-        <button onClick={() => navigate('/anuncio')}
-          style={{width:'100%',padding:'clamp(14px,2.5vw,20px)',marginBottom:'10px',background:'#f97316',color:'white',border:'none',borderRadius:'15px',fontSize:'clamp(16px,2.5vw,22px)',fontWeight:'bold',cursor:'pointer',boxShadow:'0 4px 14px rgba(249,115,22,0.4)'}}>
+        <button onClick={()=>navigate('/anuncio')}
+          style={{width:'100%',padding:'clamp(14px,2.5vw,20px)',marginBottom:'10px',background:'#f97316',color:'#fff',border:'none',borderRadius:'15px',fontSize:'clamp(16px,2.5vw,22px)',fontWeight:'bold',cursor:'pointer',boxShadow:'0 4px 14px rgba(249,115,22,0.4)'}}>
           📢 CRIAR SEU ANÚNCIO
         </button>
-        <button onClick={() => navigate('/novo')}
-          style={{width:'100%',padding:'clamp(14px,2.5vw,20px)',marginBottom:'10px',background:'#16a34a',color:'white',border:'none',borderRadius:'15px',fontSize:'clamp(16px,2.5vw,22px)',fontWeight:'bold',cursor:'pointer',boxShadow:'0 4px 14px rgba(22,163,74,0.4)'}}>
+        <button onClick={()=>navigate('/novo')}
+          style={{width:'100%',padding:'clamp(14px,2.5vw,20px)',marginBottom:'10px',background:'#16a34a',color:'#fff',border:'none',borderRadius:'15px',fontSize:'clamp(16px,2.5vw,22px)',fontWeight:'bold',cursor:'pointer',boxShadow:'0 4px 14px rgba(22,163,74,0.4)'}}>
           🔨 CRIAR SEU LEILÃO
         </button>
-        <button onClick={handleHorarioOnibus}
-          style={{width:'100%',padding:'14px 24px',marginBottom:'10px',background:'linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #0ea5e9 100%)',color:'white',border:'none',borderRadius:'50px',fontSize:'clamp(14px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',letterSpacing:'0.5px',boxShadow:'0 4px 18px rgba(59,130,246,0.5)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
-          🚌 {userNeighborhood ? 'Horário de Ônibus - ' + userNeighborhood : 'Horário de Ônibus'}
+        <button onClick={handleBus}
+          style={{width:'100%',padding:'14px 20px',marginBottom:'14px',background:'linear-gradient(135deg,#1e40af 0%,#3b82f6 50%,#0ea5e9 100%)',color:'#fff',border:'none',borderRadius:'50px',fontSize:'clamp(14px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',boxShadow:'0 4px 18px rgba(59,130,246,0.5)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
+          🚌 {userNeighborhood?'Horário de Ônibus • '+userNeighborhood:'Horário de Ônibus'}
         </button>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(110px,1fr))',gap:'8px',marginBottom:'16px'}}>
-          {[{v:'',l:'Todos'},{v:'veiculos',l:'Veículos'},{v:'eletronicos',l:'Eletrônicos'},{v:'objetos',l:'Objetos'},{v:'moveis',l:'Móveis'},{v:'imoveis',l:'Imóveis'},{v:'outros',l:'Outros'},{v:'servicos',l:'Serviços'}].map(cat => (
-            <button key={cat.v} onClick={() => setSelectedCategory(cat.v)}
-              style={{padding:'10px 8px',borderRadius:'50px',border:selectedCategory===cat.v?'3px solid white':'1px solid rgba(255,255,255,0.55)',background:'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',color:'white',fontWeight:selectedCategory===cat.v?'900':'700',fontSize:'clamp(11px,1.8vw,14px)',cursor:'pointer',whiteSpace:'nowrap',boxShadow:selectedCategory===cat.v?'0 4px 16px rgba(249,115,22,0.45),0 0 0 2px white':'0 3px 10px rgba(249,115,22,0.4)',transform:selectedCategory===cat.v?'scale(1.06)':'scale(1)',transition:'transform 0.15s'}}>
-              {cat.l}
-            </button>
-          ))}
-        </div>
-        {activeSponsorAds.length > 0 && (
-          <div style={{marginBottom:'16px'}}>
-            <h3 style={{color:'white',fontSize:'clamp(14px,2vw,18px)',marginBottom:'10px',fontWeight:'800'}}>⭐ Patrocinadores do Seu Bairro</h3>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))',gap:'12px'}}>
-              {activeSponsorAds.map(sp => (
-                <div key={'sp-'+sp.id} onClick={() => sp.link_url ? window.open(sp.link_url,'_blank') : null}
-                  style={{background:'linear-gradient(135deg,#fff7ed,#fef3c7)',borderRadius:'12px',overflow:'hidden',cursor:sp.link_url?'pointer':'default',boxShadow:'0 0 0 3px #f97316, 0 6px 18px rgba(0,0,0,0.15)',position:'relative'}}>
-                  <div style={{position:'absolute',top:'6px',left:'6px',background:'#f97316',color:'white',padding:'2px 8px',borderRadius:'12px',fontSize:'10px',fontWeight:'bold',zIndex:2}}>PATROCINADOR</div>
-                  {sp.logo_url && (
-                    <div style={{height:'110px',overflow:'hidden',backgroundColor:'#fef9c3',display:'flex',alignItems:'center',justifyContent:'center'}}>
-                      <img src={sp.logo_url} alt='logo' style={{maxHeight:'100px',maxWidth:'100%',objectFit:'contain'}} />
-                    </div>
-                  )}
-                  <div style={{padding:'12px'}}>
-                    <h3 style={{margin:'0 0 4px',fontSize:'15px',color:'#92400e',fontWeight:'bold'}}>{sp.sponsor_name||'Patrocinador'}</h3>
-                    {sp.offers && sp.offers.length > 0 && (
-                      <ul style={{margin:'0 0 6px',paddingLeft:'16px',color:'#78350f'}}>
-                        {sp.offers.slice(0,4).map((o,i) => <li key={i} style={{fontSize:'12px',marginBottom:'2px'}}>{o}</li>)}
-                      </ul>
-                    )}
+        {activeSponsorAds.length>0&&(
+          <div style={{marginBottom:'14px'}}>
+            <h3 style={{color:'#fff',fontSize:'clamp(13px,2vw,17px)',marginBottom:'8px',fontWeight:'800'}}>⭐ Patrocinadores do Seu Bairro</h3>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:'10px'}}>
+              {activeSponsorAds.map(sp=>(
+                <div key={'sp-'+sp.id} className='cb-sp-card' onClick={()=>sp.link_url?window.open(sp.link_url,'_blank'):null}>
+                  <div style={{position:'absolute',top:'6px',left:'6px',background:'#f97316',color:'#fff',padding:'2px 7px',borderRadius:'10px',fontSize:'9px',fontWeight:'bold',zIndex:2}}>PATROCINADOR</div>
+                  {sp.logo_url&&<div style={{height:'100px',backgroundColor:'#fef9c3',display:'flex',alignItems:'center',justifyContent:'center'}}><img src={sp.logo_url} alt='logo' style={{maxHeight:'90px',maxWidth:'100%',objectFit:'contain'}}/></div>}
+                  <div style={{padding:'10px'}}>
+                    <h3 style={{margin:'0 0 3px',fontSize:'14px',color:'#92400e',fontWeight:'bold'}}>{sp.sponsor_name||'Patrocinador'}</h3>
+                    {sp.offers&&sp.offers.length>0&&<ul style={{margin:'0',paddingLeft:'14px',color:'#78350f'}}>{sp.offers.slice(0,4).map((o,i)=><li key={i} style={{fontSize:'12px'}}>{o}</li>)}</ul>}
                   </div>
                 </div>
               ))}
             </div>
           </div>
         )}
-        {!loading && anuncios.length === 0 && leiloes.length === 0 && activeSponsorAds.length === 0 && (
-          <div style={{textAlign:'center',padding:'40px',background:'rgba(255,255,255,0.1)',borderRadius:'15px',color:'white'}}>
+        {!loading&&anuncios.length===0&&leiloes.length===0&&activeSponsorAds.length===0&&(
+          <div style={{textAlign:'center',padding:'40px',background:'rgba(255,255,255,0.1)',borderRadius:'15px',color:'#fff'}}>
             <div style={{fontSize:'48px',marginBottom:'12px'}}>🏪</div>
-            <p style={{fontSize:'20px',fontWeight:'bold'}}>Nenhum anúncio ativo em {userCity}{userNeighborhood?' - '+userNeighborhood:''}</p>
-            <p style={{fontSize:'15px',opacity:0.8,marginTop:'8px'}}>Seja o primeiro a criar um anúncio na sua cidade!</p>
+            <p style={{fontSize:'20px',fontWeight:'bold'}}>Nenhum anúncio ativo em {userCity}{userNeighborhood?' • '+userNeighborhood:''}</p>
+            <p style={{fontSize:'14px',opacity:0.8,marginTop:'6px'}}>Seja o primeiro!</p>
           </div>
         )}
       </div>
-      {showBuscaModal && (
-        <div className='busca-modal-overlay' onClick={() => setShowBuscaModal(false)}>
-          <div className='busca-modal' onClick={e => e.stopPropagation()}>
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'}}>
-              <h2 style={{margin:0,fontSize:'20px',color:'#1e3a8a',fontWeight:'900'}}>🔍 Buscar</h2>
-              <button onClick={() => setShowBuscaModal(false)} style={{background:'none',border:'none',fontSize:'22px',cursor:'pointer',color:'#666'}}>×</button>
+      {showBusca&&(
+        <div className='cb-overlay' onClick={()=>setShowBusca(false)}>
+          <div className='cb-modal' onClick={e=>e.stopPropagation()}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}}>
+              <h2 style={{margin:0,fontSize:'19px',color:'#1e3a8a',fontWeight:'900'}}>🔍 Buscar</h2>
+              <button onClick={()=>setShowBusca(false)} style={{background:'none',border:'none',fontSize:'22px',cursor:'pointer',color:'#666'}}>×</button>
             </div>
-            <div style={{display:'flex',gap:'8px',marginBottom:'16px',flexWrap:'wrap'}}>
-              {[{v:'produto',l:'📦 Produto'},{v:'servico',l:'🔧 Serviço'},{v:'leilao',l:'🔨 Leilão'}].map(t => (
-                <button key={t.v} onClick={() => setBuscaTab(t.v)}
-                  style={{flex:'1',padding:'10px 8px',borderRadius:'50px',border:buscaTab===t.v?'3px solid #6366f1':'2px solid #e2e8f0',background:buscaTab===t.v?'linear-gradient(135deg,#6366f1,#a855f7)':'white',color:buscaTab===t.v?'white':'#4b5563',fontWeight:'700',fontSize:'13px',cursor:'pointer'}}>
+            <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>O que você quer buscar?</p>
+            <div style={{display:'flex',gap:'7px',marginBottom:'14px'}}>
+              {[{v:'produto',l:'📦 Produto'},{v:'servico',l:'🔧 Serviço'},{v:'leilao',l:'🔨 Leilão'}].map(t=>(
+                <button key={t.v} onClick={()=>setBuscaTab(t.v)}
+                  style={{flex:'1',padding:'10px 6px',borderRadius:'50px',border:buscaTab===t.v?'3px solid #6366f1':'2px solid #e2e8f0',background:buscaTab===t.v?'linear-gradient(135deg,#6366f1,#a855f7)':'#fff',color:buscaTab===t.v?'#fff':'#4b5563',fontWeight:'700',fontSize:'12px',cursor:'pointer'}}>
                   {t.l}
                 </button>
               ))}
             </div>
-            <div style={{marginBottom:'16px'}}>
-              <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>📍 Onde buscar?</p>
-              <div style={{display:'flex',gap:'8px'}}>
-              <button onClick={() => { setSelectedCategory(buscaTab==='leilao'?'':buscaTab==='servico'?'servicos':buscaTab); setShowBuscaModal(false) }}
+            <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>📍 Onde buscar?</p>
+            <div style={{display:'flex',gap:'8px',marginBottom:'14px'}}>
+              <button onClick={()=>{setSelCat(buscaTab==='leilao'?'':buscaTab==='servico'?'servicos':buscaTab);setShowBusca(false)}}
                 style={{flex:1,padding:'10px',borderRadius:'12px',background:'#f0fdf4',border:'2px solid #16a34a',color:'#15803d',fontWeight:'700',fontSize:'13px',cursor:'pointer'}}>
                 🏘️ Meu Bairro{userNeighborhood?' ('+userNeighborhood+')':''}
               </button>
-              <button onClick={() => { setSelectedCategory(buscaTab==='leilao'?'':buscaTab==='servico'?'servicos':buscaTab); setShowBuscaModal(false) }}
+              <button onClick={()=>{setSelCat(buscaTab==='leilao'?'':buscaTab==='servico'?'servicos':buscaTab);setShowBusca(false)}}
                 style={{flex:1,padding:'10px',borderRadius:'12px',background:'#eff6ff',border:'2px solid #3b82f6',color:'#1d4ed8',fontWeight:'700',fontSize:'13px',cursor:'pointer'}}>
                 🏙️ Cidade ({userCity})
               </button>
+            </div>
+            <p style={{margin:'0 0 6px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>🌎 Mudar cidade?</p>
+            <input value={searchCity} onChange={e=>setSearchCity(e.target.value)} placeholder='Digite a cidade...'
+              style={{width:'100%',padding:'10px 12px',border:'2px solid #e2e8f0',borderRadius:'12px',fontSize:'14px',boxSizing:'border-box'}}/>
+            {filteredCities.length>0&&(
+              <div style={{maxHeight:'160px',overflowY:'auto',border:'1px solid #e2e8f0',borderRadius:'8px',marginTop:'4px'}}>
+                {filteredCities.map(city=>(
+                  <div key={city.id} onClick={()=>handleCitySelect(city)}
+                    style={{padding:'9px 12px',cursor:'pointer',fontSize:'14px',color:'#1e3a8a',borderBottom:'1px solid #f1f5f9',background:'#fff',fontWeight:'500'}}
+                    onMouseEnter={e=>e.target.style.background='#eff6ff'}
+                    onMouseLeave={e=>e.target.style.background='#fff'}>
+                    {city.nome} - {city.microrregiao.mesorregiao.UF.sigla}
+                  </div>
+                ))}
               </div>
-            </div>
-            <div style={{marginBottom:'12px'}}>
-              <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>🌎 Mudar cidade?</p>
-              <input value={searchCity} onChange={e => setSearchCity(e.target.value)}
-                placeholder='Digite a cidade...'
-                style={{width:'100%',padding:'10px 14px',border:'2px solid #e2e8f0',borderRadius:'12px',fontSize:'14px',boxSizing:'border-box'}} />
-              {filteredCities.length > 0 && (
-                <div style={{maxHeight:'180px',overflowY:'auto',border:'1px solid #e2e8f0',borderRadius:'8px',marginTop:'4px'}}>
-                  {filteredCities.map(city => (
-                    <div key={city.id} onClick={() => handleCitySelect(city)}
-                      style={{padding:'10px 14px',cursor:'pointer',fontSize:'14px',color:'#1e3a8a',borderBottom:'1px solid #f1f5f9',background:'white',fontWeight:'500'}}
-                      onMouseEnter={e=>e.target.style.background='#eff6ff'}
-                      onMouseLeave={e=>e.target.style.background='white'}>
-                      {city.nome} - {city.microrregiao.mesorregiao.UF.sigla}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
       )}
-      {lightboxImg && (
-        <div onClick={() => setLightboxImg(null)} style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.95)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center',cursor:'zoom-out'}}>
-          <img src={lightboxImg} alt='Foto ampliada' onClick={e => e.stopPropagation()} style={{maxWidth:'100vw',maxHeight:'100vh',objectFit:'contain'}} />
-          <button onClick={() => setLightboxImg(null)} style={{position:'absolute',top:'16px',right:'16px',background:'rgba(255,255,255,0.15)',border:'none',color:'white',fontSize:'28px',width:'48px',height:'48px',borderRadius:'50%',cursor:'pointer',fontWeight:'bold',display:'flex',alignItems:'center',justifyContent:'center'}}>X</button>
+      {lightboxImg&&(
+        <div onClick={()=>setLightboxImg(null)} style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.95)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center',cursor:'zoom-out'}}>
+          <img src={lightboxImg} alt='Foto ampliada' onClick={e=>e.stopPropagation()} style={{maxWidth:'100vw',maxHeight:'100vh',objectFit:'contain'}}/>
+          <button onClick={()=>setLightboxImg(null)} style={{position:'absolute',top:'16px',right:'16px',background:'rgba(255,255,255,0.15)',border:'none',color:'#fff',fontSize:'28px',width:'44px',height:'44px',borderRadius:'50%',cursor:'pointer',fontWeight:'bold'}}>X</button>
         </div>
       )}
-      <BottomBar user={user} onLogout={handleLogout} onAdminOpen={() => setShowAdmin(true)} showAdminBtn={showAdminBtn} />
-      {showAdmin && <AdminPanel onClose={() => setShowAdmin(false)} />}
+      <BottomBar user={user} onLogout={handleLogout} onAdminOpen={()=>setShowAdmin(true)} showAdminBtn={showAdminBtn}/>
+      {showAdmin&&<AdminPanel onClose={()=>setShowAdmin(false)}/>}
     </div>
   )
 }
