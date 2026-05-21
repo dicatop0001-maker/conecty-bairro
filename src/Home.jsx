@@ -30,18 +30,19 @@ const css = `
   flex: 1;
 }
 .cb-busca-btn {
-  background: linear-gradient(135deg,#6366f1 0%,#a855f7 100%);
+  background: linear-gradient(135deg,#1e40af 0%,#1d9b5e 100%);
   color: #fff;
   border: none;
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: clamp(12px,2vw,14px);
-  font-weight: 800;
+  border-radius: 24px;
+  padding: 9px 22px;
+  font-size: clamp(14px,2.5vw,17px);
+  font-weight: 900;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(99,102,241,0.4);
-  margin-left: 8px;
+  box-shadow: 0 3px 12px rgba(30,64,175,0.45);
+  margin-left: 10px;
   flex-shrink: 0;
+  letter-spacing: 0.5px;
 }
 .cb-busca-btn:active { transform: scale(0.95); }
 .cb-blue {
@@ -87,6 +88,8 @@ const css = `
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.5) rgba(255,255,255,0.1);
   height: 240px;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
 }
 .cb-strip::-webkit-scrollbar { width: 5px; }
 .cb-strip::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 4px; }
@@ -213,10 +216,108 @@ const css = `
   background: linear-gradient(135deg,#6366f1,#a855f7);
   color: #fff;
 }
+.cb-list-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 4000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.cb-list-modal {
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  width: 100%;
+  max-width: 600px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.3);
+}
+.cb-list-header {
+  padding: 16px 18px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #f1f5f9;
+  flex-shrink: 0;
+}
+.cb-list-title {
+  font-size: 18px;
+  font-weight: 900;
+  margin: 0;
+}
+.cb-list-close {
+  background: #f1f5f9;
+  border: none;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cb-list-scroll {
+  overflow-y: auto;
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cb-list-item {
+  display: flex;
+  gap: 12px;
+  background: #f8fafc;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  min-height: 90px;
+  align-items: stretch;
+}
+.cb-list-item:active { transform: scale(0.98); }
+.cb-list-item-img {
+  width: 100px;
+  min-width: 100px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.cb-list-item-body {
+  padding: 10px 12px 10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+.cb-list-item-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1a202c;
+  margin: 0 0 4px;
+}
+.cb-list-item-price {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.cb-list-item-badge {
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: #fff;
+  display: inline-block;
+  width: fit-content;
+}
 @media(max-width:600px){
   .cb-slots { grid-template-columns: repeat(3,1fr); }
   .cb-slots-main { grid-template-columns: repeat(3,1fr); }
-  .cb-strip { height: 200px; }
+  .cb-strip { height: 200px; touch-action: pan-y; overscroll-behavior: contain; }
   .cb-card { flex: 0 0 200px; height: 200px; }
   .cb-card-img { height: 120px; }
 }
@@ -253,6 +354,8 @@ function Home(){
   const[activeSponsorAds,setActiveSponsorAds]=useState([])
   const[lightboxImg,setLightboxImg]=useState(null)
   const[isSponsor,setIsSponsor]=useState(false)
+const[showList,setShowList]=useState(false)
+const[listType,setListType]=useState('anuncio')
   const navigate=useNavigate()
 
   useEffect(()=>{
@@ -374,7 +477,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
               ):anuncios.length===0?(
                 <div style={{color:'rgba(255,255,255,0.6)',fontSize:'12px',padding:'10px'}}>Nenhum anúncio</div>
               ):anuncios.map(item=>(
-                <div key={item.id} className='cb-card' onClick={()=>navigate('/leilao/'+item.id)}>
+                <div key={item.id} className='cb-card' onClick={()=>{setListType('anuncio');setShowList(true)}}>
                   <div style={{position:'relative'}}>
                     <div className='cb-badge' style={{background:'rgba(249,115,22,0.92)'}}>ANÚNCIO</div>
                     {item.images&&item.images[0]?(
@@ -402,7 +505,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
               ):leiloes.map(item=>{
                 const tl=getTimeLeft(item.ends_at)
                 return(
-                  <div key={item.id} className='cb-card' onClick={()=>navigate('/leilao/'+item.id)}>
+                  <div key={item.id} className='cb-card' onClick={()=>{setListType('leilao');setShowList(true)}}>
                     <div style={{position:'relative'}}>
                       <div className='cb-badge' style={{background:'rgba(22,163,74,0.92)'}}>LEILÃO</div>
                       {tl&&<div className='cb-timer' style={{background:tl.urgent?'rgba(220,38,38,0.9)':'rgba(30,58,138,0.85)'}}>{tl.label}</div>}
@@ -470,7 +573,49 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
           </div>
         )}
       </div>
-      {showBusca&&(
+      {showList&&(
+<div className='cb-list-overlay' onClick={()=>setShowList(false)}>
+<div className='cb-list-modal' onClick={e=>e.stopPropagation()}>
+<div className='cb-list-header'>
+<p className='cb-list-title' style={{color:listType==='anuncio'?'#f97316':'#16a34a'}}>
+{listType==='anuncio'?'📢 Todos os Anúncios':'🔨 Todos os Leilões'}
+</p>
+<button className='cb-list-close' onClick={()=>setShowList(false)}>×</button>
+</div>
+<div className='cb-list-scroll'>
+{(listType==='anuncio'?anuncios:leiloes).length===0?(
+<div style={{textAlign:'center',padding:'40px',color:'#94a3b8'}}>
+<p style={{fontSize:'16px',fontWeight:'700'}}>Nenhum item encontrado</p>
+</div>
+):(listType==='anuncio'?anuncios:leiloes).map(item=>{
+const tl=listType==='leilao'?getTimeLeft(item.ends_at):null
+return(
+<div key={item.id} className='cb-list-item' onClick={()=>{setShowList(false);navigate('/leilao/'+item.id)}}>
+{item.images&&item.images[0]?(
+<img src={item.images[0]} alt='' className='cb-list-item-img' onError={e=>{e.target.style.display='none'}}/>
+):(
+<div style={{width:'100px',minWidth:'100px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'28px',flexShrink:0}}>
+{listType==='anuncio'?'🖼️':'🔨'}
+</div>
+)}
+<div className='cb-list-item-body'>
+<p className='cb-list-item-title'>{item.title}</p>
+<p className='cb-list-item-price' style={{color:listType==='anuncio'?'#f97316':'#16a34a'}}>
+R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}
+</p>
+{tl&&<span className='cb-list-item-badge' style={{background:tl.urgent?'#dc2626':'#1e3a8a'}}>{tl.label}</span>}
+<span className='cb-list-item-badge' style={{background:listType==='anuncio'?'rgba(249,115,22,0.15)',color:listType==='anuncio'?'#f97316':'#16a34a',marginTop:'3px'}}>
+{listType==='anuncio'?'ANÚNCIO':'LEILÃO'}
+</span>
+</div>
+</div>
+)
+})}
+</div>
+</div>
+</div>
+)}
+{showBusca&&(
         <div className='cb-overlay' onClick={()=>setShowBusca(false)}>
           <div className='cb-modal' onClick={e=>e.stopPropagation()}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}}>
