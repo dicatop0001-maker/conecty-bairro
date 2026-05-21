@@ -604,7 +604,7 @@ return(
 R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}
 </p>
 {tl&&<span className='cb-list-item-badge' style={{background:tl.urgent?'#dc2626':'#1e3a8a'}}>{tl.label}</span>}
-<span className='cb-list-item-badge' style={{background:listType==='anuncio'?'rgba(249,115,22,0.15)',color:listType==='anuncio'?'#f97316':'#16a34a',marginTop:'3px'}}>
+<span className='cb-list-item-badge' style={{background:listType==='anuncio'?'rgba(249,115,22,0.9)':'rgba(22,163,74,0.9)',color:'#fff',marginTop:'3px'}}>
 {listType==='anuncio'?'ANÚNCIO':'LEILÃO'}
 </span>
 </div>
