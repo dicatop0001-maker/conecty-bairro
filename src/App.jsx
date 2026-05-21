@@ -10,6 +10,7 @@ import Vitrine from './Vitrine'
 import EditarLeilao from './EditarLeilao'
 import EditarAnuncio from './EditarAnuncio'
 import MeusAnuncios from './MeusAnuncios'
+import Perfil from './Perfil'
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
                         <Route path="/editar-leilao/:id" element={<EditarLeilao />} />
                         <Route path="/editar-anuncio/:id" element={<EditarAnuncio />} />
                                         <Route path="/meus-anuncios" element={<MeusAnuncios />} />
+                        <Route path="/perfil" element={<Perfil />} />
                 </Routes>
           </BrowserRouter>
         )
