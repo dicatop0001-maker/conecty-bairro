@@ -17,7 +17,8 @@ function App() {
     return (
           <BrowserRouter>
                 <Routes>
-                        <Route path="/" element={<Login />} />
+                        <Route path="/" element={<Home />} />
+                        <Route path="/login" element={<Login />} />
                         <Route path="/home" element={<Home />} />
                         <Route path="/novo" element={<NovoLeilao />} />
                         <Route path="/anuncio" element={<NovoAnuncio />} />
@@ -27,7 +28,7 @@ function App() {
                         <Route path="/vitrine" element={<Vitrine />} />
                         <Route path="/editar-leilao/:id" element={<EditarLeilao />} />
                         <Route path="/editar-anuncio/:id" element={<EditarAnuncio />} />
-                                        <Route path="/meus-anuncios" element={<MeusAnuncios />} />
+                        <Route path="/meus-anuncios" element={<MeusAnuncios />} />
                         <Route path="/perfil" element={<Perfil />} />
                 </Routes>
           </BrowserRouter>
@@ -36,4 +37,3 @@ function App() {
 
 
 export default App
-
