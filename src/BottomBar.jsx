@@ -29,6 +29,12 @@ function BottomBar({ user, onLogout, onAdminOpen, showAdminBtn }) {
   const hoverIn = (e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)' }
   const hoverOut = (e) => { e.currentTarget.style.background = 'none' }
 
+  // Protected navigation: redirect to /login if not logged in
+  const goProtected = (path) => {
+    if (!user) { navigate('/login'); return }
+    navigate(path)
+  }
+
   return (
     <div style={{
       position: 'fixed',
@@ -48,11 +54,11 @@ function BottomBar({ user, onLogout, onAdminOpen, showAdminBtn }) {
         maxWidth: '600px',
         margin: '0 auto'
       }}>
-        <button style={btnStyle} onClick={() => navigate('/meus-leiloes')} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
+        <button style={btnStyle} onClick={() => goProtected('/meus-leiloes')} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
           <span style={iconStyle}>🔨</span>
           <span>Meus Leilões</span>
         </button>
-        <button style={btnStyle} onClick={() => navigate('/meus-anuncios')} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
+        <button style={btnStyle} onClick={() => goProtected('/meus-anuncios')} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
           <span style={iconStyle}>📢</span>
           <span>Meus Anúncios</span>
         </button>
@@ -65,7 +71,7 @@ function BottomBar({ user, onLogout, onAdminOpen, showAdminBtn }) {
             <span>Admin</span>
           </button>
         )}
-        <button style={{ ...btnStyle, color: '#86efac' }} onClick={() => navigate('/perfil')} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
+        <button style={{ ...btnStyle, color: '#86efac' }} onClick={() => goProtected('/perfil')} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
           <span style={iconStyle}>👤</span>
           <span>Perfil</span>
         </button>
