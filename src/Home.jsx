@@ -11,17 +11,39 @@ const css = `
   width: 100%;
   box-sizing: border-box;
   padding: 8px 16px 10px;
-  text-align: center;
 }
 .cb-logo { width:100%; max-width:340px; display:block; margin:0 auto; }
+.cb-city-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding: 0 2px;
+}
 .cb-city {
-  font-size: clamp(15px,3vw,22px);
+  font-size: clamp(13px,3vw,20px);
   font-weight: 900;
   color: #16a34a;
-  margin: 4px 0 0;
+  margin: 0;
   letter-spacing: 0.5px;
   text-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  flex: 1;
 }
+.cb-busca-btn {
+  background: linear-gradient(135deg,#6366f1 0%,#a855f7 100%);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: clamp(12px,2vw,14px);
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.4);
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+.cb-busca-btn:active { transform: scale(0.95); }
 .cb-blue {
   background: linear-gradient(160deg,#1e3a8a 0%,#1e40af 50%,#1d4ed8 100%);
   width: 100%; box-sizing: border-box;
@@ -159,6 +181,30 @@ const css = `
   box-shadow:0 0 0 3px #f97316,0 6px 18px rgba(0,0,0,0.15);
   position:relative;cursor:pointer;
 }
+.cb-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 7px;
+  margin-bottom: 14px;
+}
+.cb-cat-btn {
+  padding: 10px 4px;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  background: #fff;
+  color: #4b5563;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.3;
+  transition: all 0.15s;
+}
+.cb-cat-btn.active {
+  border-color: #6366f1;
+  background: linear-gradient(135deg,#6366f1,#a855f7);
+  color: #fff;
+}
 @media(max-width:600px){
   .cb-slots { grid-template-columns: repeat(3,1fr); }
   .cb-slots-main { grid-template-columns: repeat(3,1fr); }
@@ -187,7 +233,7 @@ function Home(){
   const[userState,setUserState]=useState('PR')
   const[userNeighborhood,setUserNeighborhood]=useState('')
   const[showBusca,setShowBusca]=useState(false)
-  const[buscaTab,setBuscaTab]=useState('produto')
+  const[buscaTab,setBuscaTab]=useState('tudo')
   const[searchCity,setSearchCity]=useState('')
   const[allCities,setAllCities]=useState([])
   const[filteredCities,setFilteredCities]=useState([])
@@ -272,7 +318,23 @@ function Home(){
     else navigator.clipboard.writeText(url).then(()=>alert('Link copiado!')).catch(()=>alert('Link: '+url))
   }
 
-  const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCat===''||a.category===selCat))
+  const handleBuscaApply=(scope)=>{
+const catMap={automoveis:'automoveis',imoveis:'imoveis',eletronicos:'eletronicos',celulares:'celulares',moveis:'moveis',leiloes:'leilao',tudo:''}
+setSelCat(catMap[buscaTab]||'')
+setShowBusca(false)
+}
+
+const catList=[
+{v:'tudo',l:'🔎 Tudo'},
+{v:'automoveis',l:'🚗 Automóveis'},
+{v:'imoveis',l:'🏠 Imóveis'},
+{v:'eletronicos',l:'💻 Eletrônicos'},
+{v:'celulares',l:'📱 Celulares'},
+{v:'moveis',l:'🛋️ Móveis'},
+{v:'leiloes',l:'🔨 Leilões'},
+]
+
+const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCat===''||a.category===selCat))
   const leiloes=activeAuctions.filter(a=>a.tipo!=='anuncio'&&a.ends_at&&(selCat===''||a.category===selCat))
   const isAdmin=user&&user.email==='dicatop0001@gmail.com'
   const showAdminBtn=isAdmin||isSponsor
@@ -283,7 +345,10 @@ function Home(){
 
       <div className='cb-header'>
         <img src='/logo-conecty.png' alt='Conecty Bairro' className='cb-logo' />
-        <p className='cb-city'>{userCity}{userNeighborhood?' • '+userNeighborhood:''}</p>
+        <div className='cb-city-row'>
+<p className='cb-city'>{userCity}{userNeighborhood?' • '+userNeighborhood:''}</p>
+<button className='cb-busca-btn' onClick={()=>setShowBusca(true)}>🔍 BUSCA</button>
+</div>
       </div>
 
       <div className='cb-blue'>
@@ -348,11 +413,7 @@ function Home(){
         </div>
       </div>
       <div className='cb-main'>
-        <button onClick={()=>setShowBusca(true)}
-          style={{width:'100%',padding:'15px 20px',marginBottom:'10px',background:'linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#a855f7 100%)',color:'#fff',border:'none',borderRadius:'50px',fontSize:'clamp(14px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',boxShadow:'0 4px 18px rgba(102,126,234,0.5)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
-          🔍 Buscar: Produto, Serviço ou Leilão
-          {userNeighborhood&&<span style={{fontSize:'12px',opacity:0.85,fontWeight:'400'}}>({userNeighborhood})</span>}
-        </button>
+        
         <button onClick={()=>navigate('/anuncio')}
           style={{width:'100%',padding:'clamp(14px,2.5vw,20px)',marginBottom:'10px',background:'#f97316',color:'#fff',border:'none',borderRadius:'15px',fontSize:'clamp(16px,2.5vw,22px)',fontWeight:'bold',cursor:'pointer',boxShadow:'0 4px 14px rgba(249,115,22,0.4)'}}>
           📢 CRIAR SEU ANÚNCIO
@@ -405,21 +466,20 @@ function Home(){
               <button onClick={()=>setShowBusca(false)} style={{background:'none',border:'none',fontSize:'22px',cursor:'pointer',color:'#666'}}>×</button>
             </div>
             <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>O que você quer buscar?</p>
-            <div style={{display:'flex',gap:'7px',marginBottom:'14px'}}>
-              {[{v:'produto',l:'📦 Produto'},{v:'servico',l:'🔧 Serviço'},{v:'leilao',l:'🔨 Leilão'}].map(t=>(
-                <button key={t.v} onClick={()=>setBuscaTab(t.v)}
-                  style={{flex:'1',padding:'10px 6px',borderRadius:'50px',border:buscaTab===t.v?'3px solid #6366f1':'2px solid #e2e8f0',background:buscaTab===t.v?'linear-gradient(135deg,#6366f1,#a855f7)':'#fff',color:buscaTab===t.v?'#fff':'#4b5563',fontWeight:'700',fontSize:'12px',cursor:'pointer'}}>
+            <div className='cb-cat-grid'>
+              {catList.map(t=>(
+                <button key={t.v} onClick={()=>setBuscaTab(t.v)} className={'cb-cat-btn'+(buscaTab===t.v?' active':'')}>
                   {t.l}
                 </button>
               ))}
             </div>
             <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>📍 Onde buscar?</p>
             <div style={{display:'flex',gap:'8px',marginBottom:'14px'}}>
-              <button onClick={()=>{setSelCat(buscaTab==='leilao'?'':buscaTab==='servico'?'servicos':buscaTab);setShowBusca(false)}}
+              <button onClick={()=>handleBuscaApply('scope')}
                 style={{flex:1,padding:'10px',borderRadius:'12px',background:'#f0fdf4',border:'2px solid #16a34a',color:'#15803d',fontWeight:'700',fontSize:'13px',cursor:'pointer'}}>
                 🏘️ Meu Bairro{userNeighborhood?' ('+userNeighborhood+')':''}
               </button>
-              <button onClick={()=>{setSelCat(buscaTab==='leilao'?'':buscaTab==='servico'?'servicos':buscaTab);setShowBusca(false)}}
+              <button onClick={()=>handleBuscaApply('scope')}
                 style={{flex:1,padding:'10px',borderRadius:'12px',background:'#eff6ff',border:'2px solid #3b82f6',color:'#1d4ed8',fontWeight:'700',fontSize:'13px',cursor:'pointer'}}>
                 🏙️ Cidade ({userCity})
               </button>
