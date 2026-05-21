@@ -317,15 +317,15 @@ const css = `
 
 .cb-swipe-hint {
   position: absolute;
-  top: 50%;
+  bottom: 48px;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   z-index: 10;
   pointer-events: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 .cb-swipe-hand {
   font-size: 32px;
@@ -342,6 +342,14 @@ const css = `
   letter-spacing: 0.5px;
   white-space: nowrap;
   animation: cb-fade-anim 1.4s ease-in-out infinite;
+}
+.cb-swipe-arrow {
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  animation: cb-swipe-anim 1.4s ease-in-out infinite;
+  line-height: 1;
 }
 @keyframes cb-swipe-anim {
   0%   { transform: translateY(0px);   opacity: 1; }
@@ -432,7 +440,16 @@ const[listType,setListType]=useState('anuncio')
     } else setFilteredCities([])
   },[searchCity,allCities])
 
-  const requestUserGPS=()=>{
+  useEffect(()=>{
+    if(showSwipeHint){
+      const t=setTimeout(()=>{
+        setShowSwipeHint(false)
+        localStorage.setItem('cb_hint_seen','1')
+      },5000)
+      return ()=>clearTimeout(t)
+    }
+  },[showSwipeHint])
+    const requestUserGPS=()=>{
     const cached=localStorage.getItem('cb_neighborhood')
     if(cached)setUserNeighborhood(cached)
     const fetchBairro=async(lat,lng)=>{
@@ -530,7 +547,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
           <div>
             <div className='cb-col-head' style={{background:'rgba(249,115,22,0.85)'}}>ANÚNCIOS</div>
             <div className='cb-strip'>
-{showSwipeHint&&!loading&&anuncios.length>0&&(<div className='cb-swipe-hint' style={{top:'45%'}}><span className='cb-swipe-hand'>👆</span><span className='cb-swipe-label'>deslize</span></div>)}
+{showSwipeHint&&!loading&&anuncios.length>0&&(<div className='cb-swipe-hint'><span className='cb-swipe-arrow'>↑</span><span className='cb-swipe-hand'>👆</span><span className='cb-swipe-label'>deslize</span></div>)}
               {loading?(
                 <div style={{color:'rgba(255,255,255,0.7)',fontSize:'12px',padding:'10px'}}>Carregando...</div>
               ):anuncios.length===0?(
@@ -557,7 +574,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
           <div>
             <div className='cb-col-head' style={{background:'rgba(22,163,74,0.85)'}}>LEILÕES</div>
             <div className='cb-strip'>
-{showSwipeHint&&!loading&&leiloes.length>0&&(<div className='cb-swipe-hint' style={{top:'45%'}}><span className='cb-swipe-hand'>👆</span><span className='cb-swipe-label'>deslize</span></div>)}
+{showSwipeHint&&!loading&&leiloes.length>0&&(<div className='cb-swipe-hint'><span className='cb-swipe-arrow'>↑</span><span className='cb-swipe-hand'>👆</span><span className='cb-swipe-label'>deslize</span></div>)}
               {loading?(
                 <div style={{color:'rgba(255,255,255,0.7)',fontSize:'12px',padding:'10px'}}>Carregando...</div>
               ):leiloes.length===0?(
