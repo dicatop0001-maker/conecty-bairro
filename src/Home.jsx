@@ -314,6 +314,62 @@ const css = `
   display: inline-block;
   width: fit-content;
 }
+
+.cb-swipe-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.cb-swipe-hand {
+  font-size: 32px;
+  animation: cb-swipe-anim 1.4s ease-in-out infinite;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+}
+.cb-swipe-label {
+  font-size: 10px;
+  font-weight: 900;
+  color: #fff;
+  background: rgba(0,0,0,0.55);
+  border-radius: 8px;
+  padding: 2px 7px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  animation: cb-fade-anim 1.4s ease-in-out infinite;
+}
+@keyframes cb-swipe-anim {
+  0%   { transform: translateY(0px);   opacity: 1; }
+  30%  { transform: translateY(-18px); opacity: 1; }
+  60%  { transform: translateY(0px);   opacity: 0.5; }
+  80%  { transform: translateY(0px);   opacity: 0; }
+  100% { transform: translateY(0px);   opacity: 1; }
+}
+@keyframes cb-fade-anim {
+  0%,100% { opacity: 1; }
+  60%      { opacity: 0.3; }
+}
+.cb-share-svg {
+  position: absolute;
+  bottom: 5px; right: 5px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.45);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  padding: 0;
+}
+.cb-share-svg:hover { background: rgba(249,115,22,0.9); }
 @media(max-width:600px){
   .cb-slots { grid-template-columns: repeat(3,1fr); }
   .cb-slots-main { grid-template-columns: repeat(3,1fr); }
@@ -354,6 +410,7 @@ function Home(){
   const[activeSponsorAds,setActiveSponsorAds]=useState([])
   const[lightboxImg,setLightboxImg]=useState(null)
   const[isSponsor,setIsSponsor]=useState(false)
+const[showSwipeHint,setShowSwipeHint]=useState(()=>!localStorage.getItem('cb_hint_seen'))
 const[showList,setShowList]=useState(false)
 const[listType,setListType]=useState('anuncio')
   const navigate=useNavigate()
@@ -472,6 +529,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
           <div>
             <div className='cb-col-head' style={{background:'rgba(249,115,22,0.85)'}}>ANÚNCIOS</div>
             <div className='cb-strip'>
+{showSwipeHint&&!loading&&anuncios.length>0&&(<div className='cb-swipe-hint' style={{top:'45%'}}><span className='cb-swipe-hand'>👆</span><span className='cb-swipe-label'>deslize</span></div>)}
               {loading?(
                 <div style={{color:'rgba(255,255,255,0.7)',fontSize:'12px',padding:'10px'}}>Carregando...</div>
               ):anuncios.length===0?(
@@ -490,7 +548,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
                     <p className='cb-card-title'>{item.title}</p>
                     <p className='cb-card-price' style={{color:'#f97316'}}>R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</p>
                   </div>
-                  <button className='cb-share' onClick={e=>handleShare(e,item)} title='Compartilhar'>🔗</button>
+                  <button className='cb-share-svg' onClick={e=>handleShare(e,item)} title='Compartilhar'><svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'><circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><line x1='8.59' y1='13.51' x2='15.42' y2='17.49'/><line x1='15.41' y1='6.51' x2='8.59' y2='10.49'/></svg></button>
                 </div>
               ))}
             </div>
@@ -498,6 +556,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
           <div>
             <div className='cb-col-head' style={{background:'rgba(22,163,74,0.85)'}}>LEILÕES</div>
             <div className='cb-strip'>
+{showSwipeHint&&!loading&&leiloes.length>0&&(<div className='cb-swipe-hint' style={{top:'45%'}}><span className='cb-swipe-hand'>👆</span><span className='cb-swipe-label'>deslize</span></div>)}
               {loading?(
                 <div style={{color:'rgba(255,255,255,0.7)',fontSize:'12px',padding:'10px'}}>Carregando...</div>
               ):leiloes.length===0?(
@@ -519,7 +578,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
                       <p className='cb-card-title'>{item.title}</p>
                       <p className='cb-card-price' style={{color:'#16a34a'}}>R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</p>
                     </div>
-                    <button className='cb-share' onClick={e=>handleShare(e,item)} title='Compartilhar'>🔗</button>
+                    <button className='cb-share-svg' onClick={e=>handleShare(e,item)} title='Compartilhar'><svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'><circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><line x1='8.59' y1='13.51' x2='15.42' y2='17.49'/><line x1='15.41' y1='6.51' x2='8.59' y2='10.49'/></svg></button>
                   </div>
                 )
               })}
