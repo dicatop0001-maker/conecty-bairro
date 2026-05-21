@@ -79,35 +79,43 @@ const css = `
 .cb-strip {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  overflow-y: auto;
+  gap: 0;
+  overflow-y: scroll;
   overflow-x: hidden;
   scroll-snap-type: y mandatory;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  max-height: calc(3 * 152px);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.5) rgba(255,255,255,0.1);
+  height: 240px;
 }
-.cb-strip::-webkit-scrollbar { display:none; }
+.cb-strip::-webkit-scrollbar { width: 5px; }
+.cb-strip::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 4px; }
+.cb-strip::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 4px; }
 .cb-card {
-  flex: 0 0 auto;
+  flex: 0 0 240px;
+  height: 240px;
   width: 100%;
   background: #fff;
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   position: relative;
   box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
 }
 .cb-card:active { transform:scale(0.97); }
 .cb-card-img {
   width: 100%;
-  height: 90px;
+  height: 155px;
   object-fit: cover;
   display: block;
+  flex-shrink: 0;
   background: #e2e8f0;
 }
-.cb-card-body { padding: 5px 6px 24px; }
+.cb-card-body { padding: 5px 8px 28px; flex: 1; min-height: 0; }
 .cb-card-title {
   font-size: clamp(10px,2vw,12px);
   font-weight: 800;
@@ -208,8 +216,9 @@ const css = `
 @media(max-width:600px){
   .cb-slots { grid-template-columns: repeat(3,1fr); }
   .cb-slots-main { grid-template-columns: repeat(3,1fr); }
-  .cb-strip { max-height: calc(3 * 148px); }
-  .cb-card-img { height: 80px; }
+  .cb-strip { height: 200px; }
+  .cb-card { flex: 0 0 200px; height: 200px; }
+  .cb-card-img { height: 120px; }
 }
 `
 
@@ -310,7 +319,10 @@ function Home(){
   }
   const handleCitySelect=city=>{setUserCity(city.nome);setUserState(city.microrregiao.mesorregiao.UF.sigla);setUserNeighborhood('');setShowBusca(false);setSearchCity('')}
   const handleLogout=async()=>{await supabase.auth.signOut();navigate('/')}
-  const handleBus=()=>window.open('https://www.google.com/maps/search/ponto+de+onibus+'+encodeURIComponent(userNeighborhood||userCity),'_blank')
+  const handleBus=()=>{
+const q=encodeURIComponent('horário de ônibus '+(userNeighborhood||userCity))
+window.open('https://www.google.com/search?q='+q,'_blank')
+}
   const handleShare=(e,item)=>{
     e.stopPropagation()
     const url=window.location.origin+'/leilao/'+item.id
@@ -368,7 +380,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
                     {item.images&&item.images[0]?(
                       <img src={item.images[0]} alt='' className='cb-card-img' onError={e=>{e.target.style.display='none'}}/>
                     ):(
-                      <div style={{height:'80px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'20px'}}>🖼️</div>
+                      <div style={{height:'155px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>🖼️</div>
                     )}
                   </div>
                   <div className='cb-card-body'>
@@ -397,7 +409,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
                       {item.images&&item.images[0]?(
                         <img src={item.images[0]} alt='' className='cb-card-img' onError={e=>{e.target.style.display='none'}}/>
                       ):(
-                        <div style={{height:'80px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'20px'}}>🔨</div>
+                        <div style={{height:'155px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>🔨</div>
                       )}
                     </div>
                     <div className='cb-card-body'>
@@ -424,7 +436,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
         </button>
         <button onClick={handleBus}
           style={{width:'100%',padding:'14px 20px',marginBottom:'14px',background:'linear-gradient(135deg,#1e40af 0%,#3b82f6 50%,#0ea5e9 100%)',color:'#fff',border:'none',borderRadius:'50px',fontSize:'clamp(14px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',boxShadow:'0 4px 18px rgba(59,130,246,0.5)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
-          🚌 {userNeighborhood?'Horário de Ônibus • '+userNeighborhood:'Horário de Ônibus'}
+          🚌 Horário Ônibus{userNeighborhood?' '+userNeighborhood:''}
         </button>
 
         {/* 6 SPONSOR SLOTS */}
