@@ -418,7 +418,7 @@ const[listType,setListType]=useState('anuncio')
   useEffect(()=>{
     checkUser(); detectLocation(); loadBrazilianCities(); requestUserGPS()
   },[])
-  useEffect(()=>{ if(user){loadAuctions();loadSponsors()} },[user,userCity])
+  useEffect(()=>{ loadAuctions();if(user){loadSponsors()} },[user,userCity])
   useEffect(()=>{
     const n=new Date()
     const f=auctions.filter(a=>(a.status==='active'||!a.status)&&(a.tipo==='anuncio'||!a.ends_at||new Date(a.ends_at)>n))
@@ -463,10 +463,11 @@ const[listType,setListType]=useState('anuncio')
   }
   const checkUser=async()=>{
     const{data:{session}}=await supabase.auth.getSession()
-    if(!session){navigate('/');return}
-    setUser(session.user)
-    const{data:sp}=await supabase.from('sponsors').select('id').eq('email',session.user.email).limit(1)
-    if(sp&&sp.length>0)setIsSponsor(true)
+    if(session){
+      setUser(session.user)
+      const{data:sp}=await supabase.from('sponsors').select('id').eq('email',session.user.email).limit(1)
+      if(sp&&sp.length>0)setIsSponsor(true)
+    }
   }
   const detectLocation=async()=>{
     try{const r=await fetch('https://ipapi.co/json/');const d=await r.json();if(d.city){setUserCity(d.city);setUserState(d.region_code||'BR')}}catch(e){}
@@ -478,7 +479,7 @@ const[listType,setListType]=useState('anuncio')
     setLoading(false)
   }
   const handleCitySelect=city=>{setUserCity(city.nome);setUserState(city.microrregiao.mesorregiao.UF.sigla);setUserNeighborhood('');setShowBusca(false);setSearchCity('')}
-  const handleLogout=async()=>{await supabase.auth.signOut();navigate('/')}
+  const handleLogout=async()=>{await supabase.auth.signOut();navigate('/home')}
   const handleBus=()=>{
 const q=encodeURIComponent('horário de ônibus '+(userNeighborhood||userCity))
 window.open('https://www.google.com/search?q='+q,'_blank')
