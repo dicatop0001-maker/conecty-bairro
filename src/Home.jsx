@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient'
 import { useNavigate } from 'react-router-dom'
 import BottomBar from './BottomBar'
+import ProfissionaisBar from './ProfissionaisBar'
 import SponsorSlot from './SponsorSlot'
 import AdminPanel from './AdminPanel'
 
@@ -534,6 +535,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
       <style>{css}</style>
 
       <div className='cb-header'>
+<ProfissionaisBar userCity={userCity} />
         <img src='/logo-conecty.png' alt='Conecty Bairro' className='cb-logo' />
         <div className='cb-city-row'>
 <p className='cb-city'>{userCity}{userNeighborhood?' • '+userNeighborhood:''}</p>
