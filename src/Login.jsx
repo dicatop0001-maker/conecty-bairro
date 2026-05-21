@@ -231,7 +231,26 @@ function Login() {
                           {isLogin ? 'Criar nova conta' : 'Já tenho conta'}
                         </button>
                 
-                        <p style={{ textAlign: 'center', fontSize: '13px', color: 'var(--gray-600)', marginTop: '32px', lineHeight: '1.6' }}>
+                        <button
+                          onClick={() => navigate('/home')}
+                          style={{
+                            width: '100%', padding: '14px',
+                            background: 'transparent',
+                            color: 'var(--gray-500)',
+                            border: '1px dashed var(--gray-300)',
+                            borderRadius: '12px',
+                            fontSize: '14px', fontWeight: '500',
+                            fontFamily: 'var(--font-display)',
+                            cursor: 'pointer',
+                            marginTop: '8px',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.target.style.borderColor = 'var(--primary)'}
+                          onMouseLeave={(e) => e.target.style.borderColor = 'var(--gray-300)'}>
+                          🏘️ Continuar sem login (só visualizar)
+                        </button>
+
+                                                <p style={{ textAlign: 'center', fontSize: '13px', color: 'var(--gray-600)', marginTop: '32px', lineHeight: '1.6' }}>
                                   Ao continuar, você concorda com nossos<br/>
                                   <span style={{ color: 'var(--primary)', fontWeight: '600', cursor: 'pointer' }}>Termos de Uso</span> e{' '}
                                   <span style={{ color: 'var(--primary)', fontWeight: '600', cursor: 'pointer' }}>Política de Privacidade</span>
