@@ -3,22 +3,14 @@ import { supabase } from './supabaseClient'
 
 const pbCss = `
 .pb-wrap {
-  position: fixed;
-  bottom: 90px;
-  left: 0;
-  right: 0;
-  z-index: 998;
   width: 100%;
   background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 40%, #3b82f6 70%, #e0eaff 100%);
-  border-top: 2px solid #1e40af;
-  border-bottom: none;
-  border-left: none;
-  border-right: none;
-  border-radius: 0;
+  border: 2px solid #1e40af;
+  border-radius: 12px;
   padding: 8px 0 6px;
   box-sizing: border-box;
   overflow: hidden;
-  margin-bottom: 0;
+  margin-bottom: 4px;
 }
 .pb-track {
   display: flex;
