@@ -295,8 +295,8 @@ if (isActive && !isOwner && !dentroDoRaio()) {
 return (
 <div style={{ textAlign: 'center', padding: '4px' }}>
 <div style={{ fontSize: '22px', marginBottom: '4px' }}>{'⭐'}</div>
-<div style={{ fontSize: '11px', fontWeight: '800', color: '#1e3a8a', lineHeight: '1.4' }}>Patrocinador</div>
-<div style={{ fontSize: '11px', fontWeight: '700', color: '#f97316' }}>Clique aqui!</div>
+<div style={{ fontSize: '11px', fontWeight: '800', color: '#fff', lineHeight: '1.4', textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}>Patrocinador</div>
+<div style={{ fontSize: '11px', fontWeight: '700', color: '#fed7aa' }}>Clique aqui!</div>
 </div>
 )
 }
@@ -352,8 +352,8 @@ Pague o plano para publicar...
 return (
 <div style={{ textAlign: 'center', padding: '4px' }}>
 <div style={{ fontSize: '22px', marginBottom: '4px' }}>{'⭐'}</div>
-<div style={{ fontSize: '11px', fontWeight: '800', color: '#1e3a8a', lineHeight: '1.4' }}>Patrocinador</div>
-<div style={{ fontSize: '11px', fontWeight: '700', color: '#f97316' }}>Clique aqui!</div>
+<div style={{ fontSize: '11px', fontWeight: '800', color: '#fff', lineHeight: '1.4', textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}>Patrocinador</div>
+<div style={{ fontSize: '11px', fontWeight: '700', color: '#fed7aa' }}>Clique aqui!</div>
 </div>
 )
 }
@@ -363,14 +363,14 @@ const successMsg = isOwner
 : 'Cadastro recebido! Envie o comprovante via WhatsApp para confirmar sua reserva.'
 
 const slotBg = isActive
-? (isOwner || dentroDoRaio() ? '#fffbeb' : 'rgba(255,255,255,0.08)')
+? (isOwner || dentroDoRaio() ? '#fffbeb' : 'linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%)')
 : isPending ? '#fef9c3'
-: isPending ? '#fef3c7' : 'rgba(255,255,255,0.12)'
+: 'linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%)'
 
 const slotBorder = isActive
-? (isOwner || dentroDoRaio() ? '2px solid #fbbf24' : '2px dashed #94a3b8')
+? (isOwner || dentroDoRaio() ? '2px solid #fbbf24' : '2px solid #1e40af')
 : isPending ? '2px solid #f59e0b'
-: isPending ? '2px dashed #d97706' : '2px dashed #94a3b8'
+: '2px solid #1e40af'
 
 return (
 <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
