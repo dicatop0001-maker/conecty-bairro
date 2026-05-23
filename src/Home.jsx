@@ -551,7 +551,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
   const showAdminBtn=isAdmin||isSponsor
 
   return(
-    <div style={{minHeight:'100vh',background:'#f8fafc',paddingBottom:'80px'}}>
+    <div style={{minHeight:'100vh',background:'#f8fafc',paddingBottom:'116px'}}>
       <style>{css}</style>
 
       <div className='cb-header'>
@@ -764,7 +764,13 @@ R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDig
           <button onClick={()=>setLightboxImg(null)} style={{position:'absolute',top:'16px',right:'16px',background:'rgba(255,255,255,0.15)',border:'none',color:'#fff',fontSize:'28px',width:'44px',height:'44px',borderRadius:'50%',cursor:'pointer',fontWeight:'bold'}}>X</button>
         </div>
       )}
-      <BottomBar user={user} onLogout={handleLogout} onAdminOpen={()=>setShowAdmin(true)} showAdminBtn={showAdminBtn}/>
+      <div className='cb-bus-bar'>
+<button className='cb-bus-btn' onClick={handleBus}>
+<span>🚌{userNeighborhood?' '+userNeighborhood:' Horário Ônibus'}</span>
+<span>🕐 Horários</span>
+</button>
+</div>
+<BottomBar user={user} onLogout={handleLogout} onAdminOpen={()=>setShowAdmin(true)} showAdminBtn={showAdminBtn}/>
       {showAdmin&&<AdminPanel onClose={()=>setShowAdmin(false)}/>}
     </div>
   )
