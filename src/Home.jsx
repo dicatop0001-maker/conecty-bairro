@@ -11,9 +11,9 @@ const css = `
   background: #ffffff;
   width: 100%;
   box-sizing: border-box;
-  padding: 8px 16px 10px;
+  padding: 2px 16px 4px;
 }
-.cb-logo { width:100%; max-width:340px; display:block; margin:0 auto; }
+.cb-logo { width:100%; max-width:260px; display:block; margin:0 auto; }
 .cb-busca-btn {
   display: flex;
   align-items: center;
@@ -28,7 +28,7 @@ const css = `
   font-weight: 900;
   cursor: pointer;
   box-shadow: 0 3px 12px rgba(30,64,175,0.45);
-  margin-top: 6px;
+  margin-top: 2px;
   letter-spacing: 0.3px;
   gap: 8px;
   box-sizing: border-box;
@@ -96,7 +96,7 @@ const css = `
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.5) rgba(255,255,255,0.1);
-  height: 240px;
+  height: 290px;
   touch-action: pan-y;
   overscroll-behavior: contain;
 }
@@ -104,8 +104,8 @@ const css = `
 .cb-strip::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 4px; }
 .cb-strip::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 4px; }
 .cb-card {
-  flex: 0 0 240px;
-  height: 240px;
+  flex: 0 0 290px;
+  height: 290px;
   width: 100%;
   background: #fff;
   border-radius: 10px;
@@ -121,18 +121,18 @@ const css = `
 .cb-card:active { transform:scale(0.97); }
 .cb-card-img {
   width: 100%;
-  height: 155px;
+  height: 145px;
   object-fit: cover;
   display: block;
   flex-shrink: 0;
   background: #e2e8f0;
 }
-.cb-card-body { padding: 5px 8px 28px; flex: 1; min-height: 0; }
+.cb-card-body { padding: 5px 8px 6px; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 2px; }
 .cb-card-title {
-  font-size: clamp(10px,2vw,12px);
+  font-size: clamp(12px,2vw,14px);
   font-weight: 800;
   color: #1a202c;
-  margin: 0 0 3px;
+  margin: 0;
   line-height: 1.2;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -140,9 +140,18 @@ const css = `
   overflow: hidden;
 }
 .cb-card-price {
-  font-size: clamp(11px,2vw,13px);
-  font-weight: 700;
+  font-size: clamp(12px,2vw,14px);
+  font-weight: 800;
   margin: 0;
+}
+.cb-card-neighborhood {
+  font-size: clamp(9px,1.8vw,11px);
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .cb-badge {
   position: absolute;
@@ -617,7 +626,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
                     {item.images&&item.images[0]?(
                       <img src={item.images[0]} alt='' className='cb-card-img' onError={e=>{e.target.style.display='none'}}/>
                     ):(
-                      <div style={{height:'155px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>🖼️</div>
+                      <div style={{height:'145px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>🖼️</div>
                     )}
                   </div>
                   <div className='cb-card-body'>
@@ -647,11 +656,12 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
                       {item.images&&item.images[0]?(
                         <img src={item.images[0]} alt='' className='cb-card-img' onError={e=>{e.target.style.display='none'}}/>
                       ):(
-                        <div style={{height:'155px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>🔨</div>
+                        <div style={{height:'145px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>🔨</div>
                       )}
                     </div>
                     <div className='cb-card-body'>
                       <p className='cb-card-title'>{item.title}</p>
+                      {item.neighborhood&&<p className='cb-card-neighborhood'>📍 {item.neighborhood}</p>}
                       <p className='cb-card-price' style={{color:'#16a34a'}}>R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</p>
                     </div>
                     <button className='cb-share-svg' onClick={e=>handleShare(e,item)} title='Compartilhar'><svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'><circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><line x1='8.59' y1='13.51' x2='15.42' y2='17.49'/><line x1='15.41' y1='6.51' x2='8.59' y2='10.49'/></svg></button>
