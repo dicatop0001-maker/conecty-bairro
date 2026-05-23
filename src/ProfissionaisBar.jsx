@@ -4,10 +4,13 @@ import { supabase } from './supabaseClient'
 const pbCss = `
 .pb-wrap {
   width: 100%;
-  background: #fff;
-  padding: 8px 0 4px;
+  background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 40%, #3b82f6 70%, #e0eaff 100%);
+  border: 2px solid #1e40af;
+  border-radius: 12px;
+  padding: 8px 0 6px;
   box-sizing: border-box;
   overflow: hidden;
+  margin-bottom: 4px;
 }
 .pb-track {
   display: flex;
@@ -30,17 +33,17 @@ const pbCss = `
   gap: 4px;
   scroll-snap-align: start;
   flex-shrink: 0;
-  min-width: 72px;
+  min-width: 64px;
   cursor: pointer;
 }
 .pb-circle {
-  width: 62px;
-  height: 62px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 8px;
   font-weight: 900;
   text-align: center;
   line-height: 1.2;
@@ -68,15 +71,16 @@ const pbCss = `
   border-radius: 50%;
 }
 .pb-label {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
-  color: #374151;
+  color: #fff;
   text-align: center;
-  max-width: 72px;
+  max-width: 64px;
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 .pb-overlay {
   position: fixed;
@@ -326,12 +330,11 @@ function ProfissionaisBar({ userCity }) {
         >
           <div className="pb-item" onClick={() => setModal({ type: 'cadastro' })}>
             <div className="pb-circle cadastro">
-              <span style={{ fontSize: '9px', lineHeight: '1.3', fontWeight: '900', textAlign: 'center' }}>
-                PROFISSIONAIS
-                DA REGIAO
+              <span style={{ fontSize: '7px', lineHeight: '1.3', fontWeight: '900', textAlign: 'center' }}>
+                PROFISSIONAL<br/>DO BAIRRO
               </span>
             </div>
-            <span className="pb-label" style={{ color: '#f97316', fontWeight: '900' }}>cadastro</span>
+            <span className="pb-label" style={{ color: '#fed7aa', fontWeight: '900' }}>cadastro</span>
           </div>
           {profissoes.map((prof) => {
             const list = grouped[prof]
