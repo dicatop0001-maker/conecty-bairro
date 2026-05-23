@@ -31,7 +31,7 @@ const css = `
   flex: 1;
 }
 .cb-busca-btn {
-  background: linear-gradient(135deg,#1e40af 0%,#1d9b5e 100%);
+  background: linear-gradient(135deg,#f97316 0%,#ea580c 100%);
   color: #fff;
   border: none;
   border-radius: 24px;
@@ -40,14 +40,14 @@ const css = `
   font-weight: 900;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 3px 12px rgba(30,64,175,0.45);
+  box-shadow: 0 3px 12px rgba(249,115,22,0.45);
   margin-left: 10px;
   flex-shrink: 0;
   letter-spacing: 0.5px;
 }
 .cb-busca-btn:active { transform: scale(0.95); }
 .cb-blue {
-  background: linear-gradient(160deg,#1e3a8a 0%,#1e40af 50%,#1d4ed8 100%);
+  background: transparent;
   width: 100%; box-sizing: border-box;
 }
 .cb-slots {
@@ -379,6 +379,18 @@ const css = `
   padding: 0;
 }
 .cb-share-svg:hover { background: rgba(249,115,22,0.9); }
+.cb-card-anuncio {
+  border-left: 3px solid #f97316;
+  border-right: 3px solid #f97316;
+  border-bottom: 3px solid #f97316;
+  border-radius: 0 0 10px 10px;
+}
+.cb-card-leilao {
+  border-left: 3px solid #16a34a;
+  border-right: 3px solid #16a34a;
+  border-bottom: 3px solid #16a34a;
+  border-radius: 0 0 10px 10px;
+}
 @media(max-width:600px){
   .cb-slots { grid-template-columns: repeat(3,1fr); }
   .cb-slots-main { grid-template-columns: repeat(3,1fr); }
@@ -531,7 +543,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
   const showAdminBtn=isAdmin||isSponsor
 
   return(
-    <div style={{minHeight:'100vh',background:'linear-gradient(160deg,#1e3a8a 0%,#1e40af 40%,#1a56db 100%)',paddingBottom:'80px'}}>
+    <div style={{minHeight:'100vh',background:'#f8fafc',paddingBottom:'80px'}}>
       <style>{css}</style>
 
       <div className='cb-header'>
@@ -555,7 +567,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
               ):anuncios.length===0?(
                 <div style={{color:'rgba(255,255,255,0.6)',fontSize:'12px',padding:'10px'}}>Nenhum anúncio</div>
               ):anuncios.map(item=>(
-                <div key={item.id} className='cb-card' onClick={()=>{setListType('anuncio');setShowList(true)}}>
+                <div key={item.id} className='cb-card cb-card-anuncio' onClick={()=>{setListType('anuncio');setShowList(true)}}>
                   <div style={{position:'relative'}}>
                     <div className='cb-badge' style={{background:'rgba(249,115,22,0.92)'}}>ANÚNCIO</div>
                     {item.images&&item.images[0]?(
@@ -584,7 +596,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
               ):leiloes.map(item=>{
                 const tl=getTimeLeft(item.ends_at)
                 return(
-                  <div key={item.id} className='cb-card' onClick={()=>{setListType('leilao');setShowList(true)}}>
+                  <div key={item.id} className='cb-card cb-card-leilao' onClick={()=>{setListType('leilao');setShowList(true)}}>
                     <div style={{position:'relative'}}>
                       <div className='cb-badge' style={{background:'rgba(22,163,74,0.92)'}}>LEILÃO</div>
                       {tl&&<div className='cb-timer' style={{background:tl.urgent?'rgba(220,38,38,0.9)':'rgba(30,58,138,0.85)'}}>{tl.label}</div>}
@@ -617,7 +629,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
           🔨 CRIAR SEU LEILÃO
         </button>
         <button onClick={handleBus}
-          style={{width:'100%',padding:'14px 20px',marginBottom:'14px',background:'linear-gradient(135deg,#1e40af 0%,#3b82f6 50%,#0ea5e9 100%)',color:'#fff',border:'none',borderRadius:'50px',fontSize:'clamp(14px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',boxShadow:'0 4px 18px rgba(59,130,246,0.5)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
+          style={{width:'100%',padding:'14px 20px',marginBottom:'14px',background:'#374151',color:'#fff',border:'none',borderRadius:'50px',fontSize:'clamp(14px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',boxShadow:'0 4px 18px rgba(55,65,81,0.4)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
           🚌 Horário Ônibus{userNeighborhood?' '+userNeighborhood:''}
         </button>
 
