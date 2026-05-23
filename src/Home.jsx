@@ -551,12 +551,11 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
   const showAdminBtn=isAdmin||isSponsor
 
   return(
-    <div style={{minHeight:'100vh',background:'#f8fafc',paddingBottom:'116px'}}>
+    <div style={{minHeight:'100vh',background:'#f8fafc',paddingBottom:'160px'}}>
       <style>{css}</style>
 
       <div className='cb-header'>
-<ProfissionaisBar userCity={userCity} />
-        <img src='/logo-conecty.png' alt='Conecty Bairro' className='cb-logo' />
+<img src='/logo-conecty.png' alt='Conecty Bairro' className='cb-logo' />
         <button className='cb-busca-btn' onClick={()=>setShowBusca(true)}>
 <span className='cb-busca-info'>{userCity}{userNeighborhood?' • '+userNeighborhood:''}</span>
 <span className='cb-busca-right'>🔍 BUSCA</span>
@@ -764,7 +763,8 @@ R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDig
           <button onClick={()=>setLightboxImg(null)} style={{position:'absolute',top:'16px',right:'16px',background:'rgba(255,255,255,0.15)',border:'none',color:'#fff',fontSize:'28px',width:'44px',height:'44px',borderRadius:'50%',cursor:'pointer',fontWeight:'bold'}}>X</button>
         </div>
       )}
-      <div className='cb-bus-bar'>
+      <ProfissionaisBar userCity={userCity} />
+<div className='cb-bus-bar'>
 <button className='cb-bus-btn' onClick={handleBus}>
 <span>🚌{userNeighborhood?' '+userNeighborhood:' Horário Ônibus'}</span>
 <span>🕐 Horários</span>
