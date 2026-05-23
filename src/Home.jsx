@@ -37,12 +37,12 @@ const css = `
 .cb-busca-info {
   flex: 1;
   text-align: left;
-  font-size: clamp(12px,2.5vw,15px);
-  font-weight: 700;
+  font-size: clamp(14px,3vw,18px);
+  font-weight: 800;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  opacity: 0.95;
+  opacity: 0.98;
 }
 .cb-busca-right {
   font-size: clamp(14px,2.5vw,17px);
@@ -129,8 +129,8 @@ const css = `
 }
 .cb-card-body { padding: 5px 8px 6px; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 2px; }
 .cb-card-title {
-  font-size: clamp(12px,2vw,14px);
-  font-weight: 800;
+  font-size: clamp(13px,2.5vw,16px);
+  font-weight: 900;
   color: #1a202c;
   margin: 0;
   line-height: 1.2;
@@ -661,7 +661,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
                     </div>
                     <div className='cb-card-body'>
                       <p className='cb-card-title'>{item.title}</p>
-                      {item.neighborhood&&<p className='cb-card-neighborhood'>📍 {item.neighborhood}</p>}
+                      {(item.neighborhood||userNeighborhood)&&<p className='cb-card-neighborhood'>📍 {item.neighborhood||userNeighborhood}</p>}
                       <p className='cb-card-price' style={{color:'#16a34a'}}>R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</p>
                     </div>
                     <button className='cb-share-svg' onClick={e=>handleShare(e,item)} title='Compartilhar'><svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'><circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><line x1='8.59' y1='13.51' x2='15.42' y2='17.49'/><line x1='15.41' y1='6.51' x2='8.59' y2='10.49'/></svg></button>
