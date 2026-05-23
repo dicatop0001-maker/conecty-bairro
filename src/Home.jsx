@@ -408,28 +408,33 @@ z-index: 999;
 display: flex;
 align-items: center;
 justify-content: center;
-padding: 3px 12px;
-background: linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%);
-border-top: 1px solid rgba(255,255,255,0.15);
-box-shadow: 0 -2px 8px rgba(0,0,0,0.18);
+padding: 6px 16px;
+background: transparent;
 }
 .cb-bus-btn {
 display: flex;
 align-items: center;
-justify-content: space-between;
+justify-content: center;
+gap: 10px;
 width: 100%;
 max-width: 600px;
-background: transparent;
+background: linear-gradient(180deg, #4ade80 0%, #16a34a 40%, #15803d 100%);
 color: #fff;
-border: none;
-border-radius: 20px;
-padding: 3px 14px;
-font-size: clamp(11px,2.5vw,14px);
-font-weight: 800;
+font-size: clamp(13px,2.5vw,16px);
+font-weight: 900;
+text-transform: uppercase;
+letter-spacing: 0.5px;
 cursor: pointer;
-gap: 8px;
+border-radius: 50px;
+padding: 10px 22px;
+border: 4px solid #14532d;
+outline: 3px solid rgba(255,255,255,0.55);
+outline-offset: -7px;
+box-shadow: 0 4px 18px rgba(0,0,0,0.45), inset 0 2px 6px rgba(255,255,255,0.25), inset 0 -3px 8px rgba(0,0,0,0.25);
+text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+transition: transform 0.12s, box-shadow 0.12s;
 }
-.cb-bus-btn:active { opacity: 0.8; }
+.cb-bus-btn:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
 @media(max-width:600px){
   .cb-slots { grid-template-columns: repeat(3,1fr); }
   .cb-slots-main { grid-template-columns: repeat(3,1fr); }
@@ -793,11 +798,10 @@ R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDig
       )}
       <div className='cb-bus-bar'>
 <button className='cb-bus-btn' onClick={handleBus}>
-<span>🚌{userNeighborhood?' '+userNeighborhood:' Horário Ônibus'}</span>
-<span>🕐 Horários</span>
+<span>🚌</span>
+<span>HORÁRIO DE ÔNIBUS{userNeighborhood?' • '+userNeighborhood:''}</span>
 </button>
-</div>
-<BottomBar user={user} onLogout={handleLogout} onAdminOpen={()=>setShowAdmin(true)} showAdminBtn={showAdminBtn}/>
+</div><BottomBar user={user} onLogout={handleLogout} onAdminOpen={()=>setShowAdmin(true)} showAdminBtn={showAdminBtn}/>
       {showAdmin&&<AdminPanel onClose={()=>setShowAdmin(false)}/>}
     </div>
   )
