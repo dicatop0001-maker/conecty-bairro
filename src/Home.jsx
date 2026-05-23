@@ -399,6 +399,37 @@ const css = `
   border-bottom: 3px solid #16a34a;
   border-radius: 0 0 10px 10px;
 }
+.cb-bus-bar {
+position: fixed;
+bottom: 56px;
+left: 0;
+right: 0;
+z-index: 999;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 3px 12px;
+background: linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%);
+border-top: 1px solid rgba(255,255,255,0.15);
+box-shadow: 0 -2px 8px rgba(0,0,0,0.18);
+}
+.cb-bus-btn {
+display: flex;
+align-items: center;
+justify-content: space-between;
+width: 100%;
+max-width: 600px;
+background: transparent;
+color: #fff;
+border: none;
+border-radius: 20px;
+padding: 3px 14px;
+font-size: clamp(11px,2.5vw,14px);
+font-weight: 800;
+cursor: pointer;
+gap: 8px;
+}
+.cb-bus-btn:active { opacity: 0.8; }
 @media(max-width:600px){
   .cb-slots { grid-template-columns: repeat(3,1fr); }
   .cb-slots-main { grid-template-columns: repeat(3,1fr); }
@@ -551,7 +582,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
   const showAdminBtn=isAdmin
 
   return(
-    <div style={{minHeight:'100vh',background:'#f8fafc',paddingBottom:'116px'}}>
+    <div style={{minHeight:'100vh',background:'#f8fafc',paddingBottom:'96px'}}>
       <style>{css}</style>
 
       <div className='cb-header'>
@@ -636,11 +667,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
           style={{width:'100%',padding:'clamp(14px,2.5vw,20px)',marginBottom:'10px',background:'#16a34a',color:'#fff',border:'none',borderRadius:'15px',fontSize:'clamp(16px,2.5vw,22px)',fontWeight:'bold',cursor:'pointer',boxShadow:'0 4px 14px rgba(22,163,74,0.4)'}}>
           🔨 CRIAR SEU LEILÃO
         </button>
-        <button onClick={handleBus}
-          style={{width:'100%',padding:'14px 20px',marginBottom:'14px',background:'linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%)',color:'#1e3a8a',border:'2px solid #1e40af',borderRadius:'50px',fontSize:'clamp(14px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',boxShadow:'0 3px 12px rgba(30,64,175,0.45)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
-          🚌 Horário Ônibus{userNeighborhood?' '+userNeighborhood:''}
-        </button>
-
+        
         {/* 6 SPONSOR SLOTS */}
         <div className='cb-slots-main'>
           {[1,2,3,4,5,6].map(n=>(
