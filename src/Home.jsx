@@ -19,15 +19,15 @@ const css = `
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background: linear-gradient(135deg,#f97316 0%,#ea580c 100%);
+  background: linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%);
   color: #fff;
-  border: none;
+  border: 2px solid #1e40af;
   border-radius: 24px;
   padding: 10px 18px;
   font-size: clamp(13px,2.5vw,16px);
   font-weight: 900;
   cursor: pointer;
-  box-shadow: 0 3px 12px rgba(249,115,22,0.45);
+  box-shadow: 0 3px 12px rgba(30,64,175,0.45);
   margin-top: 6px;
   letter-spacing: 0.3px;
   gap: 8px;
@@ -637,7 +637,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
           🔨 CRIAR SEU LEILÃO
         </button>
         <button onClick={handleBus}
-          style={{width:'100%',padding:'14px 20px',marginBottom:'14px',background:'#374151',color:'#fff',border:'none',borderRadius:'50px',fontSize:'clamp(14px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',boxShadow:'0 4px 18px rgba(55,65,81,0.4)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
+          style={{width:'100%',padding:'14px 20px',marginBottom:'14px',background:'linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%)',color:'#1e3a8a',border:'2px solid #1e40af',borderRadius:'50px',fontSize:'clamp(14px,2.5vw,18px)',fontWeight:'800',cursor:'pointer',boxShadow:'0 3px 12px rgba(30,64,175,0.45)',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px'}}>
           🚌 Horário Ônibus{userNeighborhood?' '+userNeighborhood:''}
         </button>
 
