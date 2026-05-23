@@ -14,38 +14,46 @@ const css = `
   padding: 8px 16px 10px;
 }
 .cb-logo { width:100%; max-width:340px; display:block; margin:0 auto; }
-.cb-city-row {
+.cb-busca-btn {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 4px;
-  padding: 0 2px;
-}
-.cb-city {
-  font-size: clamp(13px,3vw,20px);
-  font-weight: 900;
-  color: #16a34a;
-  margin: 0;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  flex: 1;
-}
-.cb-busca-btn {
+  width: 100%;
   background: linear-gradient(135deg,#f97316 0%,#ea580c 100%);
   color: #fff;
   border: none;
   border-radius: 24px;
-  padding: 9px 22px;
-  font-size: clamp(14px,2.5vw,17px);
+  padding: 10px 18px;
+  font-size: clamp(13px,2.5vw,16px);
   font-weight: 900;
   cursor: pointer;
-  white-space: nowrap;
   box-shadow: 0 3px 12px rgba(249,115,22,0.45);
-  margin-left: 10px;
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+  gap: 8px;
+  box-sizing: border-box;
+}
+.cb-busca-btn:active { transform: scale(0.98); }
+.cb-busca-info {
+  flex: 1;
+  text-align: left;
+  font-size: clamp(12px,2.5vw,15px);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.95;
+}
+.cb-busca-right {
+  font-size: clamp(14px,2.5vw,17px);
+  font-weight: 900;
+  white-space: nowrap;
   flex-shrink: 0;
   letter-spacing: 0.5px;
+  border-left: 2px solid rgba(255,255,255,0.4);
+  padding-left: 10px;
+  margin-left: 4px;
 }
-.cb-busca-btn:active { transform: scale(0.95); }
 .cb-blue {
   background: transparent;
   width: 100%; box-sizing: border-box;
@@ -549,10 +557,10 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
       <div className='cb-header'>
 <ProfissionaisBar userCity={userCity} />
         <img src='/logo-conecty.png' alt='Conecty Bairro' className='cb-logo' />
-        <div className='cb-city-row'>
-<p className='cb-city'>{userCity}{userNeighborhood?' • '+userNeighborhood:''}</p>
-<button className='cb-busca-btn' onClick={()=>setShowBusca(true)}>🔍 BUSCA</button>
-</div>
+        <button className='cb-busca-btn' onClick={()=>setShowBusca(true)}>
+<span className='cb-busca-info'>{userCity}{userNeighborhood?' • '+userNeighborhood:''}</span>
+<span className='cb-busca-right'>🔍 BUSCA</span>
+</button>
       </div>
 
       <div className='cb-blue'>
