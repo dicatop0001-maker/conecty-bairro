@@ -28,7 +28,8 @@ phone: '',
 link_url: '',
 offers: ['', '', '', '', ''],
 logo_url: '',
-address: ''
+address: '',
+assoc_code: ''
 })
 const [saving, setSaving] = useState(false)
 const [logoPreview, setLogoPreview] = useState(null)
@@ -226,6 +227,7 @@ link_url: form.link_url ? form.link_url.trim() : '',
 offer_text: form.offers.filter(o => o && o.trim() !== '').join('\n'),
 voucher_url: voucherUrl || null,
 expires_at: expiresDate.toISOString(),
+assoc_code: form.assoc_code ? form.assoc_code.trim().toUpperCase() : null,
 }
 
 let error = null
@@ -654,6 +656,18 @@ style={{ width: '100%', padding: '9px', background: uploadingVoucher ? '#aaa' : 
 {uploadingVoucher ? 'Enviando...' : voucherUrl ? '🔄 Trocar comprovante' : '📸 Enviar foto do comprovante'}
 </button>
 <div style={{ fontSize: '11px', color: '#15803d', marginTop: '6px' }}>Envie a foto/print do comprovante Pix para agilizar a aprovacao.</div>
+</div>
+<div style={{ marginBottom: '14px', background: '#eff6ff', border: '2px solid #3b82f6', borderRadius: '12px', padding: '12px' }}>
+<label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#1e40af', marginBottom: '4px' }}>
+🤝 Código Associação Parceira (opcional)
+</label>
+<p style={{ fontSize: '11px', color: '#3b82f6', margin: '0 0 8px' }}>Se você foi indicado por uma associação de moradores, insira o código aqui.</p>
+<input
+value={form.assoc_code}
+onChange={e => setForm(prev => ({ ...prev, assoc_code: e.target.value.toUpperCase() }))}
+placeholder="Ex: ASSOC-AB12CD"
+style={{ width: '100%', padding: '9px 11px', border: '2px solid #93c5fd', borderRadius: '8px', fontSize: '13px', boxSizing: 'border-box', letterSpacing: '2px', fontFamily: 'monospace' }}
+/>
 </div>
 {isPending && !isOwner && (
 <div style={{ background: '#fef3c7', border: '2px solid #fbbf24', borderRadius: '10px', padding: '10px', marginBottom: '14px', textAlign: 'center' }}>
