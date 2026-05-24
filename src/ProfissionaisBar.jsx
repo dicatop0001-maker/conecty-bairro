@@ -74,6 +74,8 @@ const pbCss = `
   background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
   color: #fff;
   border: 3px solid #fed7aa;
+  overflow: visible;
+  font-size: 6px;
 }
 .pb-circle.profissional {
   background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
@@ -338,7 +340,7 @@ function ProfissionaisBar({ userCity }) {
       <div className="pb-wrap">
         <div className="pb-fixed" onClick={() => setModal({ type: 'cadastro' })}>
             <div className="pb-circle cadastro">
-              <span style={{ fontSize: '6.5px', lineHeight: '1.3', fontWeight: '900', textAlign: 'center', display:'block', padding:'1px', letterSpacing:'-0.2px' }}>
+              <span style={{ fontSize: '6px', lineHeight: '1.3', fontWeight: '900', textAlign: 'center', display:'block', padding:'0px', letterSpacing:'-0.3px' }}>
                 PROFISSIONAL<br/>DO<br/>BAIRRO
               </span>
             </div>
@@ -370,7 +372,6 @@ function ProfissionaisBar({ userCity }) {
             )
           })}
         </div>
-          </div>
           </div>
       </div>
       {modal && (
