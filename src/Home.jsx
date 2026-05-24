@@ -420,6 +420,42 @@ justify-content: center;
 padding: 6px 16px;
 background: transparent;
 }
+.cb-assoc-bar {
+position: relative;
+left: 0;
+right: 0;
+z-index: 10;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 6px 16px;
+background: transparent;
+margin-bottom: 14px;
+}
+.cb-assoc-btn {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+width: 100%;
+max-width: 600px;
+background: linear-gradient(180deg, #fb923c 0%, #f97316 40%, #ea580c 100%);
+color: #fff;
+font-size: clamp(13px,2.5vw,16px);
+font-weight: 900;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+cursor: pointer;
+border-radius: 50px;
+padding: 10px 22px;
+border: 4px solid #7c2d12;
+outline: 3px solid rgba(255,255,255,0.55);
+outline-offset: -7px;
+box-shadow: 0 4px 18px rgba(0,0,0,0.45), inset 0 2px 6px rgba(255,255,255,0.25), inset 0 -3px 8px rgba(0,0,0,0.25);
+text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+transition: transform 0.12s, box-shadow 0.12s;
+}
+.cb-assoc-btn:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
 .cb-bus-btn {
 display: flex;
 align-items: center;
@@ -707,6 +743,12 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
             </div>
           </div>
         )}
+        <div className='cb-assoc-bar'>
+          <button className='cb-assoc-btn' onClick={()=>window.open('https://www.google.com/search?q=associa%C3%A7%C3%A3o+de+moradores+'+(userNeighborhood||userCity),'_blank')}>
+            <span>🏘️</span>
+            <span>ASSOCIAÇÃO DE MORADORES{userNeighborhood?' • '+userNeighborhood:''}</span>
+          </button>
+        </div>
         {!loading&&anuncios.length===0&&leiloes.length===0&&activeSponsorAds.length===0&&(
           <div style={{textAlign:'center',padding:'40px',background:'rgba(255,255,255,0.1)',borderRadius:'15px',color:'#fff'}}>
             <div style={{fontSize:'48px',marginBottom:'12px'}}>🏪</div>
