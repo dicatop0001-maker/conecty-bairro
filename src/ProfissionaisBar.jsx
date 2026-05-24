@@ -71,7 +71,7 @@ const pbCss = `
   border-radius: 50%;
 }
 .pb-label {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   color: #fff;
   text-align: center;
@@ -330,7 +330,7 @@ function ProfissionaisBar({ userCity }) {
         >
           <div className="pb-item" onClick={() => setModal({ type: 'cadastro' })}>
             <div className="pb-circle cadastro">
-              <span style={{ fontSize: '7px', lineHeight: '1.3', fontWeight: '900', textAlign: 'center' }}>
+              <span style={{ fontSize: '9px', lineHeight: '1.3', fontWeight: '900', textAlign: 'center' }}>
                 PROFISSIONAL<br/>DO BAIRRO
               </span>
             </div>
