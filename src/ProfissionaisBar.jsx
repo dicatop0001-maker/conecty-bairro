@@ -11,6 +11,22 @@ const pbCss = `
   box-sizing: border-box;
   overflow: hidden;
   margin-bottom: 4px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+.pb-fixed {
+  flex-shrink: 0;
+  padding: 0 8px 0 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.pb-scroll-area {
+  flex: 1;
+  overflow: hidden;
 }
 .pb-track {
   display: flex;
@@ -320,7 +336,16 @@ function ProfissionaisBar({ userCity }) {
     <>
       <style>{pbCss}</style>
       <div className="pb-wrap">
-        <div
+        <div className="pb-fixed" onClick={() => setModal({ type: 'cadastro' })}>
+            <div className="pb-circle cadastro">
+              <span style={{ fontSize: '7.5px', lineHeight: '1.25', fontWeight: '900', textAlign: 'center', display:'block', padding:'2px' }}>
+                PROFISSIONAL<br/>DO<br/>BAIRRO
+              </span>
+            </div>
+            <span className="pb-label" style={{ color: '#fed7aa', fontWeight: '900' }}>cadastro</span>
+          </div>
+          <div className="pb-scroll-area">
+          <div
           className="pb-track"
           ref={trackRef}
           onMouseDown={onMouseDown}
@@ -328,14 +353,6 @@ function ProfissionaisBar({ userCity }) {
           onMouseUp={onMouseUp}
           onMouseLeave={onMouseUp}
         >
-          <div className="pb-item" onClick={() => setModal({ type: 'cadastro' })}>
-            <div className="pb-circle cadastro">
-              <span style={{ fontSize: '9px', lineHeight: '1.3', fontWeight: '900', textAlign: 'center' }}>
-                PROFISSIONAL<br/>DO BAIRRO
-              </span>
-            </div>
-            <span className="pb-label" style={{ color: '#fed7aa', fontWeight: '900' }}>cadastro</span>
-          </div>
           {profissoes.map((prof) => {
             const list = grouped[prof]
             const first = list[0]
@@ -353,6 +370,7 @@ function ProfissionaisBar({ userCity }) {
             )
           })}
         </div>
+          </div>
       </div>
       {modal && (
         <div className="pb-overlay" onClick={() => setModal(null)}>
