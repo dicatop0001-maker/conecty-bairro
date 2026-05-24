@@ -43,6 +43,7 @@ const [submitError, setSubmitError] = useState('')
 const [ownerModal, setOwnerModal] = useState(false)
 const [appNotification, setAppNotification] = useState(null)
 const [ownerEmailInput, setOwnerEmailInput] = useState('')
+  const [ownerPassword, setOwnerPassword] = useState('')
 const [ownerVerified, setOwnerVerified] = useState(false)
 const [ownerApproving, setOwnerApproving] = useState(false)
 const fileInputRef = useRef(null)
@@ -54,7 +55,9 @@ const expiresMonths = planType === 'monthly' ? 1 : 12
 const isOwner = sponsorData && sponsorData.owner_user_id === userId
 const isActive = sponsorData && sponsorData.status === 'active'
 const isPending = sponsorData && sponsorData.status === 'pending'
-const isReserved = sponsorData && sponsorData.status === 'reserved'
+const reservedAt = sponsorData && sponsorData.reserved_at ? new Date(sponsorData.reserved_at) : null
+  const isExpired = isReserved && reservedAt && (new Date() - reservedAt > 24 * 60 * 60 * 1000)
+  const isReservedActive = isReserved && !isExpired
 
 const dentroDoRaio = () => {
 if (!isActive) return false
@@ -64,7 +67,8 @@ return calcDistKm(userLat, userLng, sponsorData.lat, sponsorData.lng) <= RAIO_KM
 }
 
 const handleSponsorClick = () => {
-if (isPending && !isOwner) { setOwnerModal(true); return }
+if (isExpired) { setStep('plan'); setShowModal(true); return }
+  if (isReservedActive && !isOwner) { setOwnerModal(true); return }
 if (isActive && !isOwner && !dentroDoRaio()) {
 setStep('plan'); setShowModal(true); return
 }
@@ -238,7 +242,8 @@ error = result.error
 } else {
 const insertPayload = {
 ...payload,
-paid_at: now.toISOString()
+status: 'reserved',
+reserved_at: now.toISOString()
 }
 const result = await supabase
 .from('sponsors')
@@ -259,11 +264,17 @@ if (!isOwner) { try { await fetch('/api/notify-sponsor',{method:'POST',headers:{
 }
 }
 
-const handleOwnerVerify = () => {
-if (ownerEmailInput.trim().toLowerCase() === 'dicatop0001@gmail.com') {
+const handleOwnerVerify = async () => {
+setOwnerApproving(true)
+try {
+const { error } = await supabase.auth.signInWithPassword({ email: ownerEmailInput.trim().toLowerCase(), password: ownerPassword })
+if (error) throw error
+if (ownerEmailInput.trim().toLowerCase() !== 'dicatop0001@gmail.com') throw new Error('Acesso negado.')
 setOwnerVerified(true)
-} else {
-alert('E-mail incorreto. Use o e-mail do administrador.')
+} catch(e) {
+alert('Credenciais incorretas: ' + (e.message||'verifique e-mail e senha.'))
+} finally {
+setOwnerApproving(false)
 }
 }
 const handleOwnerApprove = async () => {
@@ -282,12 +293,12 @@ if (error) { alert('Erro ao rejeitar: ' + error.message) }
 else { setOwnerModal(false); setOwnerVerified(false); setOwnerEmailInput(''); if (onRefresh) onRefresh() }
 }
 const renderSlotContent = () => {
-if (isReserved) {
+if (isReservedActive) {
 return (
 <div style={{ textAlign: 'center', padding: '4px' }}>
 <div style={{ fontSize: '20px', marginBottom: '4px' }}>{'🟡'}</div>
 <div style={{ fontSize: '11px', fontWeight: '800', color: '#92400e' }}>Reservado</div>
-<div style={{ fontSize: '9px', color: '#b45309' }}>Aguard. aprovacao</div>
+<div style={{ fontSize: '9px', color: '#b45309' }}>{hoursLeft > 0 ? hoursLeft + 'h restantes' : 'Aguard. aprovacao'}</div>
 </div>
 )
 }
@@ -358,18 +369,19 @@ return (
 )
 }
 
+const hoursLeft = reservedAt ? Math.max(0, Math.ceil((reservedAt.getTime() + 24*60*60*1000 - Date.now()) / 3600000)) : 0
 const successMsg = isOwner
 ? 'Seu espaco foi atualizado com sucesso!'
 : 'Cadastro recebido! Envie o comprovante via WhatsApp para confirmar sua reserva.'
 
 const slotBg = isActive
 ? (isOwner || dentroDoRaio() ? '#fffbeb' : 'linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%)')
-: isPending ? '#fef9c3'
+: isReservedActive ? '#fef9c3'
 : 'linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%)'
 
 const slotBorder = isActive
 ? (isOwner || dentroDoRaio() ? '2px solid #fbbf24' : '2px solid #1e40af')
-: isPending ? '2px solid #f59e0b'
+: isReservedActive ? '2px solid #f59e0b'
 : '2px solid #1e40af'
 
 return (
@@ -705,16 +717,17 @@ Fechar
 
 {ownerModal && ReactDOM.createPortal(
 <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.7)',zIndex:3000,display:'flex',alignItems:'center',justifyContent:'center',padding:'16px'}}
-onClick={e => {if(e.target===e.currentTarget){setOwnerModal(false);setOwnerVerified(false);setOwnerEmailInput('')}}}>
+onClick={e => {if(e.target===e.currentTarget){setOwnerModal(false);setOwnerVerified(false);setOwnerEmailInput('');setOwnerPassword('')}}}>
 <div style={{background:'white',borderRadius:'16px',padding:'28px 24px',maxWidth:'420px',width:'100%',boxShadow:'0 20px 60px rgba(0,0,0,0.3)'}}>
 <h3 style={{margin:'0 0 8px',color:'#1e3a8a',fontSize:'18px'}}>{'🟡'} Slot Reservado</h3>
 {!ownerVerified ? (
 <div>
 <p style={{color:'#374151',fontSize:'14px',marginBottom:'16px'}}>Para ver os detalhes e aprovar/rejeitar, confirme seu e-mail de administrador.</p>
-<input type="email" placeholder="E-mail do administrador" value={ownerEmailInput} onChange={e=>setOwnerEmailInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleOwnerVerify()} style={{width:'100%',padding:'10px 12px',borderRadius:'8px',border:'1.5px solid #d1d5db',fontSize:'14px',boxSizing:'border-box',marginBottom:'12px'}} />
+<input type="email" placeholder="E-mail do administrador" value={ownerEmailInput} onChange={e=>setOwnerEmailInput(e.target.value)} style={{width:'100%',padding:'10px 12px',borderRadius:'8px',border:'1.5px solid #d1d5db',fontSize:'14px',boxSizing:'border-box',marginBottom:'8px'}} />
+<input type="password" placeholder="Senha do administrador" value={ownerPassword} onChange={e=>setOwnerPassword(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleOwnerVerify()} style={{width:'100%',padding:'10px 12px',borderRadius:'8px',border:'1.5px solid #d1d5db',fontSize:'14px',boxSizing:'border-box',marginBottom:'12px'}} />
 <div style={{display:'flex',gap:'8px'}}>
-<button onClick={handleOwnerVerify} style={{flex:1,padding:'10px',background:'#1e3a8a',color:'white',border:'none',borderRadius:'8px',fontWeight:'700',cursor:'pointer'}}>Verificar</button>
-<button onClick={()=>{setOwnerModal(false);setOwnerEmailInput('')}} style={{padding:'10px 16px',background:'#f3f4f6',color:'#374151',border:'none',borderRadius:'8px',cursor:'pointer'}}>Cancelar</button>
+<button onClick={handleOwnerVerify} disabled={ownerApproving} style={{flex:1,padding:'10px',background:ownerApproving?'#94a3b8':'#1e3a8a',color:'white',border:'none',borderRadius:'8px',fontWeight:'700',cursor:ownerApproving?'not-allowed':'pointer'}}>{ownerApproving?'Verificando...':'Entrar como Admin'}</button>
+<button onClick={()=>{setOwnerModal(false);setOwnerEmailInput('');setOwnerPassword('')}} style={{padding:'10px 16px',background:'#f3f4f6',color:'#374151',border:'none',borderRadius:'8px',cursor:'pointer'}}>Cancelar</button>
 </div>
 </div>
 ) : (
@@ -726,6 +739,8 @@ onClick={e => {if(e.target===e.currentTarget){setOwnerModal(false);setOwnerVerif
 <div><strong>Cidade:</strong> {city}</div>
 <div><strong>Slot:</strong> {slot}</div>
 <div><strong>Plano:</strong> {sponsorData && sponsorData.plan_type === 'monthly' ? 'Mensal R$ 50' : 'Anual R$ 400'}</div>
+<div><strong>Reservado em:</strong> {sponsorData && sponsorData.reserved_at ? new Date(sponsorData.reserved_at).toLocaleString('pt-BR') : '—'}</div>
+{sponsorData && sponsorData.voucher_url && (<div style={{marginTop:'8px'}}><strong>Comprovante: </strong><a href={sponsorData.voucher_url} target='_blank' rel='noopener noreferrer' style={{color:'#1e3a8a',fontWeight:'700'}}>Ver comprovante ↗</a></div>)}
 </div>
 <div style={{display:'flex',gap:'8px',flexDirection:'column'}}>
 <button onClick={handleOwnerApprove} disabled={ownerApproving} style={{padding:'12px',background:'linear-gradient(135deg,#16a34a,#15803d)',color:'white',border:'none',borderRadius:'10px',fontWeight:'800',cursor:'pointer',fontSize:'14px'}}>
@@ -734,7 +749,7 @@ onClick={e => {if(e.target===e.currentTarget){setOwnerModal(false);setOwnerVerif
 <button onClick={handleOwnerReject} disabled={ownerApproving} style={{padding:'12px',background:'linear-gradient(135deg,#dc2626,#b91c1c)',color:'white',border:'none',borderRadius:'10px',fontWeight:'800',cursor:'pointer',fontSize:'14px'}}>
 {'❌'} Rejeitar e Remover Reserva
 </button>
-<button onClick={()=>{setOwnerModal(false);setOwnerVerified(false);setOwnerEmailInput('')}} style={{padding:'10px',background:'#f3f4f6',color:'#374151',border:'none',borderRadius:'8px',cursor:'pointer'}}>Fechar</button>
+<button onClick={()=>{setOwnerModal(false);setOwnerVerified(false);setOwnerEmailInput('');setOwnerPassword('')}} style={{padding:'10px',background:'#f3f4f6',color:'#374151',border:'none',borderRadius:'8px',cursor:'pointer'}}>Fechar</button>
 </div>
 </div>)}
 </div>
