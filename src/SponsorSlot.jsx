@@ -55,7 +55,8 @@ const expiresMonths = planType === 'monthly' ? 1 : 12
 const isOwner = sponsorData && sponsorData.owner_user_id === userId
 const isActive = sponsorData && sponsorData.status === 'active'
 const isPending = sponsorData && sponsorData.status === 'pending'
-const reservedAt = sponsorData && sponsorData.reserved_at ? new Date(sponsorData.reserved_at) : null
+const isReserved = sponsorData && sponsorData.status === 'reserved'
+  const reservedAt = sponsorData && sponsorData.reserved_at ? new Date(sponsorData.reserved_at) : null
   const isExpired = isReserved && reservedAt && (new Date() - reservedAt > 24 * 60 * 60 * 1000)
   const isReservedActive = isReserved && !isExpired
 
