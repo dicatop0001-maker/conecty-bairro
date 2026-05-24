@@ -102,6 +102,25 @@ const amCss = `
 .am-empty {
   text-align: center; padding: 32px; color: #9ca3af;
 }
+
+.am-partner-badge {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 60%, #3b82f6 100%);
+  border-radius: 14px; padding: 16px; color: #fff; margin-bottom: 14px; text-align: center;
+}
+.am-partner-code {
+  font-size: 28px; font-weight: 900; letter-spacing: 3px; color: #fbbf24;
+  margin: 8px 0; font-family: monospace;
+}
+.am-partner-info {
+  background: #eff6ff; border: 2px solid #3b82f6; border-radius: 12px;
+  padding: 14px; margin-bottom: 12px;
+}
+.am-select {
+  width: 100%; padding: 11px 13px; border: 2px solid #e2e8f0;
+  border-radius: 10px; font-size: 14px; box-sizing: border-box;
+  margin-bottom: 10px; outline: none; background: #fff;
+}
+.am-select:focus { border-color: #1e40af; }
 `
 
 function AssociacaoModal({ city, neighborhood, onClose }) {
@@ -112,6 +131,13 @@ function AssociacaoModal({ city, neighborhood, onClose }) {
   const [loginEmail, setLoginEmail] = useState('')
   const [authenticated, setAuthenticated] = useState(false)
   const [loginMsg, setLoginMsg] = useState({ text: '', type: '' })
+  const [partnerTab, setPartnerTab] = useState('regform')
+  const [partner, setPartner] = useState(null)
+  const [partnerForm, setPartnerForm] = useState({
+    pix_key: '', pix_owner: '', pix_type: 'CPF', commission_contact: ''
+  })
+  const [partnerSaving, setPartnerSaving] = useState(false)
+  const [partnerMsg, setPartnerMsg] = useState({ text: '', type: '' })
   const [saving, setSaving] = useState(false)
   const [saveMsg, setSaveMsg] = useState({ text: '', type: '' })
   const [noticeText, setNoticeText] = useState('')
@@ -125,7 +151,49 @@ function AssociacaoModal({ city, neighborhood, onClose }) {
 
   const loadAssoc = async () => {
     setLoading(true)
-    const bairro = neighborhood || city
+  
+  const handlePartnerSave = async () => {
+    if (!partnerForm.pix_key.trim() || !partnerForm.pix_owner.trim()) {
+      setPartnerMsg({ text: 'Chave PIX e nome do titular sao obrigatorios.', type: 'err' }); return
+    }
+    if (!assoc || !assoc.id) {
+      setPartnerMsg({ text: 'Salve os dados da associacao primeiro.', type: 'err' }); return
+    }
+    setPartnerSaving(true)
+    setPartnerMsg({ text: '', type: '' })
+    if (partner && partner.id) {
+      const { error } = await supabase.from('partner_associations').update({
+        pix_key: partnerForm.pix_key,
+        pix_owner: partnerForm.pix_owner,
+        pix_type: partnerForm.pix_type,
+        commission_contact: partnerForm.commission_contact,
+        updated_at: new Date().toISOString()
+      }).eq('id', partner.id)
+      setPartnerSaving(false)
+      if (error) { setPartnerMsg({ text: 'Erro: ' + error.message, type: 'err' }) }
+      else { setPartnerMsg({ text: 'Dados atualizados com sucesso!', type: 'ok' }); await loadAssoc() }
+    } else {
+      const code = 'ASSOC-' + Math.random().toString(36).substr(2,6).toUpperCase()
+      const { error } = await supabase.from('partner_associations').insert({
+        association_id: assoc.id,
+        assoc_name: assoc.assoc_name,
+        neighborhood: assoc.neighborhood,
+        city: assoc.city,
+        registration_code: code,
+        pix_key: partnerForm.pix_key,
+        pix_owner: partnerForm.pix_owner,
+        pix_type: partnerForm.pix_type,
+        commission_contact: partnerForm.commission_contact,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      setPartnerSaving(false)
+      if (error) { setPartnerMsg({ text: 'Erro: ' + error.message, type: 'err' }) }
+      else { setPartnerMsg({ text: 'Cadastro realizado!', type: 'ok' }); await loadAssoc() }
+    }
+  }
+  const bairro = neighborhood || city
     const { data } = await supabase.from('associations').select('*')
       .eq('neighborhood', bairro).limit(1)
     if (data && data.length > 0) {
@@ -143,6 +211,19 @@ function AssociacaoModal({ city, neighborhood, onClose }) {
         rental_description: data[0].rental_description || '',
         logo_url: data[0].logo_url || ''
       })
+      const { data: pd } = await supabase.from('partner_associations')
+        .select('*').eq('association_id', data[0].id).limit(1)
+      if (pd && pd.length > 0) {
+        setPartner(pd[0])
+        setPartnerForm({
+          pix_key: pd[0].pix_key || '',
+          pix_owner: pd[0].pix_owner || '',
+          pix_type: pd[0].pix_type || 'CPF',
+          commission_contact: pd[0].commission_contact || ''
+        })
+      } else {
+        setPartner(null)
+      }
     }
     setLoading(false)
   }
@@ -221,6 +302,7 @@ function AssociacaoModal({ city, neighborhood, onClose }) {
                 {hasAssoc && <button className={'am-tab'+(tab==='avisos'?' active':'')} onClick={()=>setTab('avisos')}>📢 Avisos</button>}
                 {hasAssoc && assoc.rental_available && <button className={'am-tab'+(tab==='aluguel'?' active':'')} onClick={()=>setTab('aluguel')}>🏠 Aluguel</button>}
                 <button className={'am-tab'+(tab==='login'?' active':'')} onClick={()=>setTab(authenticated?'edit':'login')}>⚙️ {authenticated?'Editar':'Entrar'}</button>
+                {authenticated && hasAssoc && <button className={'am-tab'+(tab==='parceira'?' active':'')} onClick={()=>setTab('parceira')} style={{background:tab==='parceira'?'linear-gradient(135deg,#1e3a8a,#3b82f6)':undefined,color:tab==='parceira'?'#fff':undefined,borderColor:tab==='parceira'?'#1e40af':undefined}}>🤝 Parceira</button>}
               </div>
 
               {tab==='info' && (
@@ -345,6 +427,53 @@ function AssociacaoModal({ city, neighborhood, onClose }) {
                   <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>URL do logo/foto (opcional)</label>
                   <input className="am-input" placeholder="https://..." value={form.logo_url} onChange={e=>setForm(f=>({...f,logo_url:e.target.value}))}/>
                   <button className="am-submit" onClick={handleSave} disabled={saving}>{saving?'Salvando...':'💾 Salvar Associação'}</button>
+                </div>
+              )}
+
+              {tab==='parceira' && authenticated && hasAssoc && (
+                <div>
+                  <div className="am-partner-badge">
+                    <p style={{margin:'0 0 4px',fontSize:14,fontWeight:700}}>🤝 Programa Associação Parceira</p>
+                    <p style={{margin:0,fontSize:12,opacity:0.9}}>Angarie patrocinadores do seu bairro e ganhe 50% da renda!</p>
+                  </div>
+                  <div className="am-partner-info">
+                    <p style={{fontWeight:800,fontSize:14,color:'#1e40af',margin:'0 0 8px'}}>📋 Como funciona:</p>
+                    <p style={{fontSize:13,color:'#1e3a8a',lineHeight:1.6,margin:'0 0 6px'}}>1. Cadastre seus dados de PIX abaixo e receba seu número de inscrição.</p>
+                    <p style={{fontSize:13,color:'#1e3a8a',lineHeight:1.6,margin:'0 0 6px'}}>2. Indique ao patrocinador do bairro para usar seu código ao se cadastrar no site.</p>
+                    <p style={{fontSize:13,color:'#1e3a8a',lineHeight:1.6,margin:'0 0 6px'}}>3. O administrador do site será notificado e realizará o PIX de 50% para sua conta.</p>
+                    <p style={{fontSize:13,color:'#1e3a8a',lineHeight:1.6,margin:0}}>4. Quanto mais patrocinadores você indicar, mais você recebe!</p>
+                  </div>
+                  {partner && partner.registration_code && (
+                    <div style={{background:'linear-gradient(135deg,#1e3a8a,#1e40af)',borderRadius:14,padding:16,marginBottom:14,textAlign:'center'}}>
+                      <p style={{margin:'0 0 4px',fontSize:12,fontWeight:700,color:'#bfdbfe'}}>SEU NÚMERO DE INSCRIÇÃO</p>
+                      <p className="am-partner-code">{partner.registration_code}</p>
+                      <p style={{margin:0,fontSize:11,color:'#93c5fd'}}>Passe este código para os patrocinadores do seu bairro</p>
+                    </div>
+                  )}
+                  <div style={{background:'#f8fafc',borderRadius:12,padding:14,border:'2px solid #e2e8f0',marginBottom:14}}>
+                    <p style={{fontWeight:900,fontSize:15,color:'#1e40af',margin:'0 0 12px'}}>{partner ? '✏️ Atualizar Dados de Pagamento' : '📝 Cadastrar para Receber Comissão'}</p>
+                    {partnerMsg.text && <p className={partnerMsg.type==='ok'?'am-msg-ok':'am-msg-err'}>{partnerMsg.text}</p>}
+                    <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>Tipo de Chave PIX *</label>
+                    <select className="am-select" value={partnerForm.pix_type} onChange={e=>setPartnerForm(f=>({...f,pix_type:e.target.value}))}>
+                      <option value="CPF">CPF</option>
+                      <option value="CNPJ">CNPJ</option>
+                      <option value="Telefone">Telefone</option>
+                      <option value="E-mail">E-mail</option>
+                      <option value="Chave aleatória">Chave aleatória</option>
+                    </select>
+                    <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>Chave PIX *</label>
+                    <input className="am-input" placeholder="Ex: 999.999.999-99 ou email@..." value={partnerForm.pix_key} onChange={e=>setPartnerForm(f=>({...f,pix_key:e.target.value}))} style={{borderColor:'#3b82f6'}}/>
+                    <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>Nome do titular da conta *</label>
+                    <input className="am-input" placeholder="Nome completo do titular" value={partnerForm.pix_owner} onChange={e=>setPartnerForm(f=>({...f,pix_owner:e.target.value}))} style={{borderColor:'#3b82f6'}}/>
+                    <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>Telefone / WhatsApp para contato sobre pagamento</label>
+                    <input className="am-input" placeholder="(99) 99999-9999" value={partnerForm.commission_contact} onChange={e=>setPartnerForm(f=>({...f,commission_contact:e.target.value}))}/>
+                    <button className="am-submit" onClick={handlePartnerSave} disabled={partnerSaving} style={{background:'linear-gradient(135deg,#1e3a8a,#3b82f6)'}}>
+                      {partnerSaving ? 'Salvando...' : (partner ? '💾 Atualizar Dados' : '✅ Cadastrar e Gerar Código')}
+                    </button>
+                  </div>
+                  <div style={{background:'#fef9c3',borderRadius:10,padding:12,border:'1px solid #fde047'}}>
+                    <p style={{fontSize:12,color:'#713f12',margin:0,lineHeight:1.6}}>⚠️ <strong>Importante:</strong> Ao cadastrar um patrocinador, oriente-o a informar seu código de inscrição no campo indicado. Após a confirmação do pagamento, o administrador realizará o repasse de 50% para sua chave PIX cadastrada.</p>
+                  </div>
                 </div>
               )}
             </>
