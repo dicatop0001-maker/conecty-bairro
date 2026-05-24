@@ -5,6 +5,7 @@ import BottomBar from './BottomBar'
 import ProfissionaisBar from './ProfissionaisBar'
 import SponsorSlot from './SponsorSlot'
 import AdminPanel from './AdminPanel'
+import AssociacaoModal from './AssociacaoModal'
 
 const css = `
 .cb-header {
@@ -523,6 +524,7 @@ function Home(){
 const[showSwipeHint,setShowSwipeHint]=useState(()=>!localStorage.getItem('cb_hint_seen'))
 const[showList,setShowList]=useState(false)
 const[listType,setListType]=useState('anuncio')
+const[showAssoc,setShowAssoc]=useState(false)
   const navigate=useNavigate()
 
   useEffect(()=>{
@@ -744,7 +746,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
           </div>
         )}
         <div className='cb-assoc-bar'>
-          <button className='cb-assoc-btn' onClick={()=>window.open('https://www.google.com/search?q=associa%C3%A7%C3%A3o+de+moradores+'+(userNeighborhood||userCity),'_blank')}>
+          <button className='cb-assoc-btn' onClick={()=>setShowAssoc(true)}>
             <span>🏘️</span>
             <span>ASSOCIAÇÃO DE MORADORES{userNeighborhood?' • '+userNeighborhood:''}</span>
           </button>
@@ -856,6 +858,7 @@ R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDig
 </button>
 </div><BottomBar user={user} onLogout={handleLogout} onAdminOpen={()=>setShowAdmin(true)} showAdminBtn={showAdminBtn}/>
       {showAdmin&&<AdminPanel onClose={()=>setShowAdmin(false)}/>}
+{showAssoc&&<AssociacaoModal city={userCity} neighborhood={userNeighborhood} onClose={()=>setShowAssoc(false)}/>}
     </div>
   )
 }
