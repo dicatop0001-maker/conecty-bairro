@@ -204,61 +204,61 @@ function AssociacaoModal({ city, neighborhood, onClose }) {
         <div className="am-head">
           <div>
             <p className="am-head-title">
-              {hasAssoc ? assoc.assoc_name : 'Associa\u00e7\u00e3o de Moradores'}
+              {hasAssoc ? assoc.assoc_name : 'Associação de Moradores'}
             </p>
-            <p className="am-head-sub">\uD83C\uDFD8\uFE0F {bairro}</p>
+            <p className="am-head-sub">🏘️ {bairro}</p>
           </div>
-          <button className="am-close" onClick={onClose}>\u00d7</button>
+          <button className="am-close" onClick={onClose}>×</button>
         </div>
 
         <div className="am-body">
           {loading ? (
-            <div className="am-empty"><div style={{fontSize:32}}>\u23F3</div><p>Carregando...</p></div>
+            <div className="am-empty"><div style={{fontSize:32}}>⏳</div><p>Carregando...</p></div>
           ) : (
             <>
               <div className="am-tabs">
-                <button className={'am-tab'+(tab==='info'?' active':'')} onClick={()=>setTab('info')}>\uD83D\uDCCB Informa\u00e7\u00f5es</button>
-                {hasAssoc && <button className={'am-tab'+(tab==='avisos'?' active':'')} onClick={()=>setTab('avisos')}>\uD83D\uDCE2 Avisos</button>}
-                {hasAssoc && assoc.rental_available && <button className={'am-tab'+(tab==='aluguel'?' active':'')} onClick={()=>setTab('aluguel')}>\uD83C\uDFE0 Aluguel</button>}
-                <button className={'am-tab'+(tab==='login'?' active':'')} onClick={()=>setTab(authenticated?'edit':'login')}>\u2699\uFE0F {authenticated?'Editar':'Entrar'}</button>
+                <button className={'am-tab'+(tab==='info'?' active':'')} onClick={()=>setTab('info')}>📋 Informações</button>
+                {hasAssoc && <button className={'am-tab'+(tab==='avisos'?' active':'')} onClick={()=>setTab('avisos')}>📢 Avisos</button>}
+                {hasAssoc && assoc.rental_available && <button className={'am-tab'+(tab==='aluguel'?' active':'')} onClick={()=>setTab('aluguel')}>🏠 Aluguel</button>}
+                <button className={'am-tab'+(tab==='login'?' active':'')} onClick={()=>setTab(authenticated?'edit':'login')}>⚙️ {authenticated?'Editar':'Entrar'}</button>
               </div>
 
               {tab==='info' && (
                 !hasAssoc ? (
                   <div className="am-empty">
-                    <div style={{fontSize:48,marginBottom:12}}>\uD83C\uDFD8\uFE0F</div>
-                    <p style={{fontWeight:700,color:'#374151',fontSize:16}}>Associa\u00e7\u00e3o n\u00e3o cadastrada</p>
-                    <p style={{color:'#9ca3af',fontSize:13}}>O presidente da associa\u00e7\u00e3o pode cadastrar aqui.</p>
-                    <button className="am-submit" style={{marginTop:16}} onClick={()=>setTab('login')}>Cadastrar Associa\u00e7\u00e3o</button>
+                    <div style={{fontSize:48,marginBottom:12}}>🏘️</div>
+                    <p style={{fontWeight:700,color:'#374151',fontSize:16}}>Associação não cadastrada</p>
+                    <p style={{color:'#9ca3af',fontSize:13}}>O presidente da associação pode cadastrar aqui.</p>
+                    <button className="am-submit" style={{marginTop:16}} onClick={()=>setTab('login')}>Cadastrar Associação</button>
                   </div>
                 ) : (
                   <div>
                     {assoc.logo_url && <img src={assoc.logo_url} alt="logo" className="am-logo"/>}
                     {assoc.description && (
                       <div className="am-section">
-                        <p className="am-section-title">\uD83D\uDCDD Sobre</p>
+                        <p className="am-section-title">📝 Sobre</p>
                         <p style={{margin:0,fontSize:14,color:'#374151',lineHeight:1.6}}>{assoc.description}</p>
                       </div>
                     )}
                     <div className="am-section">
-                      <p className="am-section-title">\uD83D\uDC64 Respons\u00e1vel</p>
-                      <div className="am-info-row"><span className="am-info-icon">\uD83E\uDDD1\u200D\uD83D\uDCBC</span><span className="am-info-text">{assoc.president_name}</span></div>
-                      {assoc.contact_phone && <div className="am-info-row"><span className="am-info-icon">\uD83D\uDCF1</span><span className="am-info-text">{assoc.contact_phone}</span></div>}
-                      {assoc.contact_email && <div className="am-info-row"><span className="am-info-icon">\u2709\uFE0F</span><span className="am-info-text">{assoc.contact_email}</span></div>}
+                      <p className="am-section-title">👤 Responsável</p>
+                      <div className="am-info-row"><span className="am-info-icon">🧑‍💼</span><span className="am-info-text">{assoc.president_name}</span></div>
+                      {assoc.contact_phone && <div className="am-info-row"><span className="am-info-icon">📱</span><span className="am-info-text">{assoc.contact_phone}</span></div>}
+                      {assoc.contact_email && <div className="am-info-row"><span className="am-info-icon">✉️</span><span className="am-info-text">{assoc.contact_email}</span></div>}
                     </div>
                     {assoc.address && (
                       <div className="am-section">
-                        <p className="am-section-title">\uD83D\uDCCD Endere\u00e7o</p>
-                        <div className="am-info-row"><span className="am-info-icon">\uD83D\uDDFA\uFE0F</span><span className="am-info-text">{assoc.address}</span></div>
+                        <p className="am-section-title">📍 Endereço</p>
+                        <div className="am-info-row"><span className="am-info-icon">🗺️</span><span className="am-info-text">{assoc.address}</span></div>
                         <a href={'https://www.google.com/maps/search/'+encodeURIComponent(assoc.address+', '+city)} target="_blank" rel="noopener noreferrer"
                           style={{display:'inline-block',marginTop:6,padding:'6px 14px',background:'#1e3a8a',color:'#fff',borderRadius:8,fontSize:12,fontWeight:700,textDecoration:'none'}}>
-                          Ver no mapa \uD83D\uDDFA\uFE0F
+                          Ver no mapa 🗺️
                         </a>
                       </div>
                     )}
                     {assoc.contact_phone && (
                       <a href={'https://wa.me/55'+assoc.contact_phone.replace(/\\D/g,'')} target="_blank" rel="noopener noreferrer" className="am-wa-btn">
-                        \uD83D\uDCAC Falar com a Associa\u00e7\u00e3o
+                        💬 Falar com a Associação
                       </a>
                     )}
                   </div>
@@ -269,19 +269,19 @@ function AssociacaoModal({ city, neighborhood, onClose }) {
                 <div>
                   {authenticated && (
                     <div style={{marginBottom:16,background:'#fff7ed',borderRadius:12,padding:12,border:'2px solid #fed7aa'}}>
-                      <p style={{fontWeight:800,fontSize:13,color:'#ea580c',margin:'0 0 8px'}}>\u2795 Novo Aviso</p>
+                      <p style={{fontWeight:800,fontSize:13,color:'#ea580c',margin:'0 0 8px'}}>➕ Novo Aviso</p>
                       <textarea className="am-textarea" placeholder="Escreva o aviso aqui..." value={noticeText} onChange={e=>setNoticeText(e.target.value)}/>
                       <button className="am-submit" onClick={handleAddNotice} style={{marginTop:0}}>Publicar Aviso</button>
                     </div>
                   )}
                   {(!assoc.notices || assoc.notices.length===0) ? (
-                    <div className="am-empty"><div style={{fontSize:32}}>\uD83D\uDCE2</div><p>Nenhum aviso publicado.</p></div>
+                    <div className="am-empty"><div style={{fontSize:32}}>📢</div><p>Nenhum aviso publicado.</p></div>
                   ) : (
                     [...(assoc.notices||[])].reverse().map((n,i)=>(
                       <div key={i} className="am-notice-item">
                         <p className="am-notice-text">{n.text || n}</p>
                         <p style={{fontSize:11,color:'#9ca3af',margin:'4px 0 0'}}>{n.date ? new Date(n.date).toLocaleString('pt-BR') : ''}</p>
-                        {authenticated && <button onClick={()=>handleDeleteNotice(assoc.notices.length-1-i)} style={{marginTop:6,padding:'4px 10px',background:'#fee2e2',border:'none',borderRadius:6,fontSize:11,color:'#dc2626',cursor:'pointer',fontWeight:700}}>\uD83D\uDDD1 Remover</button>}
+                        {authenticated && <button onClick={()=>handleDeleteNotice(assoc.notices.length-1-i)} style={{marginTop:6,padding:'4px 10px',background:'#fee2e2',border:'none',borderRadius:6,fontSize:11,color:'#dc2626',cursor:'pointer',fontWeight:700}}>🗑 Remover</button>}
                       </div>
                     ))
                   )}
@@ -291,14 +291,14 @@ function AssociacaoModal({ city, neighborhood, onClose }) {
               {tab==='aluguel' && assoc && assoc.rental_available && (
                 <div>
                   <div className="am-rental-card">
-                    <p style={{margin:'0 0 4px',fontSize:13,fontWeight:700,color:'#92400e'}}>\uD83C\uDFE0 Espa\u00e7o dispon\u00edvel para loca\u00e7\u00e3o</p>
+                    <p style={{margin:'0 0 4px',fontSize:13,fontWeight:700,color:'#92400e'}}>🏠 Espaço disponível para locação</p>
                     {assoc.rental_price && <p className="am-price-big">{assoc.rental_price}</p>}
-                    {assoc.rental_days && <p style={{margin:'0 0 8px',fontSize:13,color:'#374151'}}>\uD83D\uDCC5 Dias: {assoc.rental_days}</p>}
+                    {assoc.rental_days && <p style={{margin:'0 0 8px',fontSize:13,color:'#374151'}}>📅 Dias: {assoc.rental_days}</p>}
                     {assoc.rental_description && <p style={{margin:0,fontSize:13,color:'#374151',lineHeight:1.5}}>{assoc.rental_description}</p>}
                   </div>
                   {assoc.contact_phone && (
                     <a href={'https://wa.me/55'+assoc.contact_phone.replace(/\\D/g,'')+'?text=Ola!%20Gostaria%20de%20saber%20mais%20sobre%20o%20aluguel%20do%20espaco%20da%20associacao.'} target="_blank" rel="noopener noreferrer" className="am-wa-btn">
-                      \uD83D\uDCAC Solicitar Reserva via WhatsApp
+                      💬 Solicitar Reserva via WhatsApp
                     </a>
                   )}
                 </div>
@@ -306,45 +306,45 @@ function AssociacaoModal({ city, neighborhood, onClose }) {
 
               {tab==='login' && !authenticated && (
                 <div>
-                  <p style={{fontWeight:800,color:'#ea580c',fontSize:16,margin:'0 0 4px'}}>\uD83D\uDD10 \u00c1rea do Presidente</p>
-                  <p style={{fontSize:13,color:'#6b7280',margin:'0 0 16px'}}>Entre com seu e-mail e senha para gerenciar a associa\u00e7\u00e3o.</p>
+                  <p style={{fontWeight:800,color:'#ea580c',fontSize:16,margin:'0 0 4px'}}>🔐 Área do Presidente</p>
+                  <p style={{fontSize:13,color:'#6b7280',margin:'0 0 16px'}}>Entre com seu e-mail e senha para gerenciar a associação.</p>
                   {loginMsg.text && <p className={loginMsg.type==='ok'?'am-msg-ok':'am-msg-err'}>{loginMsg.text}</p>}
                   <input className="am-input" type="email" placeholder="Seu e-mail *" value={loginEmail} onChange={e=>setLoginEmail(e.target.value)}/>
                   <input className="am-input" type="password" placeholder="Senha *" value={loginPwd} onChange={e=>setLoginPwd(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleLogin()}/>
                   <button className="am-submit" onClick={handleLogin}>Entrar</button>
-                  {!hasAssoc && <p style={{fontSize:12,color:'#9ca3af',marginTop:8,textAlign:'center'}}>Primeiro acesso? Crie uma senha para cadastrar sua associa\u00e7\u00e3o.</p>}
+                  {!hasAssoc && <p style={{fontSize:12,color:'#9ca3af',marginTop:8,textAlign:'center'}}>Primeiro acesso? Crie uma senha para cadastrar sua associação.</p>}
                 </div>
               )}
 
               {tab==='edit' && authenticated && (
                 <div>
-                  <p style={{fontWeight:900,color:'#ea580c',fontSize:16,margin:'0 0 16px'}}>\u270F\uFE0F Editar Associa\u00e7\u00e3o</p>
+                  <p style={{fontWeight:900,color:'#ea580c',fontSize:16,margin:'0 0 16px'}}>✏️ Editar Associação</p>
                   {saveMsg.text && <p className={saveMsg.type==='ok'?'am-msg-ok':'am-msg-err'}>{saveMsg.text}</p>}
-                  <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>Nome da Associa\u00e7\u00e3o *</label>
-                  <input className="am-input" placeholder="Ex: Associa\u00e7\u00e3o de Moradores do Jardim Para\u00edso" value={form.assoc_name} onChange={e=>setForm(f=>({...f,assoc_name:e.target.value}))}/>
-                  <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>Nome do Presidente / Respons\u00e1vel *</label>
+                  <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>Nome da Associação *</label>
+                  <input className="am-input" placeholder="Ex: Associação de Moradores do Jardim Paraíso" value={form.assoc_name} onChange={e=>setForm(f=>({...f,assoc_name:e.target.value}))}/>
+                  <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>Nome do Presidente / Responsável *</label>
                   <input className="am-input" placeholder="Nome completo" value={form.president_name} onChange={e=>setForm(f=>({...f,president_name:e.target.value}))}/>
                   <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>WhatsApp / Telefone</label>
                   <input className="am-input" placeholder="(42) 99999-9999" value={form.contact_phone} onChange={e=>setForm(f=>({...f,contact_phone:e.target.value}))}/>
                   <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>E-mail de contato</label>
                   <input className="am-input" placeholder="associacao@email.com" value={form.contact_email} onChange={e=>setForm(f=>({...f,contact_email:e.target.value}))}/>
-                  <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>Endere\u00e7o da sede</label>
-                  <input className="am-input" placeholder="Rua, n\u00famero, bairro" value={form.address} onChange={e=>setForm(f=>({...f,address:e.target.value}))}/>
-                  <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>Descri\u00e7\u00e3o / Sobre a associa\u00e7\u00e3o</label>
-                  <textarea className="am-textarea" placeholder="Fale sobre a associa\u00e7\u00e3o, atividades, miss\u00e3o..." value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}/>
-                  <label style={{fontSize:12,fontWeight:800,color:'#ea580c',display:'block',marginBottom:8}}>\uD83C\uDFE0 Espa\u00e7o para Loca\u00e7\u00e3o</label>
+                  <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>Endereço da sede</label>
+                  <input className="am-input" placeholder="Rua, número, bairro" value={form.address} onChange={e=>setForm(f=>({...f,address:e.target.value}))}/>
+                  <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>Descrição / Sobre a associação</label>
+                  <textarea className="am-textarea" placeholder="Fale sobre a associação, atividades, missão..." value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}/>
+                  <label style={{fontSize:12,fontWeight:800,color:'#ea580c',display:'block',marginBottom:8}}>🏠 Espaço para Locação</label>
                   <label style={{display:'flex',alignItems:'center',gap:8,marginBottom:10,cursor:'pointer'}}>
                     <input type="checkbox" checked={form.rental_available} onChange={e=>setForm(f=>({...f,rental_available:e.target.checked}))} style={{width:18,height:18}}/>
-                    <span style={{fontSize:14,fontWeight:600,color:'#374151'}}>Possui espa\u00e7o dispon\u00edvel para loca\u00e7\u00e3o</span>
+                    <span style={{fontSize:14,fontWeight:600,color:'#374151'}}>Possui espaço disponível para locação</span>
                   </label>
                   {form.rental_available && <>
-                    <input className="am-input" placeholder="Dias dispon\u00edveis (ex: S\u00e1b e Dom)" value={form.rental_days} onChange={e=>setForm(f=>({...f,rental_days:e.target.value}))}/>
-                    <input className="am-input" placeholder="Pre\u00e7o (ex: R\u0024 200 por dia)" value={form.rental_price} onChange={e=>setForm(f=>({...f,rental_price:e.target.value}))}/>
-                    <textarea className="am-textarea" placeholder="Detalhes do espa\u00e7o (capacidade, estrutura...)" value={form.rental_description} onChange={e=>setForm(f=>({...f,rental_description:e.target.value}))}/>
+                    <input className="am-input" placeholder="Dias disponíveis (ex: Sáb e Dom)" value={form.rental_days} onChange={e=>setForm(f=>({...f,rental_days:e.target.value}))}/>
+                    <input className="am-input" placeholder="Preço (ex: R$ 200 por dia)" value={form.rental_price} onChange={e=>setForm(f=>({...f,rental_price:e.target.value}))}/>
+                    <textarea className="am-textarea" placeholder="Detalhes do espaço (capacidade, estrutura...)" value={form.rental_description} onChange={e=>setForm(f=>({...f,rental_description:e.target.value}))}/>
                   </>}
                   <label style={{fontSize:12,fontWeight:700,color:'#374151',display:'block',marginBottom:4}}>URL do logo/foto (opcional)</label>
                   <input className="am-input" placeholder="https://..." value={form.logo_url} onChange={e=>setForm(f=>({...f,logo_url:e.target.value}))}/>
-                  <button className="am-submit" onClick={handleSave} disabled={saving}>{saving?'Salvando...':'\uD83D\uDCBE Salvar Associa\u00e7\u00e3o'}</button>
+                  <button className="am-submit" onClick={handleSave} disabled={saving}>{saving?'Salvando...':'💾 Salvar Associação'}</button>
                 </div>
               )}
             </>
