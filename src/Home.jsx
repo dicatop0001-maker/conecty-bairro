@@ -29,7 +29,7 @@ const css = `
   font-weight: 900;
   cursor: pointer;
   box-shadow: 0 3px 12px rgba(30,64,175,0.45);
-  margin-top: 6px;
+  margin-top: 10px;
   letter-spacing: 0.3px;
   gap: 8px;
   box-sizing: border-box;
@@ -58,6 +58,7 @@ const css = `
 .cb-blue {
   background: transparent;
   width: 100%; box-sizing: border-box;
+  margin-top: 9px;
 }
 .cb-slots {
   display: grid;
@@ -97,7 +98,7 @@ const css = `
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.5) rgba(255,255,255,0.1);
-  height: 290px;
+  height: 300px;
   touch-action: pan-y;
   overscroll-behavior: contain;
 }
@@ -105,8 +106,8 @@ const css = `
 .cb-strip::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 4px; }
 .cb-strip::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 4px; }
 .cb-card {
-  flex: 0 0 290px;
-  height: 290px;
+  flex: 0 0 300px;
+  height: 300px;
   width: 100%;
   background: #fff;
   border-radius: 10px;
@@ -193,7 +194,7 @@ const css = `
 .cb-main {
   max-width: 900px;
   margin: 0 auto;
-  padding: 14px 12px 14px;
+  padding: 10px 12px 120px;
 }
 .cb-overlay {
   position:fixed;top:0;left:0;right:0;bottom:0;
@@ -410,16 +411,16 @@ const css = `
   border-radius: 0 0 10px 10px;
 }
 .cb-bus-bar {
-position: relative;
+position: fixed;
+bottom: 56px;
 left: 0;
 right: 0;
-z-index: 10;
+z-index: 999;
 display: flex;
 align-items: center;
 justify-content: center;
 padding: 0 16px;
 background: transparent;
-margin-bottom: 10px;
 }
 .cb-assoc-bar {
 position: relative;
@@ -485,8 +486,8 @@ transition: transform 0.12s, box-shadow 0.12s;
 @media(max-width:600px){
   .cb-slots { grid-template-columns: repeat(3,1fr); }
   .cb-slots-main { grid-template-columns: repeat(3,1fr); }
-  .cb-strip { height: 200px; touch-action: pan-y; overscroll-behavior: contain; }
-  .cb-card { flex: 0 0 200px; height: 200px; }
+  .cb-strip { height: 210px; touch-action: pan-y; overscroll-behavior: contain; }
+  .cb-card { flex: 0 0 210px; height: 210px; }
   .cb-card-img { height: 120px; }
 }
 `
@@ -761,12 +762,6 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
             <span>ASSOCIAÇÃO DE MORADORES{userNeighborhood?' • '+userNeighborhood:''}</span>
           </button>
         </div>
-        <div className='cb-bus-bar'>
-          <button className='cb-bus-btn' onClick={handleBus}>
-            <span>🚌</span>
-            <span>HORÁRIO DE ÔNIBUS{userNeighborhood?' • '+userNeighborhood:''}</span>
-          </button>
-        </div>
         {!loading&&anuncios.length===0&&leiloes.length===0&&activeSponsorAds.length===0&&(
           <div style={{textAlign:'center',padding:'40px',background:'rgba(255,255,255,0.1)',borderRadius:'15px',color:'#fff'}}>
             <div style={{fontSize:'48px',marginBottom:'12px'}}>🏪</div>
@@ -867,7 +862,12 @@ R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDig
           <button onClick={()=>setLightboxImg(null)} style={{position:'absolute',top:'16px',right:'16px',background:'rgba(255,255,255,0.15)',border:'none',color:'#fff',fontSize:'28px',width:'44px',height:'44px',borderRadius:'50%',cursor:'pointer',fontWeight:'bold'}}>X</button>
         </div>
       )}
-      <BottomBar user={user} onLogout={handleLogout} onAdminOpen={()=>setShowAdmin(true)} showAdminBtn={showAdminBtn}/>
+      <div className='cb-bus-bar'>
+<button className='cb-bus-btn' onClick={handleBus}>
+<span>🚌</span>
+<span>HORÁRIO DE ÔNIBUS{userNeighborhood?' • '+userNeighborhood:''}</span>
+</button>
+</div><BottomBar user={user} onLogout={handleLogout} onAdminOpen={()=>setShowAdmin(true)} showAdminBtn={showAdminBtn}/>
       {showAdmin&&<AdminPanel onClose={()=>setShowAdmin(false)}/>}
 {showAssoc&&<AssociacaoModal city={userCity} neighborhood={userNeighborhood} onClose={()=>setShowAssoc(false)}/>}
     </div>
