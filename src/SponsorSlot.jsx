@@ -309,8 +309,7 @@ if (isActive && !isOwner && !dentroDoRaio()) {
 return (
 <div style={{ textAlign: 'center', padding: '4px' }}>
 <div style={{ fontSize: '22px', marginBottom: '4px' }}>{'⭐'}</div>
-<div style={{ fontSize: '11px', fontWeight: '800', color: '#fff', lineHeight: '1.4', textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}>Patrocinador</div>
-<div style={{ fontSize: '11px', fontWeight: '700', color: '#fed7aa' }}>Clique aqui!</div>
+<div style={{ fontSize: '10px', fontWeight: '800', color: '#fff', lineHeight: '1.4', textShadow: '0 1px 3px rgba(0,0,0,0.4)', textAlign:'center' }}>⭐ Patrocinador<br/>premium do bairro<br/><span style={{color:'#fed7aa',fontWeight:'700'}}>clique aqui</span></div>
 </div>
 )
 }
@@ -366,8 +365,7 @@ Pague o plano para publicar...
 return (
 <div style={{ textAlign: 'center', padding: '4px' }}>
 <div style={{ fontSize: '22px', marginBottom: '4px' }}>{'⭐'}</div>
-<div style={{ fontSize: '11px', fontWeight: '800', color: '#fff', lineHeight: '1.4', textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}>Patrocinador</div>
-<div style={{ fontSize: '11px', fontWeight: '700', color: '#fed7aa' }}>Clique aqui!</div>
+<div style={{ fontSize: '10px', fontWeight: '800', color: '#fff', lineHeight: '1.4', textShadow: '0 1px 3px rgba(0,0,0,0.4)', textAlign:'center' }}>⭐ Patrocinador<br/>premium do bairro<br/><span style={{color:'#fed7aa',fontWeight:'700'}}>clique aqui</span></div>
 </div>
 )
 }
