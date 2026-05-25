@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef } from 'react' // v2
 import ReactDOM from 'react-dom'
 import { supabase } from './supabaseClient'
 
