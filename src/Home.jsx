@@ -602,8 +602,17 @@ const[showAssoc,setShowAssoc]=useState(false)
   const handleCitySelect=city=>{setUserCity(city.nome);setUserState(city.microrregiao.mesorregiao.UF.sigla);setUserNeighborhood('');setShowBusca(false);setSearchCity('')}
   const handleLogout=async()=>{await supabase.auth.signOut();navigate('/home')}
   const handleBus=()=>{
-const q=encodeURIComponent('horário de ônibus '+(userNeighborhood||userCity))
-window.open('https://www.google.com/search?q='+q,'_blank')
+const MOBILIBUS_BASE='https://editor.mobilibus.com/web/timetable/2bld5';
+const JARDIM_PARAISO_URL=MOBILIBUS_BASE+'#cg8';
+const cityNorm=(userCity||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+const bairroNorm=(userNeighborhood||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+if(cityNorm==='ponta grossa'){
+  const isPG=bairroNorm==='jardim paraiso'||bairroNorm==='jd. paraiso'||bairroNorm==='jd paraiso';
+  window.open(isPG?JARDIM_PARAISO_URL:MOBILIBUS_BASE,'_blank');
+}else{
+  const q=encodeURIComponent('horário de ônibus '+(userNeighborhood||userCity));
+  window.open('https://www.google.com/search?q='+q,'_blank');
+}
 }
   const handleShare=(e,item)=>{
     e.stopPropagation()
