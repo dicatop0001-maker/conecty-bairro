@@ -761,6 +761,12 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
             <span>ASSOCIAÇÃO DE MORADORES{userNeighborhood?' • '+userNeighborhood:''}</span>
           </button>
         </div>
+        <div className='cb-bus-bar'>
+          <button className='cb-bus-btn' onClick={handleBus}>
+            <span>🚌</span>
+            <span>HORÁRIO DE ÔNIBUS{userNeighborhood?' • '+userNeighborhood:''}</span>
+          </button>
+        </div>
         {!loading&&anuncios.length===0&&leiloes.length===0&&activeSponsorAds.length===0&&(
           <div style={{textAlign:'center',padding:'40px',background:'rgba(255,255,255,0.1)',borderRadius:'15px',color:'#fff'}}>
             <div style={{fontSize:'48px',marginBottom:'12px'}}>🏪</div>
@@ -861,12 +867,7 @@ R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDig
           <button onClick={()=>setLightboxImg(null)} style={{position:'absolute',top:'16px',right:'16px',background:'rgba(255,255,255,0.15)',border:'none',color:'#fff',fontSize:'28px',width:'44px',height:'44px',borderRadius:'50%',cursor:'pointer',fontWeight:'bold'}}>X</button>
         </div>
       )}
-      <div className='cb-bus-bar'>
-<button className='cb-bus-btn' onClick={handleBus}>
-<span>🚌</span>
-<span>HORÁRIO DE ÔNIBUS{userNeighborhood?' • '+userNeighborhood:''}</span>
-</button>
-</div><BottomBar user={user} onLogout={handleLogout} onAdminOpen={()=>setShowAdmin(true)} showAdminBtn={showAdminBtn}/>
+      <BottomBar user={user} onLogout={handleLogout} onAdminOpen={()=>setShowAdmin(true)} showAdminBtn={showAdminBtn}/>
       {showAdmin&&<AdminPanel onClose={()=>setShowAdmin(false)}/>}
 {showAssoc&&<AssociacaoModal city={userCity} neighborhood={userNeighborhood} onClose={()=>setShowAssoc(false)}/>}
     </div>
