@@ -12,9 +12,9 @@ const css = `
   background: #ffffff;
   width: 100%;
   box-sizing: border-box;
-  padding: 2px 16px 4px;
+  padding: 0px 16px 1px;
 }
-.cb-logo { width:100%; max-width:260px; display:block; margin:0 auto; }
+.cb-logo { width:80%; max-width:208px; display:block; margin:0 auto; }
 .cb-busca-btn {
   display: flex;
   align-items: center;
