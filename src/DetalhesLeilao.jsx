@@ -228,7 +228,7 @@ function DetalhesLeilao() {
             <p style={{ color: '#666', lineHeight: '1.6', marginBottom: '16px', fontSize: 'clamp(14px, 3.5vw, 16px)', wordBreak: 'break-word' }}>{auction.description || 'Sem descricao'}</p>
             <div style={{ borderTop: '1px solid #e0e0e0', paddingTop: '16px' }}>
               <div style={{ marginBottom: '8px', fontSize: 'clamp(13px, 3.5vw, 15px)' }}><strong>Categoria:</strong> {auction.category}</div>
-              <div style={{ marginBottom: '8px', fontSize: 'clamp(13px, 3.5vw, 15px)' }}><strong>Localizacao:</strong> {auction.neighborhood ? auction.neighborhood + ', ' : ''}{auction.city} - {auction.state}</div>
+              <div style={{ marginBottom: '8px', fontSize: 'clamp(13px, 3.5vw, 15px)' }}><strong>Localização:</strong> {auction.neighborhood ? auction.neighborhood + ', ' : ''}{auction.city} - {auction.state}</div>
               <div style={{ marginBottom: '8px', fontSize: 'clamp(13px, 3.5vw, 15px)' }}><strong>Criado em:</strong> {new Date(auction.created_at).toLocaleDateString('pt-BR')}</div>
             </div>
           </div>
@@ -285,7 +285,7 @@ function DetalhesLeilao() {
             {!isAnuncio && !isEnded && user && !isSeller && (
               <form onSubmit={handleBid}>
                 <input type="text" inputMode="decimal" value={bidValue} onChange={(e) => setBidValue(e.target.value)}
-                  placeholder={isServico ? 'Lance maximo: R$ ' + formatBRL(auction.current_price - 0.01) : 'Minimo: R$ ' + formatBRL(auction.current_price + 0.01)}
+                  placeholder={isServico ? 'Lance maximo: R$ ' + formatBRL(auction.current_price - 0.01) : 'Mínimo: R$ ' + formatBRL(auction.current_price + 0.01)}
                   disabled={bidLoading}
                   style={{ width: '100%', padding: 'clamp(12px, 3vw, 15px)', border: '2px solid #e0e0e0', borderRadius: '10px', fontSize: 'clamp(16px, 4vw, 18px)', boxSizing: 'border-box', marginBottom: '12px' }} />
                 <button type="submit" disabled={bidLoading}
@@ -311,7 +311,7 @@ function DetalhesLeilao() {
           {/* HISTORICO DE LANCES */}
           {!isAnuncio && (
             <div style={{ background: 'white', borderRadius: '16px', padding: 'clamp(16px, 4vw, 30px)', marginBottom: '16px' }}>
-              <h3 style={{ margin: '0 0 16px 0', fontSize: 'clamp(16px, 4vw, 20px)' }}>Historico de Lances ({bids.length})</h3>
+              <h3 style={{ margin: '0 0 16px 0', fontSize: 'clamp(16px, 4vw, 20px)' }}>Histórico de Lances ({bids.length})</h3>
               {bids.length === 0 ? (
                 <div style={{ textAlign: 'center', color: '#999', padding: '20px' }}>Nenhum lance ainda. Seja o primeiro!</div>
               ) : (
