@@ -3,7 +3,11 @@ import { supabase } from './supabaseClient'
 import { useNavigate } from 'react-router-dom'
 
 function getTimeLeft(endsAt) {
-  const diffMs = new Date(endsAt) - new Date()
+  if (!endsAt) return { label: 'Encerrado', urgent: false }
+  const end = new Date(endsAt)
+  if (isNaN(end.getTime())) return { label: 'Encerrado', urgent: false }
+  const diffMs = end - new Date()
+  if (diffMs <= 0) return { label: 'Encerrado', urgent: false }
   const diffMin = Math.floor(diffMs / 60000)
   const diffH   = Math.floor(diffMs / 3600000)
   const diffD   = Math.floor(diffMs / 86400000)
