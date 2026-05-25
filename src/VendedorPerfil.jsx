@@ -52,17 +52,17 @@ function VendedorPerfil() {
                     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
 
                                 <div style={{ background: 'white', borderRadius: '20px', padding: 'clamp(20px, 4vw, 40px)', marginBottom: '24px', textAlign: 'center' }}>
-                                              <img src="/logo-leilao.png" alt="Zap Bairro" style={{ height: 'clamp(60px, 15vw, 100px)', objectFit: 'contain', marginBottom: '12px' }} />
-                                              <h1 style={{ margin: '0 0 6px 0', fontSize: 'clamp(22px, 5vw, 36px)', color: '#667eea' }}>Zap Bairro</h1>
+                                              <img src="/logo-leilao.png" alt="Conecty Bairro" style={{ height: 'clamp(60px, 15vw, 100px)', objectFit: 'contain', marginBottom: '12px' }} />
+                                              <h1 style={{ margin: '0 0 6px 0', fontSize: 'clamp(22px, 5vw, 36px)', color: '#667eea' }}>Conecty Bairro</h1>
                                     {sellerCity && <p style={{ fontSize: 'clamp(14px, 3vw, 18px)', color: '#666', margin: '0 0 8px 0' }}>Leiloes e anuncios em {sellerCity}</p>}
                                               <p style={{ fontSize: 'clamp(13px, 2.5vw, 16px)', color: '#999', margin: 0 }}>
-                                                  {auctions.length} {auctions.length === 1 ? 'item disponivel' : 'itens disponiveis'}
+                                                  {auctions.length} {auctions.length === 1 ? 'item disponivel' : 'itens disponíveis'}
                                               </p>
                                 </div>
 
                         {auctions.length === 0 ? (
                         <div style={{ background: 'white', borderRadius: '20px', padding: '60px', textAlign: 'center' }}>
-                                        <h2 style={{ color: '#999', fontSize: 'clamp(16px, 4vw, 22px)' }}>Este vendedor nao tem itens ativos no momento</h2>
+                                        <h2 style={{ color: '#999', fontSize: 'clamp(16px, 4vw, 22px)' }}>Este vendedor não tem itens ativos no momento</h2>
                                         <button onClick={() => navigate('/')} style={{ marginTop: '20px', padding: '14px 32px', background: '#667eea', color: 'white', border: 'none', borderRadius: '50px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}>
                                                           Criar minha conta gratis
                                         </button>
@@ -113,7 +113,7 @@ function VendedorPerfil() {
                     
                             <div style={{ textAlign: 'center', marginTop: '40px' }}>
                                       <button onClick={() => navigate('/')} style={{ padding: '14px 36px', background: 'white', color: '#667eea', border: 'none', borderRadius: '50px', fontSize: 'clamp(14px, 3vw, 18px)', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
-                                                  Criar minha conta no Zap Bairro - Gratis!
+                                                  Criar minha conta grátis!
                                       </button>
                             </div>
                     
