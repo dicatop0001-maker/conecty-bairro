@@ -169,7 +169,7 @@ function Login() {
               textAlign: 'center', fontSize: '14px', fontWeight: '500',
               color: 'var(--gray-600)', marginBottom: '28px', fontStyle: 'italic'
             }}>
-              {isLogin ? 'aqui tem de tudo, ate o horario do seu onibus!' : 'Preencha os dados para se cadastrar'}
+              {isLogin ? 'aqui tem de tudo, até o horário do seu ônibus!' : 'Preencha os dados para se cadastrar'}
             </p>
 
             <form onSubmit={handleAuth} style={{ marginBottom: '16px' }}>
@@ -263,7 +263,7 @@ function Login() {
             }}
               onMouseEnter={(e) => e.target.style.borderColor = 'var(--primary)'}
               onMouseLeave={(e) => e.target.style.borderColor = 'var(--gray-300)'}>
-              Continuar sem login (so visualizar)
+              Continuar sem login (só visualizar)
             </button>
 
             <p style={{ textAlign: 'center', fontSize: '13px', color: 'var(--gray-600)', marginTop: '24px', lineHeight: '1.6' }}>
