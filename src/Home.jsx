@@ -29,7 +29,7 @@ const css = `
   font-weight: 900;
   cursor: pointer;
   box-shadow: 0 3px 12px rgba(30,64,175,0.45);
-  margin-top: 2px;
+  margin-top: 6px;
   letter-spacing: 0.3px;
   gap: 8px;
   box-sizing: border-box;
@@ -69,7 +69,7 @@ const css = `
   display: grid;
   grid-template-columns: repeat(6,1fr);
   gap: 6px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 .cb-cols {
   display: grid;
@@ -193,7 +193,7 @@ const css = `
 .cb-main {
   max-width: 900px;
   margin: 0 auto;
-  padding: 14px 12px 40px;
+  padding: 14px 12px 14px;
 }
 .cb-overlay {
   position:fixed;top:0;left:0;right:0;bottom:0;
@@ -410,16 +410,16 @@ const css = `
   border-radius: 0 0 10px 10px;
 }
 .cb-bus-bar {
-position: fixed;
-bottom: 56px;
+position: relative;
 left: 0;
 right: 0;
-z-index: 999;
+z-index: 10;
 display: flex;
 align-items: center;
 justify-content: center;
-padding: 6px 16px;
+padding: 0 16px;
 background: transparent;
+margin-bottom: 10px;
 }
 .cb-assoc-bar {
 position: relative;
@@ -429,9 +429,10 @@ z-index: 10;
 display: flex;
 align-items: center;
 justify-content: center;
-padding: 6px 16px;
+padding: 0 16px;
 background: transparent;
-margin-bottom: 14px;
+margin-top: 0px;
+margin-bottom: 10px;
 }
 .cb-assoc-btn {
 display: flex;
