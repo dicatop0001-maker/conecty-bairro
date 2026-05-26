@@ -101,7 +101,14 @@ function AdminPanel({ onClose, adminUser }) {
           showMsg('Erro ao remover lances: ' + bidsErr.message, false)
           return
         }
-        // Step 2: delete the auction/anuncio
+        // Step 2: delete contact_unlocks (foreign key constraint)
+        const { error: unlockErr } = await supabase.from('contact_unlocks').delete().eq('auction_id', id)
+        if (unlockErr) {
+          setSaving(false)
+          showMsg('Erro ao remover desbloqueios: ' + unlockErr.message, false)
+          return
+        }
+        // Step 3: delete the auction/anuncio
         const { error } = await supabase.from('auctions').delete().eq('id', id)
         setSaving(false)
         if (error) showMsg('Erro: ' + error.message, false)
