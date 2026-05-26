@@ -179,7 +179,7 @@ function AdminPanel({ onClose, adminUser }) {
 
   const approveSponsor = async (sp) => {
     setSaving(true)
-    const { error } = await supabase.from('sponsors').update({ status:'active', approved_at: new Date().toISOString() }).eq('id', sp.id)
+    const { error } = await supabase.from('sponsors').update({ status: 'active' }).eq('id', sp.id)
     setSaving(false)
     if (error) showMsg('Erro: ' + error.message, false)
     else { showMsg('Patrocinador aprovado! ✅'); load() }
