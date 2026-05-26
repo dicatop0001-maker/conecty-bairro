@@ -108,7 +108,14 @@ function AdminPanel({ onClose, adminUser }) {
           showMsg('Erro ao remover desbloqueios: ' + unlockErr.message, false)
           return
         }
-        // Step 3: delete the auction/anuncio
+        // Step 3: delete messages (foreign key constraint)
+        const { error: msgErr } = await supabase.from('messages').delete().eq('auction_id', id)
+        if (msgErr) {
+          setSaving(false)
+          showMsg('Erro ao remover mensagens: ' + msgErr.message, false)
+          return
+        }
+        // Step 4: delete the auction/anuncio
         const { error } = await supabase.from('auctions').delete().eq('id', id)
         setSaving(false)
         if (error) showMsg('Erro: ' + error.message, false)
