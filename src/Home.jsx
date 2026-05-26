@@ -12,9 +12,9 @@ const css = `
   background: #ffffff;
   width: 100%;
   box-sizing: border-box;
-  padding: 0px 16px 1px;
+  padding: 0px 16px 0px;
 }
-.cb-logo { width:80%; max-width:208px; display:block; margin:0 auto; }
+.cb-logo { width:80%; max-width:208px; display:block; margin:2px auto 2px; padding: 2px 0; }
 .cb-busca-btn {
   display: flex;
   align-items: center;
@@ -29,7 +29,7 @@ const css = `
   font-weight: 900;
   cursor: pointer;
   box-shadow: 0 3px 12px rgba(30,64,175,0.45);
-  margin-top: 10px;
+  margin-top: 4px;
   letter-spacing: 0.3px;
   gap: 8px;
   box-sizing: border-box;
@@ -98,7 +98,7 @@ const css = `
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.5) rgba(255,255,255,0.1);
-  height: 300px;
+  height: 360px;
   touch-action: pan-y;
   overscroll-behavior: contain;
 }
@@ -106,8 +106,8 @@ const css = `
 .cb-strip::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 4px; }
 .cb-strip::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 4px; }
 .cb-card {
-  flex: 0 0 300px;
-  height: 300px;
+  flex: 0 0 360px;
+  height: 360px;
   width: 100%;
   background: #fff;
   border-radius: 10px;
@@ -123,7 +123,7 @@ const css = `
 .cb-card:active { transform:scale(0.97); }
 .cb-card-img {
   width: 100%;
-  height: 145px;
+  height: 174px;
   object-fit: cover;
   display: block;
   flex-shrink: 0;
@@ -486,9 +486,9 @@ transition: transform 0.12s, box-shadow 0.12s;
 @media(max-width:600px){
   .cb-slots { grid-template-columns: repeat(3,1fr); }
   .cb-slots-main { grid-template-columns: repeat(3,1fr); }
-  .cb-strip { height: 210px; touch-action: pan-y; overscroll-behavior: contain; }
-  .cb-card { flex: 0 0 210px; height: 210px; }
-  .cb-card-img { height: 120px; }
+  .cb-strip { height: 252px; touch-action: pan-y; overscroll-behavior: contain; }
+  .cb-card { flex: 0 0 252px; height: 252px; }
+  .cb-card-img { height: 144px; }
 }
 `
 
@@ -675,7 +675,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
                     {item.images&&item.images[0]?(
                       <img src={item.images[0]} alt='' className='cb-card-img' onError={e=>{e.target.style.display='none'}}/>
                     ):(
-                      <div style={{height:'145px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>🖼️</div>
+                      <div style={{height:'174px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>🖼️</div>
                     )}
                   </div>
                   <div className='cb-card-body'>
@@ -706,7 +706,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
                       {item.images&&item.images[0]?(
                         <img src={item.images[0]} alt='' className='cb-card-img' onError={e=>{e.target.style.display='none'}}/>
                       ):(
-                        <div style={{height:'145px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>🔨</div>
+                        <div style={{height:'174px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>🔨</div>
                       )}
                     </div>
                     <div className='cb-card-body'>
