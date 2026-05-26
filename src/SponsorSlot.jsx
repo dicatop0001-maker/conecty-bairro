@@ -245,7 +245,7 @@ error = result.error
 } else {
 const insertPayload = {
 ...payload,
-status: 'reserved',
+status: 'pending',
 reserved_at: now.toISOString()
 }
 const result = await supabase
