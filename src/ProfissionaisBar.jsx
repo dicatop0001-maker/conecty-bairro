@@ -7,12 +7,12 @@ const pbCss = `
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 2px 0 3px;
+  gap: 5px;
+  padding: 3px 0 4px;
   pointer-events: none;
 }
 .pb-hint-arrow {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 900;
   color: #fff;
   animation: pb-arrow-pulse 1.3s ease-in-out infinite;
@@ -22,29 +22,35 @@ const pbCss = `
 .pb-hint-label {
   font-size: 11px;
   font-weight: 800;
-  color: rgba(255,255,255,0.92);
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  color: rgba(255,255,255,0.95);
+  letter-spacing: 0.4px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.45);
 }
 @keyframes pb-arrow-pulse {
-  0%   { transform: translateX(0px); opacity: 1; }
-  30%  { transform: translateX(8px); opacity: 1; }
-  60%  { transform: translateX(0px); opacity: 0.5; }
-  80%  { transform: translateX(0px); opacity: 0; }
-  100% { transform: translateX(0px); opacity: 1; }
+  0%   { transform: translateX(0px);  opacity: 1;   }
+  30%  { transform: translateX(7px);  opacity: 1;   }
+  60%  { transform: translateX(0px);  opacity: 0.5; }
+  80%  { transform: translateX(0px);  opacity: 0;   }
+  100% { transform: translateX(0px);  opacity: 1;   }
 }
 .pb-wrap {
   width: 100%;
   background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 40%, #3b82f6 70%, #e0eaff 100%);
   border: 2px solid #1e40af;
   border-radius: 12px;
-  padding: 8px 0 6px;
+  padding: 0 0 6px;
   box-sizing: border-box;
   overflow: hidden;
   margin-bottom: 4px;
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.pb-row {
+  display: flex;
   flex-direction: row;
   align-items: flex-start;
+  padding-top: 8px;
 }
 .pb-fixed {
   flex-shrink: 0;
@@ -459,15 +465,17 @@ return 'https://wa.me/' + full + '?text=Oi ' + encodeURIComponent(nome) + ', vi 
 return (
 <>
 <style>{pbCss}</style>
+<div className="pb-wrap">
 {showScrollHint && (
   <div className="pb-hint-bar">
-    <span className="pb-hint-label">arraste para ver mais profissionais</span>
     <span className="pb-hint-arrow">&#8594;</span>
     <span className="pb-hint-arrow" style={{animationDelay:'0.2s'}}>&#8594;</span>
-    <span className="pb-hint-arrow" style={{animationDelay:'0.4s'}}>&#8594;</span>
+    <span className="pb-hint-label">arraste para ver mais profissionais</span>
+    <span className="pb-hint-arrow" style={{animationDelay:'0.2s'}}>&#8594;</span>
+    <span className="pb-hint-arrow">&#8594;</span>
   </div>
 )}
-<div className="pb-wrap">
+<div className="pb-row">
 <div className="pb-fixed" onClick={() => { setModal({ type: 'cadastro' }); setFotoFile(null); setFotoPreview(null); setMsg({ text: '', type: '' }); }}>
 <div className="pb-circle cadastro">
 <span style={{ fontSize: '9px', lineHeight: '1.25', fontWeight: '900', textAlign: 'center', display: 'block', padding: '2px', letterSpacing: '-0.5px' }}>
@@ -503,6 +511,7 @@ return (
 </div>
 )
 })}
+</div>
 </div>
 </div>
 </div>
@@ -549,8 +558,6 @@ onChange={e => setForm(f => ({ ...f, whatsapp: e.target.value }))}
 type="tel"
 required
 />
-
-{/* Upload de foto/logo */}
 <input
 ref={fotoInputRef}
 type="file"
@@ -572,7 +579,6 @@ onChange={handleFotoChange}
 </>
 )}
 </div>
-
 <button className="pb-submit" type="submit" disabled={loading || uploadingFoto}>
 {loading || uploadingFoto ? 'Cadastrando...' : 'Cadastrar agora'}
 </button>
