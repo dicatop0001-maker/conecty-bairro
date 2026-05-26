@@ -612,7 +612,7 @@ if(cityNorm==='ponta grossa'){
   const isPG=bairroNorm==='jardim paraiso'||bairroNorm==='jd. paraiso'||bairroNorm==='jd paraiso';
   window.open(isPG?JARDIM_PARAISO_URL:MOBILIBUS_BASE,'_blank');
 }else{
-  const q=encodeURIComponent('horÃ¡rio de Ã´nibus '+(userNeighborhood||userCity));
+  const q=encodeURIComponent('horário de ônibus '+(userNeighborhood||userCity));
   window.open('https://www.google.com/search?q='+q,'_blank');
 }
 }
@@ -630,13 +630,13 @@ setShowBusca(false)
 }
 
 const catList=[
-{v:'tudo',l:'ð Tudo'},
-{v:'automoveis',l:'ð AutomÃ³veis'},
-{v:'imoveis',l:'ð  ImÃ³veis'},
-{v:'eletronicos',l:'ð» EletrÃ´nicos'},
-{v:'celulares',l:'ð± Celulares'},
-{v:'moveis',l:'ðï¸ MÃ³veis'},
-{v:'leiloes',l:'ð¨ LeilÃµes'},
+{v:'tudo',l:'🔎 Tudo'},
+{v:'automoveis',l:'🚗 Automóveis'},
+{v:'imoveis',l:'🏠 Imóveis'},
+{v:'eletronicos',l:'💻 Eletrônicos'},
+{v:'celulares',l:'📱 Celulares'},
+{v:'moveis',l:'🛋️ Móveis'},
+{v:'leiloes',l:'🔨 Leilões'},
 ]
 
 const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCat===''||a.category===selCat))
@@ -652,8 +652,8 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
 <ProfissionaisBar userCity={userCity} />
         <img src='/logo-conecty.png' alt='Conecty Bairro' className='cb-logo' />
         <button className='cb-busca-btn' onClick={()=>setShowBusca(true)}>
-<span className='cb-busca-info'>{userCity}{userNeighborhood?' â¢ '+userNeighborhood:''}</span>
-<span className='cb-busca-right'>ð BUSCA</span>
+<span className='cb-busca-info'>{userCity}{userNeighborhood?' • '+userNeighborhood:''}</span>
+<span className='cb-busca-right'>🔍 BUSCA</span>
 </button>
       </div>
 
@@ -661,26 +661,26 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
 
         <div className='cb-cols'>
           <div>
-            <div className='cb-col-head' style={{background:'rgba(249,115,22,0.85)'}}>ANÃNCIOS</div>
+            <div className='cb-col-head' style={{background:'rgba(249,115,22,0.85)'}}>ANÚNCIOS</div>
             <div className='cb-strip'>
-{showSwipeHint&&!loading&&anuncios.length>0&&(<div className='cb-swipe-hint'><span className='cb-swipe-arrow'>â</span><span className='cb-swipe-hand'>ð</span><span className='cb-swipe-label'>deslize</span></div>)}
+{showSwipeHint&&!loading&&anuncios.length>0&&(<div className='cb-swipe-hint'><span className='cb-swipe-arrow'>↑</span><span className='cb-swipe-hand'>👆</span><span className='cb-swipe-label'>deslize</span></div>)}
               {loading?(
                 <div style={{color:'rgba(255,255,255,0.7)',fontSize:'12px',padding:'10px'}}>Carregando...</div>
               ):anuncios.length===0?(
-                <div style={{color:'rgba(255,255,255,0.6)',fontSize:'12px',padding:'10px'}}>Nenhum anÃºncio</div>
+                <div style={{color:'rgba(255,255,255,0.6)',fontSize:'12px',padding:'10px'}}>Nenhum anúncio</div>
               ):anuncios.map(item=>(
                 <div key={item.id} className='cb-card cb-card-anuncio' onClick={()=>{setListType('anuncio');setShowList(true)}}>
                   <div style={{position:'relative'}}>
-                    <div className='cb-badge' style={{background:'rgba(249,115,22,0.92)'}}>ANÃNCIO</div>
+                    <div className='cb-badge' style={{background:'rgba(249,115,22,0.92)'}}>ANÚNCIO</div>
                     {item.images&&item.images[0]?(
                       <img src={item.images[0]} alt='' className='cb-card-img' onError={e=>{e.target.style.display='none'}}/>
                     ):(
-                      <div style={{height:'174px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>ð¼ï¸</div>
+                      <div style={{height:'174px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>🖼️</div>
                     )}
                   </div>
                   <div className='cb-card-body'>
                     <p className='cb-card-title'>{item.title}</p>
-                    <p className='cb-card-neighborhood'>ð {item.neighborhood||userNeighborhood||userCity}</p>
+                    <p className='cb-card-neighborhood'>📍 {item.neighborhood||userNeighborhood||userCity}</p>
                     <p className='cb-card-price' style={{color:'#f97316'}}>R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</p>
                   </div>
                   <button className='cb-share-svg' onClick={e=>handleShare(e,item)} title='Compartilhar'><svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'><circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><line x1='8.59' y1='13.51' x2='15.42' y2='17.49'/><line x1='15.41' y1='6.51' x2='8.59' y2='10.49'/></svg></button>
@@ -689,29 +689,29 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
             </div>
           </div>
           <div>
-            <div className='cb-col-head' style={{background:'rgba(22,163,74,0.85)'}}>LEILÃES</div>
+            <div className='cb-col-head' style={{background:'rgba(22,163,74,0.85)'}}>LEILÕES</div>
             <div className='cb-strip'>
-{showSwipeHint&&!loading&&leiloes.length>0&&(<div className='cb-swipe-hint'><span className='cb-swipe-arrow'>â</span><span className='cb-swipe-hand'>ð</span><span className='cb-swipe-label'>deslize</span></div>)}
+{showSwipeHint&&!loading&&leiloes.length>0&&(<div className='cb-swipe-hint'><span className='cb-swipe-arrow'>↑</span><span className='cb-swipe-hand'>👆</span><span className='cb-swipe-label'>deslize</span></div>)}
               {loading?(
                 <div style={{color:'rgba(255,255,255,0.7)',fontSize:'12px',padding:'10px'}}>Carregando...</div>
               ):leiloes.length===0?(
-                <div style={{color:'rgba(255,255,255,0.6)',fontSize:'12px',padding:'10px'}}>Nenhum leilÃ£o</div>
+                <div style={{color:'rgba(255,255,255,0.6)',fontSize:'12px',padding:'10px'}}>Nenhum leilão</div>
               ):leiloes.map(item=>{
                 const tl=getTimeLeft(item.ends_at)
                 return(
                   <div key={item.id} className='cb-card cb-card-leilao' onClick={()=>{setListType('leilao');setShowList(true)}}>
                     <div style={{position:'relative'}}>
-                      <div className='cb-badge' style={{background:'rgba(22,163,74,0.92)'}}>LEILÃO</div>
+                      <div className='cb-badge' style={{background:'rgba(22,163,74,0.92)'}}>LEILÃO</div>
                       {tl&&<div className='cb-timer' style={{background:tl.urgent?'rgba(220,38,38,0.9)':'rgba(30,58,138,0.85)'}}>{tl.label}</div>}
                       {item.images&&item.images[0]?(
                         <img src={item.images[0]} alt='' className='cb-card-img' onError={e=>{e.target.style.display='none'}}/>
                       ):(
-                        <div style={{height:'174px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>ð¨</div>
+                        <div style={{height:'174px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>🔨</div>
                       )}
                     </div>
                     <div className='cb-card-body'>
                       <p className='cb-card-title'>{item.title}</p>
-                      <p className='cb-card-neighborhood'>ð {item.neighborhood||userNeighborhood||userCity}</p>
+                      <p className='cb-card-neighborhood'>📍 {item.neighborhood||userNeighborhood||userCity}</p>
                       <p className='cb-card-price' style={{color:'#16a34a'}}>R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</p>
                     </div>
                     <button className='cb-share-svg' onClick={e=>handleShare(e,item)} title='Compartilhar'><svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'><circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><line x1='8.59' y1='13.51' x2='15.42' y2='17.49'/><line x1='15.41' y1='6.51' x2='8.59' y2='10.49'/></svg></button>
@@ -726,11 +726,11 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
         
         <button onClick={()=>navigate('/anuncio')}
           style={{width:'100%',padding:'clamp(14px,2.5vw,20px)',marginBottom:'10px',background:'#f97316',color:'#fff',border:'none',borderRadius:'15px',fontSize:'clamp(16px,2.5vw,22px)',fontWeight:'bold',cursor:'pointer',boxShadow:'0 4px 14px rgba(249,115,22,0.4)'}}>
-          ð¢ CRIAR SEU ANÃNCIO
+          📢 CRIAR SEU ANÚNCIO
         </button>
         <button onClick={()=>navigate('/novo')}
           style={{width:'100%',padding:'clamp(14px,2.5vw,20px)',marginBottom:'10px',background:'#16a34a',color:'#fff',border:'none',borderRadius:'15px',fontSize:'clamp(16px,2.5vw,22px)',fontWeight:'bold',cursor:'pointer',boxShadow:'0 4px 14px rgba(22,163,74,0.4)'}}>
-          ð¨ CRIAR SEU LEILÃO
+          🔨 CRIAR SEU LEILÃO
         </button>
         
         {/* 6 SPONSOR SLOTS */}
@@ -741,7 +741,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
         </div>
         {activeSponsorAds.length>0&&(
           <div style={{marginBottom:'14px'}}>
-            <h3 style={{color:'#fff',fontSize:'clamp(13px,2vw,17px)',marginBottom:'8px',fontWeight:'800'}}>â­ Patrocinadores do Seu Bairro</h3>
+            <h3 style={{color:'#fff',fontSize:'clamp(13px,2vw,17px)',marginBottom:'8px',fontWeight:'800'}}>⭐ Patrocinadores do Seu Bairro</h3>
             <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:'10px'}}>
               {activeSponsorAds.map(sp=>(
                 <div key={'sp-'+sp.id} className='cb-sp-card' onClick={()=>sp.link_url?window.open(sp.link_url,'_blank'):null}>
@@ -758,14 +758,14 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
         )}
         <div className='cb-assoc-bar'>
           <button className='cb-assoc-btn' onClick={()=>setShowAssoc(true)}>
-            <span>ðï¸</span>
-            <span>ASSOCIAÃÃO DE MORADORES{userNeighborhood?' â¢ '+userNeighborhood:''}</span>
+            <span>🏘️</span>
+            <span>ASSOCIAÇÃO DE MORADORES{userNeighborhood?' • '+userNeighborhood:''}</span>
           </button>
         </div>
         {!loading&&anuncios.length===0&&leiloes.length===0&&activeSponsorAds.length===0&&(
           <div style={{textAlign:'center',padding:'40px',background:'rgba(255,255,255,0.1)',borderRadius:'15px',color:'#fff'}}>
-            <div style={{fontSize:'48px',marginBottom:'12px'}}>ðª</div>
-            <p style={{fontSize:'20px',fontWeight:'bold'}}>Nenhum anÃºncio ativo em {userCity}{userNeighborhood?' â¢ '+userNeighborhood:''}</p>
+            <div style={{fontSize:'48px',marginBottom:'12px'}}>🏪</div>
+            <p style={{fontSize:'20px',fontWeight:'bold'}}>Nenhum anúncio ativo em {userCity}{userNeighborhood?' • '+userNeighborhood:''}</p>
             <p style={{fontSize:'14px',opacity:0.8,marginTop:'6px'}}>Seja o primeiro!</p>
           </div>
         )}
@@ -775,9 +775,9 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
 <div className='cb-list-modal' onClick={e=>e.stopPropagation()}>
 <div className='cb-list-header'>
 <p className='cb-list-title' style={{color:listType==='anuncio'?'#f97316':'#16a34a'}}>
-{listType==='anuncio'?'ð¢ Todos os AnÃºncios':'ð¨ Todos os LeilÃµes'}
+{listType==='anuncio'?'📢 Todos os Anúncios':'🔨 Todos os Leilões'}
 </p>
-<button className='cb-list-close' onClick={()=>setShowList(false)}>Ã</button>
+<button className='cb-list-close' onClick={()=>setShowList(false)}>×</button>
 </div>
 <div className='cb-list-scroll'>
 {(listType==='anuncio'?anuncios:leiloes).length===0?(
@@ -792,7 +792,7 @@ return(
 <img src={item.images[0]} alt='' className='cb-list-item-img' onError={e=>{e.target.style.display='none'}}/>
 ):(
 <div style={{width:'100px',minWidth:'100px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'28px',flexShrink:0}}>
-{listType==='anuncio'?'ð¼ï¸':'ð¨'}
+{listType==='anuncio'?'🖼️':'🔨'}
 </div>
 )}
 <div className='cb-list-item-body'>
@@ -802,7 +802,7 @@ R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDig
 </p>
 {tl&&<span className='cb-list-item-badge' style={{background:tl.urgent?'#dc2626':'#1e3a8a'}}>{tl.label}</span>}
 <span className='cb-list-item-badge' style={{background:listType==='anuncio'?'rgba(249,115,22,0.9)':'rgba(22,163,74,0.9)',color:'#fff',marginTop:'3px'}}>
-{listType==='anuncio'?'ANÃNCIO':'LEILÃO'}
+{listType==='anuncio'?'ANÚNCIO':'LEILÃO'}
 </span>
 </div>
 </div>
@@ -816,10 +816,10 @@ R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDig
         <div className='cb-overlay' onClick={()=>setShowBusca(false)}>
           <div className='cb-modal' onClick={e=>e.stopPropagation()}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}}>
-              <h2 style={{margin:0,fontSize:'19px',color:'#1e3a8a',fontWeight:'900'}}>ð Buscar</h2>
-              <button onClick={()=>setShowBusca(false)} style={{background:'none',border:'none',fontSize:'22px',cursor:'pointer',color:'#666'}}>Ã</button>
+              <h2 style={{margin:0,fontSize:'19px',color:'#1e3a8a',fontWeight:'900'}}>🔍 Buscar</h2>
+              <button onClick={()=>setShowBusca(false)} style={{background:'none',border:'none',fontSize:'22px',cursor:'pointer',color:'#666'}}>×</button>
             </div>
-            <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>O que vocÃª quer buscar?</p>
+            <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>O que você quer buscar?</p>
             <div className='cb-cat-grid'>
               {catList.map(t=>(
                 <button key={t.v} onClick={()=>setBuscaTab(t.v)} className={'cb-cat-btn'+(buscaTab===t.v?' active':'')}>
@@ -827,18 +827,18 @@ R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDig
                 </button>
               ))}
             </div>
-            <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>ð Onde buscar?</p>
+            <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>📍 Onde buscar?</p>
             <div style={{display:'flex',gap:'8px',marginBottom:'14px'}}>
               <button onClick={()=>handleBuscaApply('scope')}
                 style={{flex:1,padding:'10px',borderRadius:'12px',background:'#f0fdf4',border:'2px solid #16a34a',color:'#15803d',fontWeight:'700',fontSize:'13px',cursor:'pointer'}}>
-                ðï¸ Meu Bairro{userNeighborhood?' ('+userNeighborhood+')':''}
+                🏘️ Meu Bairro{userNeighborhood?' ('+userNeighborhood+')':''}
               </button>
               <button onClick={()=>handleBuscaApply('scope')}
                 style={{flex:1,padding:'10px',borderRadius:'12px',background:'#eff6ff',border:'2px solid #3b82f6',color:'#1d4ed8',fontWeight:'700',fontSize:'13px',cursor:'pointer'}}>
-                ðï¸ Cidade ({userCity})
+                🏙️ Cidade ({userCity})
               </button>
             </div>
-            <p style={{margin:'0 0 6px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>ð Mudar cidade?</p>
+            <p style={{margin:'0 0 6px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>🌎 Mudar cidade?</p>
             <input value={searchCity} onChange={e=>setSearchCity(e.target.value)} placeholder='Digite a cidade...'
               style={{width:'100%',padding:'10px 12px',border:'2px solid #e2e8f0',borderRadius:'12px',fontSize:'14px',boxSizing:'border-box'}}/>
             {filteredCities.length>0&&(
@@ -864,8 +864,8 @@ R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDig
       )}
       <div className='cb-bus-bar'>
 <button className='cb-bus-btn' onClick={handleBus}>
-<span>ð</span>
-<span>HORÃRIO DE ÃNIBUS{userNeighborhood?' â¢ '+userNeighborhood:''}</span>
+<span>🚌</span>
+<span>HORÁRIO DE ÔNIBUS{userNeighborhood?' • '+userNeighborhood:''}</span>
 </button>
 </div><BottomBar user={user} onLogout={handleLogout} onAdminOpen={()=>setShowAdmin(true)} showAdminBtn={showAdminBtn}/>
       {showAdmin&&<AdminPanel onClose={()=>setShowAdmin(false)} adminUser={user}/>}
