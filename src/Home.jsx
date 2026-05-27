@@ -53,8 +53,8 @@ const css = `
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 35%;
-  flex-shrink: 1;
+  flex: 0 0 auto;
+  flex-shrink: 0;
 }
 .cb-busca-sep {
   color: rgba(255,255,255,0.5);
@@ -70,7 +70,7 @@ const css = `
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
 }
 .cb-busca-right {
@@ -681,6 +681,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
 <span className='cb-busca-city'>{userCity||'Sua cidade'}</span>
 <span className='cb-busca-sep'>|</span>
 <span className='cb-busca-neighborhood'>{userNeighborhood||'📍 bairro'}</span>
+<span style={{flex:'1'}}></span>
 <span className='cb-busca-right'>🔍 BUSCA</span>
 </button>
       </div>
