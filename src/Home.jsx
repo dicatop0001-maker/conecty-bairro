@@ -1,789 +1,851 @@
-import { useState, useRef } from 'react' // v2
-import ReactDOM from 'react-dom'
+import { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient'
+import { useNavigate } from 'react-router-dom'
+import BottomBar from './BottomBar'
+import ProfissionaisBar from './ProfissionaisBar'
+import SponsorSlot from './SponsorSlot'
+import AdminPanel from './AdminPanel'
+import AssociacaoModal from './AssociacaoModal'
 
-const PIX_KEY = 'dicatop0001@gmail.com'
-const PIX_NAME = 'Conecty Bairro'
-const RAIO_KM = 2
-
-function calcDistKm(lat1, lon1, lat2, lon2) {
-const R = 6371
-const dLat = (lat2 - lat1) * Math.PI / 180
-const dLon = (lon2 - lon1) * Math.PI / 180
-const a =
-Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-Math.sin(dLon / 2) * Math.sin(dLon / 2)
-return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+const css = `
+.cb-header {
+  background: #ffffff;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0px 16px 0px;
+}
+.cb-logo { width:80%; max-width:208px; display:block; margin:2px auto 2px; padding: 2px 0; }
+.cb-busca-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%);
+  color: #fff;
+  border: 2px solid #1e40af;
+  border-radius: 24px;
+  padding: 10px 18px;
+  font-size: clamp(13px,2.5vw,16px);
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(30,64,175,0.45);
+  margin-top: 4px;
+  letter-spacing: 0.3px;
+  gap: 8px;
+  box-sizing: border-box;
+}
+.cb-busca-btn:active { transform: scale(0.98); }
+.cb-busca-info {
+  flex: 1;
+  text-align: left;
+  font-size: clamp(14px,3vw,18px);
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.98;
+}
+.cb-busca-right {
+  font-size: clamp(14px,2.5vw,17px);
+  font-weight: 900;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+  border-left: 2px solid rgba(255,255,255,0.4);
+  padding-left: 10px;
+  margin-left: 4px;
+}
+.cb-blue {
+  background: transparent;
+  width: 100%; box-sizing: border-box;
+  margin-top: 9px;
+}
+.cb-slots {
+  display: grid;
+  grid-template-columns: repeat(6,1fr);
+  gap: 6px;
+  padding: 10px 8px 8px;
+}
+.cb-slots-main {
+  display: grid;
+  grid-template-columns: repeat(6,1fr);
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.cb-cols {
+  display: block;
+  padding: 0 8px 12px;
+}
+.cb-col-head {
+  text-align: center;
+  font-size: clamp(11px,2.5vw,14px);
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 6px 4px;
+  border-radius: 8px 8px 0 0;
+}
+.cb-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.5) rgba(255,255,255,0.1);
+  height: 360px;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}
+.cb-strip::-webkit-scrollbar { width: 5px; }
+.cb-strip::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 4px; }
+.cb-strip::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 4px; }
+.cb-card {
+  flex: 0 0 360px;
+  height: 360px;
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+}
+.cb-card:active { transform:scale(0.97); }
+.cb-card-img {
+  width: 100%;
+  height: 174px;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+  background: #e2e8f0;
+}
+.cb-card-body { padding: 5px 8px 6px; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 2px; }
+.cb-card-title {
+  font-size: clamp(13px,2.5vw,16px);
+  font-weight: 900;
+  color: #1a202c;
+  margin: 0;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cb-card-price {
+  font-size: clamp(12px,2vw,14px);
+  font-weight: 800;
+  margin: 0;
+}
+.cb-card-neighborhood {
+  font-size: clamp(9px,1.8vw,11px);
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cb-badge {
+  position: absolute;
+  top: 4px; right: 4px;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 2px 5px;
+  border-radius: 10px;
+  color: #fff;
+  z-index: 3;
+}
+.cb-timer {
+  position: absolute;
+  top: 4px; left: 4px;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 2px 5px;
+  border-radius: 10px;
+  color: #fff;
+  z-index: 3;
+}
+.cb-share {
+  position: absolute;
+  bottom: 4px; right: 4px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+}
+.cb-share:hover { background: rgba(249,115,22,0.9); }
+.cb-main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px 12px 120px;
+}
+.cb-overlay {
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.7);z-index:3000;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:60px;overflow-y:auto;
+}
+.cb-modal {
+  background:#fff;border-radius:18px;padding:22px;
+  width:90%;max-width:480px;box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.cb-sp-card {
+  background:linear-gradient(135deg,#fff7ed,#fef3c7);
+  border-radius:12px;overflow:hidden;
+  box-shadow:0 0 0 3px #f97316,0 6px 18px rgba(0,0,0,0.15);
+  position:relative;cursor:pointer;
+}
+.cb-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 7px;
+  margin-bottom: 14px;
+}
+.cb-cat-btn {
+  padding: 10px 4px;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  background: #fff;
+  color: #4b5563;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.3;
+  transition: all 0.15s;
+}
+.cb-cat-btn.active {
+  border-color: #6366f1;
+  background: linear-gradient(135deg,#6366f1,#a855f7);
+  color: #fff;
+}
+.cb-list-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 4000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.cb-list-modal {
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  width: 100%;
+  max-width: 600px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.3);
+}
+.cb-list-header {
+  padding: 16px 18px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #f1f5f9;
+  flex-shrink: 0;
+}
+.cb-list-title {
+  font-size: 18px;
+  font-weight: 900;
+  margin: 0;
+}
+.cb-list-close {
+  background: #f1f5f9;
+  border: none;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cb-list-scroll {
+  overflow-y: auto;
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cb-list-item {
+  display: flex;
+  gap: 12px;
+  background: #f8fafc;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  min-height: 90px;
+  align-items: stretch;
+}
+.cb-list-item:active { transform: scale(0.98); }
+.cb-list-item-img {
+  width: 100px;
+  min-width: 100px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.cb-list-item-body {
+  padding: 10px 12px 10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+.cb-list-item-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1a202c;
+  margin: 0 0 4px;
+}
+.cb-list-item-price {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.cb-list-item-badge {
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: #fff;
+  display: inline-block;
+  width: fit-content;
 }
 
-function SponsorSlot({ slot, city, sponsorData, onRefresh, userId, userLat, userLng }) {
-const [showModal, setShowModal] = useState(false)
-const [step, setStep] = useState('plan')
-const [planType, setPlanType] = useState('monthly')
-const [form, setForm] = useState({
-name: '',
-email: '',
-phone: '',
-link_url: '',
-offers: ['', '', '', '', ''],
-logo_url: '',
-address: '',
-assoc_code: ''
-})
-const [saving, setSaving] = useState(false)
-const [logoPreview, setLogoPreview] = useState(null)
-const [uploadingLogo, setUploadingLogo] = useState(false)
-const [voucherUrl, setVoucherUrl] = useState('')
-const [uploadingVoucher, setUploadingVoucher] = useState(false)
-const voucherInputRef = useRef(null)
-const [geoStatus, setGeoStatus] = useState('')
-const [sponsorLat, setSponsorLat] = useState(null)
-const [sponsorLng, setSponsorLng] = useState(null)
-const [submitError, setSubmitError] = useState('')
-const [ownerModal, setOwnerModal] = useState(false)
-const [appNotification, setAppNotification] = useState(null)
-const [ownerEmailInput, setOwnerEmailInput] = useState('')
-  const [ownerPassword, setOwnerPassword] = useState('')
-const [ownerVerified, setOwnerVerified] = useState(false)
-const [ownerApproving, setOwnerApproving] = useState(false)
-const fileInputRef = useRef(null)
+.cb-swipe-hint {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.cb-swipe-hand {
+  font-size: 32px;
+  animation: cb-swipe-anim 1.4s ease-in-out infinite;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+}
+.cb-swipe-label {
+  font-size: 10px;
+  font-weight: 900;
+  color: #fff;
+  background: rgba(0,0,0,0.55);
+  border-radius: 8px;
+  padding: 2px 7px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  animation: cb-fade-anim 1.4s ease-in-out infinite;
+}
+.cb-swipe-arrow {
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  animation: cb-swipe-anim 1.4s ease-in-out infinite;
+  line-height: 1;
+}
+@keyframes cb-swipe-anim {
+  0%   { transform: translateY(0px);   opacity: 1; }
+  30%  { transform: translateY(-18px); opacity: 1; }
+  60%  { transform: translateY(0px);   opacity: 0.5; }
+  80%  { transform: translateY(0px);   opacity: 0; }
+  100% { transform: translateY(0px);   opacity: 1; }
+}
+@keyframes cb-fade-anim {
+  0%,100% { opacity: 1; }
+  60%      { opacity: 0.3; }
+}
+.cb-share-svg {
+  position: absolute;
+  bottom: 5px; right: 5px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.45);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  padding: 0;
+}
+.cb-share-svg:hover { background: rgba(249,115,22,0.9); }
+.cb-card-anuncio {
+  border-left: 3px solid #f97316;
+  border-right: 3px solid #f97316;
+  border-bottom: 3px solid #f97316;
+  border-radius: 0 0 10px 10px;
+}
+.cb-card-leilao {
+  border-left: 3px solid #16a34a;
+  border-right: 3px solid #16a34a;
+  border-bottom: 3px solid #16a34a;
+  border-radius: 0 0 10px 10px;
+}
+.cb-bus-bar {
+position: fixed;
+bottom: 56px;
+left: 0;
+right: 0;
+z-index: 999;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 0 16px;
+background: transparent;
+}
+.cb-assoc-bar {
+position: relative;
+left: 0;
+right: 0;
+z-index: 10;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 0 16px;
+background: transparent;
+margin-top: 0px;
+margin-bottom: 10px;
+}
+.cb-assoc-btn {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+width: 100%;
+max-width: 600px;
+background: linear-gradient(180deg, #fb923c 0%, #f97316 40%, #ea580c 100%);
+color: #fff;
+font-size: clamp(13px,2.5vw,16px);
+font-weight: 900;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+cursor: pointer;
+border-radius: 50px;
+padding: 10px 22px;
+border: 4px solid #7c2d12;
+outline: 3px solid rgba(255,255,255,0.55);
+outline-offset: -7px;
+box-shadow: 0 4px 18px rgba(0,0,0,0.45), inset 0 2px 6px rgba(255,255,255,0.25), inset 0 -3px 8px rgba(0,0,0,0.25);
+text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+transition: transform 0.12s, box-shadow 0.12s;
+}
+.cb-assoc-btn:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+.cb-bus-btn {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+width: 100%;
+max-width: 600px;
+background: linear-gradient(180deg, #4ade80 0%, #16a34a 40%, #15803d 100%);
+color: #fff;
+font-size: clamp(13px,2.5vw,16px);
+font-weight: 900;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+cursor: pointer;
+border-radius: 50px;
+padding: 10px 22px;
+border: 4px solid #14532d;
+outline: 3px solid rgba(255,255,255,0.55);
+outline-offset: -7px;
+box-shadow: 0 4px 18px rgba(0,0,0,0.45), inset 0 2px 6px rgba(255,255,255,0.25), inset 0 -3px 8px rgba(0,0,0,0.25);
+text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+transition: transform 0.12s, box-shadow 0.12s;
+}
+.cb-bus-btn:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+@media(max-width:600px){
+  .cb-slots { grid-template-columns: repeat(3,1fr); }
+  .cb-slots-main { grid-template-columns: repeat(3,1fr); }
+  .cb-strip { height: 252px; touch-action: pan-y; overscroll-behavior: contain; }
+  .cb-card { flex: 0 0 252px; height: 252px; }
+  .cb-card-img { height: 144px; }
+}
+`
 
-const planPrice = planType === 'monthly' ? 50 : 400
-const planLabel = planType === 'monthly' ? 'Mensal' : 'Anual'
-const expiresMonths = planType === 'monthly' ? 1 : 12
-
-const isOwner = sponsorData && sponsorData.owner_user_id === userId
-const isActive = sponsorData && sponsorData.status === 'active'
-const isPending = sponsorData && sponsorData.status === 'pending'
-const isReserved = sponsorData && sponsorData.status === 'reserved'
-  const reservedAt = sponsorData && sponsorData.reserved_at ? new Date(sponsorData.reserved_at) : null
-  const isExpired = isReserved && reservedAt && (new Date() - reservedAt > 24 * 60 * 60 * 1000)
-  const isReservedActive = isReserved && !isExpired
-
-const dentroDoRaio = () => {
-if (!isActive) return false
-if (!sponsorData.lat || !sponsorData.lng) return true
-if (!userLat || !userLng) return true
-return calcDistKm(userLat, userLng, sponsorData.lat, sponsorData.lng) <= RAIO_KM
+function getTimeLeft(endsAt){
+  if(!endsAt)return null
+  const diff=new Date(endsAt)-new Date()
+  if(diff<=0)return{label:'Encerrado',urgent:true}
+  const h=Math.floor(diff/3600000)
+  const m=Math.floor((diff%3600000)/60000)
+  if(h<24)return{label:h+'h '+m+'m',urgent:h<2}
+  return{label:Math.floor(h/24)+'d',urgent:false}
 }
 
-const handleSponsorClick = () => {
-if (isExpired) { setStep('plan'); setShowModal(true); return }
-  if (isReservedActive && !isOwner) { setOwnerModal(true); return }
-if (isActive && !isOwner && !dentroDoRaio()) {
-setStep('plan'); setShowModal(true); return
+function Home(){
+  const[user,setUser]=useState(null)
+  const[showAdmin,setShowAdmin]=useState(false)
+  const[auctions,setAuctions]=useState([])
+  const[activeAuctions,setActiveAuctions]=useState([])
+  const[selCat,setSelCat]=useState('')
+  const[userCity,setUserCity]=useState('Ponta Grossa')
+  const[userState,setUserState]=useState('PR')
+  const[userNeighborhood,setUserNeighborhood]=useState('')
+  const[showBusca,setShowBusca]=useState(false)
+  const[buscaTab,setBuscaTab]=useState('tudo')
+  const[searchCity,setSearchCity]=useState('')
+  const[allCities,setAllCities]=useState([])
+  const[filteredCities,setFilteredCities]=useState([])
+  const[loading,setLoading]=useState(true)
+  const[sponsors,setSponsors]=useState({})
+  const[userLat,setUserLat]=useState(null)
+  const[userLng,setUserLng]=useState(null)
+  const[activeSponsorAds,setActiveSponsorAds]=useState([])
+  const[lightboxImg,setLightboxImg]=useState(null)
+  const[isSponsor,setIsSponsor]=useState(false)
+const[showSwipeHint,setShowSwipeHint]=useState(()=>!localStorage.getItem('cb_hint_seen'))
+const[showList,setShowList]=useState(false)
+const[listType,setListType]=useState('anuncio')
+const[showAssoc,setShowAssoc]=useState(false)
+  const navigate=useNavigate()
+
+  useEffect(()=>{
+    checkUser(); detectLocation(); loadBrazilianCities(); requestUserGPS()
+  },[])
+  useEffect(()=>{ loadAuctions();if(user){loadSponsors()} },[user,userCity])
+  useEffect(()=>{
+    const n=new Date()
+    const f=auctions.filter(a=>(a.status==='active'||!a.status)&&(a.tipo==='anuncio'||!a.ends_at||new Date(a.ends_at)>n))
+    const sN=f.filter(a=>userNeighborhood&&a.neighborhood&&a.neighborhood.toLowerCase().trim()===userNeighborhood.toLowerCase().trim())
+    const oN=f.filter(a=>!(userNeighborhood&&a.neighborhood&&a.neighborhood.toLowerCase().trim()===userNeighborhood.toLowerCase().trim()))
+    setActiveAuctions([...sN,...oN])
+  },[auctions,userNeighborhood])
+  useEffect(()=>{
+    if(searchCity.length>=2){
+      setFilteredCities(allCities.filter(c=>c.nome.toLowerCase().includes(searchCity.toLowerCase())).slice(0,50))
+    } else setFilteredCities([])
+  },[searchCity,allCities])
+
+  useEffect(()=>{
+    if(showSwipeHint){
+      const t=setTimeout(()=>{
+        setShowSwipeHint(false)
+        localStorage.setItem('cb_hint_seen','1')
+      },5000)
+      return ()=>clearTimeout(t)
+    }
+  },[showSwipeHint])
+    const requestUserGPS=()=>{
+    const cached=localStorage.getItem('cb_neighborhood')
+    if(cached)setUserNeighborhood(cached)
+    const fetchBairro=async(lat,lng)=>{
+      try{
+        const res=await fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&addressdetails=1',{headers:{'Accept-Language':'pt-BR,pt;q=0.9'}})
+        const d=await res.json()
+        const addr=d.address||{}
+        const b=addr.suburb||addr.neighbourhood||addr.quarter||addr.residential||addr.district||addr.village||addr.hamlet||''
+        if(b){setUserNeighborhood(b);localStorage.setItem('cb_neighborhood',b)}
+      }catch(e){}
+    }
+    const ipFB=()=>fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=>{if(d.latitude&&d.longitude)fetchBairro(d.latitude,d.longitude)}).catch(()=>{})
+    if(!navigator.geolocation){ipFB();return}
+    const wId=navigator.geolocation.watchPosition(
+      pos=>{setUserLat(pos.coords.latitude);setUserLng(pos.coords.longitude);fetchBairro(pos.coords.latitude,pos.coords.longitude);navigator.geolocation.clearWatch(wId)},
+      ()=>navigator.geolocation.getCurrentPosition(pos=>fetchBairro(pos.coords.latitude,pos.coords.longitude),()=>ipFB(),{enableHighAccuracy:false,timeout:10000,maximumAge:60000}),
+      {enableHighAccuracy:true,timeout:15000,maximumAge:0}
+    )
+  }
+
+  const loadBrazilianCities=async()=>{
+    try{const r=await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/municipios?orderBy=nome');setAllCities(await r.json())}catch(e){}
+  }
+  function haversineKm(la1,lo1,la2,lo2){const R=6371;const dL=(la2-la1)*Math.PI/180;const dl=(lo2-lo1)*Math.PI/180;const a=Math.sin(dL/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dl/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))}
+  const loadSponsors=async()=>{
+    const{data}=await supabase.from('sponsors').select('*').eq('city',userCity)
+    if(data){const map={};const ads=[];data.forEach(s=>{map[s.slot]=s;if(s.status==='active'){if(!userLat||!s.lat||haversineKm(userLat,userLng,s.lat,s.lng)<=2)ads.push(s)}});setSponsors(map);setActiveSponsorAds(ads)}
+  }
+  const checkUser=async()=>{
+    const{data:{session}}=await supabase.auth.getSession()
+    if(session){
+      setUser(session.user)
+      const{data:sp}=await supabase.from('sponsors').select('id').eq('email',session.user.email).limit(1)
+      if(sp&&sp.length>0)setIsSponsor(true)
+    }
+  }
+  const detectLocation=async()=>{
+    try{const r=await fetch('https://ipapi.co/json/');const d=await r.json();if(d.city){setUserCity(d.city);setUserState(d.region_code||'BR')}}catch(e){}
+  }
+  const loadAuctions=async()=>{
+    setLoading(true)
+    const{data}=await supabase.from('auctions').select('*').eq('city',userCity).order('created_at',{ascending:false})
+    if(data)setAuctions(data)
+    setLoading(false)
+  }
+  const handleCitySelect=city=>{setUserCity(city.nome);setUserState(city.microrregiao.mesorregiao.UF.sigla);setUserNeighborhood('');setShowBusca(false);setSearchCity('')}
+  const handleLogout=async()=>{await supabase.auth.signOut();navigate('/home')}
+  const handleBus=()=>{
+const MOBILIBUS_BASE='https://editor.mobilibus.com/web/timetable/2bld5';
+const JARDIM_PARAISO_URL=MOBILIBUS_BASE+'#cg8';
+const cityNorm=(userCity||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+const bairroNorm=(userNeighborhood||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+if(cityNorm==='ponta grossa'){
+  const isPG=bairroNorm==='jardim paraiso'||bairroNorm==='jd. paraiso'||bairroNorm==='jd paraiso';
+  window.open(isPG?JARDIM_PARAISO_URL:MOBILIBUS_BASE,'_blank');
+}else{
+  const q=encodeURIComponent('horário de ônibus '+(userNeighborhood||userCity));
+  window.open('https://www.google.com/search?q='+q,'_blank');
 }
-if (isActive && !isOwner && sponsorData.link_url) {
-window.open(sponsorData.link_url, '_blank'); return
 }
-if (isOwner) {
-setForm({
-name: sponsorData.sponsor_name || '',
-email: sponsorData.contact_email || '',
-phone: sponsorData.contact_phone || '',
-link_url: sponsorData.link_url || '',
-offers: sponsorData.offers && sponsorData.offers.length === 5
-? sponsorData.offers
-: ['', '', '', '', ''],
-logo_url: sponsorData.logo_url || '',
-address: sponsorData.address || ''
-})
-setLogoPreview(sponsorData.logo_url || null)
-setSponsorLat(sponsorData.lat || null)
-setSponsorLng(sponsorData.lng || null)
-setGeoStatus(sponsorData.lat ? 'Localizacao registrada.' : '')
-setSubmitError('')
-setStep('form'); setShowModal(true); return
-}
-if (!isActive && !isPending) {
-setStep('plan'); setShowModal(true); return
-}
-if (isPending && isOwner) {
-setStep('form'); setShowModal(true); return
-}
+  const handleShare=(e,item)=>{
+    e.stopPropagation()
+    const url=window.location.origin+'/leilao/'+item.id
+    if(navigator.share)navigator.share({title:item.title,url}).catch(()=>{})
+    else navigator.clipboard.writeText(url).then(()=>alert('Link copiado!')).catch(()=>alert('Link: '+url))
+  }
+
+  const handleBuscaApply=(scope)=>{
+const catMap={automoveis:'automoveis',imoveis:'imoveis',eletronicos:'eletronicos',celulares:'celulares',moveis:'moveis',leiloes:'leilao',tudo:''}
+setSelCat(catMap[buscaTab]||'')
+setShowBusca(false)
 }
 
-const handleLogoUpload = async (e) => {
-const file = e.target.files[0]
-if (!file) return
-setUploadingLogo(true)
-const ext = file.name.split('.').pop()
-const fileName = 'sponsor_' + city + '_' + slot + '_' + Date.now() + '.' + ext
-const { error } = await supabase.storage
-.from('auction-images')
-.upload(fileName, file, { upsert: true })
-if (!error) {
-const { data: urlData } = supabase.storage
-.from('auction-images')
-.getPublicUrl(fileName)
-setForm(prev => ({ ...prev, logo_url: urlData.publicUrl }))
-setLogoPreview(urlData.publicUrl)
-} else {
-alert('Erro ao fazer upload: ' + error.message)
-}
-setUploadingLogo(false)
-}
+const catList=[
+{v:'tudo',l:'🔎 Tudo'},
+{v:'automoveis',l:'🚗 Automóveis'},
+{v:'imoveis',l:'🏠 Imóveis'},
+{v:'eletronicos',l:'💻 Eletrônicos'},
+{v:'celulares',l:'📱 Celulares'},
+{v:'moveis',l:'🛋️ Móveis'},
+{v:'leiloes',l:'🔨 Leilões'},
+]
 
-const handleVoucherUpload = async (e) => {
-const file = e.target.files[0]
-if (!file) return
-setUploadingVoucher(true)
-const ext = file.name.split('.').pop()
-const fileName = 'voucher_' + city + '_' + slot + '_' + Date.now() + '.' + ext
-const { error } = await supabase.storage
-.from('auction-images')
-.upload(fileName, file, { upsert: true })
-if (!error) {
-const { data: urlData } = supabase.storage
-.from('auction-images')
-.getPublicUrl(fileName)
-setVoucherUrl(urlData.publicUrl)
-} else {
-alert('Erro ao fazer upload do comprovante: ' + error.message)
-}
-setUploadingVoucher(false)
-}
+const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCat===''||a.category===selCat))
+  const leiloes=activeAuctions.filter(a=>a.tipo!=='anuncio'&&a.ends_at&&(selCat===''||a.category===selCat))
+  const isAdmin=user&&user.email==='dicatop0001@gmail.com'
+  const showAdminBtn=isAdmin
 
-const geocodeAddress = async (address) => {
-if (!address || address.trim().length < 5) {
-alert('Digite um endereco valido!')
-return null
-}
-setGeoStatus('Buscando localizacao...')
-try {
-const query = encodeURIComponent(address + ', ' + city + ', Brasil')
-const res = await fetch(
-'https://nominatim.openstreetmap.org/search?q=' + query + '&format=json&limit=1'
+  return(
+    <div style={{minHeight:'100vh',background:'#f8fafc',paddingBottom:'96px'}}>
+      <style>{css}</style>
+
+      <div className='cb-header'>
+<ProfissionaisBar userCity={userCity} />
+        <img src='/logo-conecty.png' alt='Conecty Bairro' className='cb-logo' />
+        <button className='cb-busca-btn' onClick={()=>setShowBusca(true)}>
+<span className='cb-busca-info'>{userCity}{userNeighborhood?' • '+userNeighborhood:''}</span>
+<span className='cb-busca-right'>🔍 BUSCA</span>
+</button>
+      </div>
+
+      <div className='cb-blue'>
+
+        <div className='cb-cols'>
+          <div>
+            <div className='cb-col-head' style={{background:'linear-gradient(135deg,rgba(249,115,22,0.9),rgba(30,58,138,0.85))'}}>📢 ANÚNCIOS & LEILÕES</div>
+            <div className='cb-strip'>
+{showSwipeHint&&!loading&&(anuncios.length>0||leiloes.length>0)&&(<div className='cb-swipe-hint'><span className='cb-swipe-arrow'>↑</span><span className='cb-swipe-hand'>👆</span><span className='cb-swipe-label'>deslize</span></div>)}
+              {loading?(
+                <div style={{color:'rgba(255,255,255,0.7)',fontSize:'12px',padding:'10px'}}>Carregando...</div>
+              ):(anuncios.length===0&&leiloes.length===0)?(
+                <div style={{color:'rgba(255,255,255,0.6)',fontSize:'12px',padding:'10px'}}>Nenhum anúncio</div>
+              ):[...anuncios.map(item=>({...item,_tipo:'anuncio'})),...leiloes.map(item=>({...item,_tipo:'leilao'}))].map(item=>{
+const isLeilao=item._tipo==='leilao';
+const tl=isLeilao?getTimeLeft(item.ends_at):null;
+return(
+                <div key={item.id+'-'+item._tipo} className={'cb-card '+(isLeilao?'cb-card-leilao':'cb-card-anuncio')} onClick={()=>{setListType(isLeilao?'leilao':'anuncio');setShowList(true)}}>
+                  <div style={{position:'relative'}}>
+                    <div className='cb-badge' style={{background:isLeilao?'rgba(22,163,74,0.92)':'rgba(249,115,22,0.92)'}}>{isLeilao?'🔨 LEILÃO':'ANÚNCIO'}</div>
+                    {isLeilao&&tl&&<div className='cb-timer' style={{background:tl.urgent?'rgba(220,38,38,0.9)':'rgba(30,58,138,0.85)'}}>{tl.label}</div>}
+                    {item.images&&item.images[0]?(
+                      <img src={item.images[0]} alt='' className='cb-card-img' onError={e=>{e.target.style.display='none'}}/>
+                    ):(
+                      <div style={{height:'174px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>{isLeilao?'🔨':'🖼️'}</div>
+                    )}
+                  </div>
+                  <div className='cb-card-body'>
+                    <p className='cb-card-title'>{item.title}</p>
+                    <p className='cb-card-neighborhood'>📍 {item.neighborhood||userNeighborhood||userCity}</p>
+                    <p className='cb-card-price' style={{color:isLeilao?'#16a34a':'#f97316'}}>R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</p>
+                  </div>
+                  <button className='cb-share-svg' onClick={e=>handleShare(e,item)} title='Compartilhar'><svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'><circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><line x1='8.59' y1='13.51' x2='15.42' y2='17.49'/><line x1='15.41' y1='6.51' x2='8.59' y2='10.49'/></svg></button>
+                </div>
 )
-const data = await res.json()
-if (data && data.length > 0) {
-const lat = parseFloat(data[0].lat)
-const lng = parseFloat(data[0].lon)
-setSponsorLat(lat)
-setSponsorLng(lng)
-setGeoStatus('Localizacao encontrada! ' + lat.toFixed(4) + ', ' + lng.toFixed(4))
-return { lat, lng }
-}
-setGeoStatus('Endereco nao encontrado. Tente ser mais especifico.')
-return null
-} catch (err) {
-setGeoStatus('Erro ao buscar localizacao.')
-return null
-}
-}
+})}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className='cb-main'>
+        
+        <button onClick={()=>navigate('/anuncio')}
+          style={{width:'100%',padding:'clamp(14px,2.5vw,20px)',marginBottom:'10px',background:'#f97316',color:'#fff',border:'none',borderRadius:'15px',fontSize:'clamp(16px,2.5vw,22px)',fontWeight:'bold',cursor:'pointer',boxShadow:'0 4px 14px rgba(249,115,22,0.4)'}}>
+          📢 CRIAR SEU ANÚNCIO
+        </button>
 
-const handleSubmit = async () => {
-setSubmitError('')
-if (sponsorData && sponsorData.id && (isActive || isReserved) && !isOwner) {
-setSubmitError('Este slot ja esta reservado ou ativo. Escolha outro slot disponivel.')
-return
-}
-if (!form.name || !form.name.trim()) {
-setSubmitError('Preencha o nome do negocio!')
-return
-}
-if (!form.email || !form.email.trim()) {
-setSubmitError('Preencha o e-mail!')
-return
-}
-
-let lat = sponsorLat
-let lng = sponsorLng
-
-if ((!lat || !lng) && form.address && form.address.trim().length >= 5) {
-const coords = await geocodeAddress(form.address)
-if (coords) {
-lat = coords.lat
-lng = coords.lng
-}
-}
-
-if (!lat || !lng) {
-const continuar = window.confirm(
-'Nao foi possivel localizar o endereco automaticamente. ' +
-'Deseja enviar o cadastro sem localizacao precisa? ' +
-'Voce podera atualizar depois.'
-)
-if (!continuar) return
-}
-
-setSaving(true)
-
-const now = new Date()
-const expiresDate = new Date(now.getTime())
-expiresDate.setMonth(expiresDate.getMonth() + expiresMonths)
-
-const payload = {
-city,
-slot: (['L1','L2','L3','R1','R2','R3'].indexOf(slot) + 1) || 1,
-status: (isOwner && isActive) ? 'active' : 'pending',
-plan_type: planType === 'monthly' ? 'monthly' : 'yearly',
-plan_price: planPrice,
-sponsor_name: form.name.trim(),
-contact_email: form.email.trim(),
-contact_phone: form.phone ? form.phone.trim() : '',
-link_url: form.link_url ? form.link_url.trim() : '',
-offer_text: form.offers.filter(o => o && o.trim() !== '').join('\n'),
-voucher_url: voucherUrl || null,
-expires_at: expiresDate.toISOString(),
-assoc_code: form.assoc_code ? form.assoc_code.trim().toUpperCase() : null,
-}
-
-let error = null
-
-if (sponsorData && sponsorData.id && (isOwner || isPending)) {
-const updatePayload = { status: 'active', ...payload }
-if (!isOwner) {
-updatePayload.paid_at = now.toISOString()
-}
-const result = await supabase
-.from('sponsors')
-.update(updatePayload)
-.eq('id', sponsorData.id)
-error = result.error
-} else {
-const insertPayload = {
-...payload,
-status: 'pending',
-reserved_at: now.toISOString()
-}
-const result = await supabase
-.from('sponsors')
-.upsert(insertPayload, { onConflict: 'city,slot' })
-error = result.error
-}
-
-setSaving(false)
-
-if (error) {
-console.error('Supabase error:', error)
-setSubmitError('Erro ao salvar: ' + error.message)
-} else {
-setStep('success')
-if (!isOwner) { setAppNotification('Cadastro enviado! Envie o comprovante via WhatsApp: (42) 98888-0353. Seu espaco ficara RESERVADO ate confirmacao.') }
-if (onRefresh) onRefresh()
-if (!isOwner) { try { await fetch('/api/notify-sponsor',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sponsorName:form.name.trim(),sponsorEmail:form.email.trim(),city,slot:(['L1','L2','L3','R1','R2','R3'].indexOf(slot)+1)||1,planType,planPrice})}) } catch(e){} }
-}
-}
-
-const handleOwnerVerify = async () => {
-setOwnerApproving(true)
-try {
-const { error } = await supabase.auth.signInWithPassword({ email: ownerEmailInput.trim().toLowerCase(), password: ownerPassword })
-if (error) throw error
-if (ownerEmailInput.trim().toLowerCase() !== 'dicatop0001@gmail.com') throw new Error('Acesso negado.')
-setOwnerVerified(true)
-} catch(e) {
-alert('Credenciais incorretas: ' + (e.message||'verifique e-mail e senha.'))
-} finally {
-setOwnerApproving(false)
-}
-}
-const handleOwnerApprove = async () => {
-setOwnerApproving(true)
-const { error } = await supabase.from('sponsors').update({ status: 'active' }).eq('id', sponsorData.id)
-setOwnerApproving(false)
-if (error) { alert('Erro ao aprovar: ' + error.message) }
-else { setOwnerModal(false); setOwnerVerified(false); setOwnerEmailInput(''); if (onRefresh) onRefresh() }
-}
-const handleOwnerReject = async () => {
-if (!confirm('Tem certeza que deseja rejeitar e remover esta reserva?')) return
-setOwnerApproving(true)
-const { error } = await supabase.from('sponsors').delete().eq('id', sponsorData.id)
-setOwnerApproving(false)
-if (error) { alert('Erro ao rejeitar: ' + error.message) }
-else { setOwnerModal(false); setOwnerVerified(false); setOwnerEmailInput(''); if (onRefresh) onRefresh() }
-}
-const renderSlotContent = () => {
-if (isReservedActive) {
-return (
-<div style={{ textAlign: 'center', padding: '4px' }}>
-<div style={{ fontSize: '20px', marginBottom: '4px' }}>{'🟡'}</div>
-<div style={{ fontSize: '11px', fontWeight: '800', color: '#92400e' }}>Reservado</div>
-<div style={{ fontSize: '9px', color: '#b45309' }}>{hoursLeft > 0 ? hoursLeft + 'h restantes' : 'Aguard. aprovacao'}</div>
-</div>
-)
-}
-if (isActive && !isOwner && !dentroDoRaio()) {
-return (
-<div style={{ textAlign: 'center', padding: '4px' }}>
-<div style={{ fontSize: '22px', marginBottom: '4px' }}>{'⭐'}</div>
-<div style={{ fontSize: '10px', fontWeight: '800', color: '#fff', lineHeight: '1.4', textShadow: '0 1px 3px rgba(0,0,0,0.4)', textAlign:'center' }}>⭐ Patrocinador<br/>premium do bairro<br/><span style={{color:'#fed7aa',fontWeight:'700'}}>clique aqui</span></div>
-</div>
-)
-}
-
-if (isActive && (isOwner || dentroDoRaio())) {
-const dist = (!isOwner && userLat && userLng && sponsorData.lat && sponsorData.lng)
-? calcDistKm(userLat, userLng, sponsorData.lat, sponsorData.lng)
-: null
-return (
-<div style={{ textAlign: 'center', width: '100%', padding: '4px' }}>
-{sponsorData.logo_url && (
-<img
-src={sponsorData.logo_url}
-alt={sponsorData.sponsor_name}
-style={{ width: '100%', maxHeight: '55px', objectFit: 'contain', borderRadius: '6px', marginBottom: '3px' }}
-/>)}
-<div style={{ fontWeight: '800', fontSize: '11px', color: '#1e3a8a', marginBottom: '2px', lineHeight: '1.2' }}>
-{sponsorData.sponsor_name}
-</div>
-{sponsorData.offers && sponsorData.offers.length > 0 && (
-<div>
-{sponsorData.offers.slice(0, 2).map((o, i) => (
-<div key={i} style={{ fontSize: '10px', color: '#dc2626', fontWeight: '700', lineHeight: '1.3' }}>
-Oferta: {o}
-</div>))}
-</div>)}
-{sponsorData.link_url && (
-<div style={{ fontSize: '10px', color: '#667eea', marginTop: '2px' }}>Ver mais</div>)}
-{dist !== null && (
-<div style={{ fontSize: '9px', color: '#16a34a', marginTop: '2px', fontWeight: '700' }}>
-{dist < 1 ? Math.round(dist * 1000) + 'm' : dist.toFixed(1) + 'km'}
-</div>)}
-{isOwner && (
-<div style={{ fontSize: '9px', background: '#fbbf24', color: '#92400e', borderRadius: '4px', padding: '2px 4px', marginTop: '3px', fontWeight: '700' }}>
-Editar
-</div>)}
-</div>
-)
-}
-
-if (isPending) {
-return (
-<div style={{ textAlign: 'center', padding: '4px' }}>
-<div style={{ fontSize: '10px', fontWeight: '800', color: '#d97706', lineHeight: '1.3' }}>
-Pague o plano para publicar...
-</div>
-{isOwner && (
-<div style={{ fontSize: '9px', color: '#666', marginTop: '3px' }}>Em analise</div>)}
-</div>
-)
-}
-
-return (
-<div style={{ textAlign: 'center', padding: '4px' }}>
-<div style={{ fontSize: '22px', marginBottom: '4px' }}>{'⭐'}</div>
-<div style={{ fontSize: '10px', fontWeight: '800', color: '#fff', lineHeight: '1.4', textShadow: '0 1px 3px rgba(0,0,0,0.4)', textAlign:'center' }}>⭐ Patrocinador<br/>premium do bairro<br/><span style={{color:'#fed7aa',fontWeight:'700'}}>clique aqui</span></div>
-</div>
-)
-}
-
-const hoursLeft = reservedAt ? Math.max(0, Math.ceil((reservedAt.getTime() + 24*60*60*1000 - Date.now()) / 3600000)) : 0
-const successMsg = isOwner
-? 'Seu espaco foi atualizado com sucesso!'
-: 'Cadastro recebido! Envie o comprovante via WhatsApp para confirmar sua reserva.'
-
-const slotBg = isActive
-? (isOwner || dentroDoRaio() ? '#fffbeb' : 'linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%)')
-: isReservedActive ? '#fef9c3'
-: 'linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%)'
-
-const slotBorder = isActive
-? (isOwner || dentroDoRaio() ? '2px solid #fbbf24' : '2px solid #1e40af')
-: isReservedActive ? '2px solid #f59e0b'
-: '2px solid #1e40af'
-
-return (
-<div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-<div
-onClick={handleSponsorClick}
-style={{
-flex: 1,
-minHeight: '120px',
-border: slotBorder,
-borderRadius: '10px',
-background: slotBg,
-cursor: 'pointer',
-display: 'flex',
-flexDirection: 'column',
-alignItems: 'center',
-justifyContent: 'center',
-padding: '8px',
-transition: 'box-shadow 0.2s, transform 0.2s',
-boxSizing: 'border-box',
-overflow: 'hidden'
-}}
-onMouseEnter={e => {
-e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.25)'
-e.currentTarget.style.transform = 'scale(1.02)'
-}}
-onMouseLeave={e => {
-e.currentTarget.style.boxShadow = 'none'
-e.currentTarget.style.transform = 'scale(1)'
-}}
->
-{renderSlotContent()}
-</div>
-
-{showModal && ReactDOM.createPortal(
-<div
-style={{
-position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-background: 'rgba(0,0,0,0.65)', zIndex: 9999,
-display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px'
-}}
-onClick={e => { if (e.target === e.currentTarget) setShowModal(false) }}
->
-<div style={{
-background: 'white', borderRadius: '20px', padding: '28px',
-maxWidth: '460px', width: '100%',
-boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
-maxHeight: '90vh', overflowY: 'auto', position: 'relative',
-WebkitOverflowScrolling: 'touch'
-}}>
-<button
-onClick={() => setShowModal(false)}
-style={{
-position: 'absolute', top: '14px', right: '18px',
-background: 'none', border: 'none', fontSize: '22px', cursor: 'pointer', color: '#888'
-}}
->{'✕'}</button>
-
-{step === 'plan' && (
-<div>
-<h2 style={{ margin: '0 0 4px', fontSize: '22px', color: '#1a202c' }}>Seja Patrocinador</h2>
-<p style={{ color: '#666', fontSize: '13px', marginBottom: '16px' }}>
-Escolha o plano ideal para o seu negocio e apareca para o publico da sua regiao!
+        
+        {/* 6 SPONSOR SLOTS */}
+        <div className='cb-slots-main'>
+          {[1,2,3,4,5,6].map(n=>(
+            <SponsorSlot key={n} slotNumber={n} city={userCity} sponsorData={sponsors[n]||null} userEmail={user?.email} onUpdate={loadSponsors}/>
+          ))}
+        </div>
+        {activeSponsorAds.length>0&&(
+          <div style={{marginBottom:'14px'}}>
+            <h3 style={{color:'#fff',fontSize:'clamp(13px,2vw,17px)',marginBottom:'8px',fontWeight:'800'}}>⭐ Patrocinadores do Seu Bairro</h3>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:'10px'}}>
+              {activeSponsorAds.map(sp=>(
+                <div key={'sp-'+sp.id} className='cb-sp-card' onClick={()=>sp.link_url?window.open(sp.link_url,'_blank'):null}>
+                  <div style={{position:'absolute',top:'6px',left:'6px',background:'#f97316',color:'#fff',padding:'2px 7px',borderRadius:'10px',fontSize:'9px',fontWeight:'bold',zIndex:2}}>PATROCINADOR</div>
+                  {sp.logo_url&&<div style={{height:'100px',backgroundColor:'#fef9c3',display:'flex',alignItems:'center',justifyContent:'center'}}><img src={sp.logo_url} alt='logo' style={{maxHeight:'90px',maxWidth:'100%',objectFit:'contain'}}/></div>}
+                  <div style={{padding:'10px'}}>
+                    <h3 style={{margin:'0 0 3px',fontSize:'14px',color:'#92400e',fontWeight:'bold'}}>{sp.sponsor_name||'Patrocinador'}</h3>
+                    {sp.offers&&sp.offers.length>0&&<ul style={{margin:'0',paddingLeft:'14px',color:'#78350f'}}>{sp.offers.slice(0,4).map((o,i)=><li key={i} style={{fontSize:'12px'}}>{o}</li>)}</ul>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className='cb-assoc-bar'>
+          <button className='cb-assoc-btn' onClick={()=>setShowAssoc(true)}>
+            <span>🏘️</span>
+            <span>ASSOCIAÇÃO DE MORADORES{userNeighborhood?' • '+userNeighborhood:''}</span>
+          </button>
+        </div>
+        <div className='cb-assoc-bar' style={{marginTop:'8px'}}>
+          <button className='cb-bus-btn' onClick={()=>navigate('/novo')}>
+            <span>🔨</span>
+            <span>CRIAR SEU LEILÃO</span>
+          </button>
+        </div>
+        {!loading&&anuncios.length===0&&leiloes.length===0&&activeSponsorAds.length===0&&(
+          <div style={{textAlign:'center',padding:'40px',background:'rgba(255,255,255,0.1)',borderRadius:'15px',color:'#fff'}}>
+            <div style={{fontSize:'48px',marginBottom:'12px'}}>🏪</div>
+            <p style={{fontSize:'20px',fontWeight:'bold'}}>Nenhum anúncio ativo em {userCity}{userNeighborhood?' • '+userNeighborhood:''}</p>
+            <p style={{fontSize:'14px',opacity:0.8,marginTop:'6px'}}>Seja o primeiro!</p>
+          </div>
+        )}
+      </div>
+      {showList&&(
+<div className='cb-list-overlay' onClick={()=>setShowList(false)}>
+<div className='cb-list-modal' onClick={e=>e.stopPropagation()}>
+<div className='cb-list-header'>
+<p className='cb-list-title' style={{color:listType==='anuncio'?'#f97316':'#16a34a'}}>
+{listType==='anuncio'?'📢 Todos os Anúncios':'🔨 Todos os Leilões'}
 </p>
-<div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
-{[
-{ type: 'monthly', label: 'Mensal', price: 'R$ 50,00', sub: 'por mes' },
-{ type: 'yearly', label: 'Anual', price: 'R$ 400,00', sub: 'por ano — economize R$ 200!' }
-].map(p => (
-<div
-key={p.type}
-onClick={() => setPlanType(p.type)}
-style={{
-flex: 1, padding: '14px 10px',
-border: planType === p.type ? '3px solid #667eea' : '2px solid #e2e8f0',
-borderRadius: '14px', cursor: 'pointer', textAlign: 'center',
-background: planType === p.type ? '#eef2ff' : 'white'
-}}
->
-<div style={{ fontWeight: '800', fontSize: '15px', color: '#1e3a8a' }}>{p.label}</div>
-<div style={{ fontSize: '20px', fontWeight: '900', color: '#667eea', margin: '4px 0' }}>{p.price}</div>
-<div style={{ fontSize: '11px', color: '#666' }}>{p.sub}</div>
-</div>))}
+<button className='cb-list-close' onClick={()=>setShowList(false)}>×</button>
 </div>
-<div style={{ background: '#fff7ed', border: '2px solid #f97316', borderRadius: '10px', padding: '10px', marginBottom: '16px', fontSize: '12px', color: '#7c2d12' }}>
-<strong>Beneficios do patrocinador:</strong> Um anuncio criado pelo patrocinador ficara sempre entre os 6 primeiros no feed. Cada patrocinador tem o direito de fazer um anuncio para ficar no topo.
+<div className='cb-list-scroll'>
+{(listType==='anuncio'?anuncios:leiloes).length===0?(
+<div style={{textAlign:'center',padding:'40px',color:'#94a3b8'}}>
+<p style={{fontSize:'16px',fontWeight:'700'}}>Nenhum item encontrado</p>
 </div>
-<div style={{ background: '#f8fafc', borderRadius: '10px', padding: '12px', marginBottom: '16px', fontSize: '12px', color: '#374151' }}>
-<div style={{ fontWeight: '700', marginBottom: '5px' }}>O que voce recebe:</div>
-<div>{'✅'} Logo/foto do estabelecimento no espaco</div>
-<div>{'✅'} Ate 5 super ofertas exclusivas</div>
-<div>{'✅'} Link clicavel para seu site ou rede social</div>
-<div>{'✅'} Visibilidade exclusiva para clientes proximos</div>
-<div>{'✅'} Edite seu espaco quando quiser</div>
-</div>
-<button
-onClick={() => setStep('pix')}
-style={{
-width: '100%', padding: '13px',
-background: 'linear-gradient(135deg, #667eea, #764ba2)',
-color: 'white', border: 'none', borderRadius: '12px',
-fontSize: '15px', fontWeight: '800', cursor: 'pointer'
-}}
->
-Contratar plano {planLabel} — R$ {planPrice},00
-</button>
-</div>)}
-
-{step === 'pix' && (
-<div>
-<h2 style={{ margin: '0 0 6px', fontSize: '20px', color: '#1a202c' }}>Pagamento via Pix</h2>
-<p style={{ color: '#666', fontSize: '13px', marginBottom: '16px' }}>
-Plano {planLabel} — <strong>R$ {planPrice},00</strong>
-</p>
-<div style={{ background: '#f0fdf4', border: '2px solid #16a34a', borderRadius: '14px', padding: '16px', marginBottom: '14px', textAlign: 'center' }}>
-<div style={{ fontSize: '12px', color: '#374151', marginBottom: '8px', fontWeight: '600' }}>Chave Pix:</div>
-<div style={{ background: 'white', border: '1px solid #d1fae5', borderRadius: '8px', padding: '10px', fontFamily: 'monospace', fontSize: '14px', fontWeight: '700', color: '#15803d', wordBreak: 'break-all', marginBottom: '8px' }}>
-{PIX_KEY}
-</div>
-<div style={{ fontSize: '12px', color: '#666' }}>Beneficiario: <strong>{PIX_NAME}</strong></div>
-<div style={{ fontSize: '24px', fontWeight: '900', color: '#15803d', margin: '8px 0 4px' }}>R$ {planPrice},00</div>
-<button
-onClick={() => navigator.clipboard && navigator.clipboard.writeText(PIX_KEY)}
-style={{ padding: '7px 16px', background: '#16a34a', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '700', marginTop: '4px' }}
->
-Copiar chave Pix
-</button>
-</div>
-<div style={{ background: '#fffbeb', border: '1px solid #fbbf24', borderRadius: '10px', padding: '10px', fontSize: '12px', color: '#92400e', marginBottom: '14px' }}>
-Apos o pagamento, clique em "Ja paguei" e preencha seus dados. Ativamos em ate 24h.
-</div>
-<div style={{ display: 'flex', gap: '12px', marginTop: '4px' }}>
-<button
-onClick={() => setStep('plan')}
-style={{ flex: 1, padding: '14px', background: 'white', color: '#374151', border: '2px solid #64748b', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', fontSize: '15px' }}
->
-{'←'} Voltar
-</button>
-<button
-onClick={() => { setSubmitError(''); setStep('form') }}
-style={{ flex: 2, padding: '14px', background: 'linear-gradient(135deg, #16a34a, #15803d)', color: 'white', border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: '800', fontSize: '16px', boxShadow: '0 4px 14px rgba(22,163,74,0.35)' }}
->
-{'✅'} Ja paguei
-</button>
-</div>
-</div>)}
-
-{step === 'form' && (
-<div>
-<h2 style={{ margin: '0 0 4px', fontSize: '20px', color: '#1a202c' }}>
-{isOwner ? 'Editar espaco' : 'Seus dados'}
-</h2>
-<p style={{ color: '#666', fontSize: '12px', marginBottom: '14px' }}>
-{isOwner ? 'Atualize as informacoes do seu espaco.' : 'Preencha seus dados para ativarmos seu espaco.'}
-</p>
-<div style={{ marginBottom: '14px', textAlign: 'center' }}>
-<label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: '#374151', marginBottom: '6px' }}>
-Logo / Foto do estabelecimento
-</label>
-{logoPreview && (
-<img
-src={logoPreview}
-alt="preview"
-style={{ width: '110px', height: '70px', objectFit: 'contain', borderRadius: '8px', border: '2px solid #e2e8f0', marginBottom: '6px', display: 'block', margin: '0 auto 6px' }}
-/>)}
-<input
-ref={fileInputRef}
-type="file"
-accept="image/*"
-onChange={handleLogoUpload}
-style={{ display: 'none' }}
-/>
-<button
-onClick={() => fileInputRef.current && fileInputRef.current.click()}
-disabled={uploadingLogo}
-style={{
-padding: '8px 18px',
-background: uploadingLogo ? '#aaa' : '#667eea',
-color: 'white', border: 'none', borderRadius: '8px',
-cursor: uploadingLogo ? 'not-allowed' : 'pointer',
-fontSize: '12px', fontWeight: '700'
-}}
->
-{uploadingLogo ? 'Enviando...' : logoPreview ? 'Trocar logo' : 'Enviar logo'}
-</button>
-</div>
-{[
-{ key: 'name', label: 'Nome do negocio *', placeholder: 'Ex: Pizzaria do Joao' },
-{ key: 'email', label: 'E-mail *', placeholder: 'seu@email.com' },
-{ key: 'phone', label: 'WhatsApp / Telefone', placeholder: '(42) 99999-9999' },
-{ key: 'link_url', label: 'URL do site/rede social (torna clicavel)', placeholder: 'https://instagram.com/seunegocio' }
-].map(f => (
-<div key={f.key} style={{ marginBottom: '10px' }}>
-<label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: '#374151', marginBottom: '3px' }}>
-{f.label}
-</label>
-<input
-value={form[f.key]}
-onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
-placeholder={f.placeholder}
-style={{ width: '100%', padding: '9px 11px', border: '2px solid #e2e8f0', borderRadius: '8px', fontSize: '13px', boxSizing: 'border-box' }}
-/>
-</div>))}
-<div style={{ marginBottom: '14px' }}>
-<label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#1e3a8a', marginBottom: '3px' }}>
-Endereco do estabelecimento
-</label>
-<div style={{ display: 'flex', gap: '6px' }}>
-<input
-value={form.address}
-onChange={e => {
-setForm(prev => ({ ...prev, address: e.target.value }))
-setGeoStatus('')
-setSponsorLat(null)
-setSponsorLng(null)
-}}
-placeholder="Ex: Rua das Flores, 123, Centro"
-style={{ flex: 1, padding: '9px 11px', border: '2px solid #a5b4fc', borderRadius: '8px', fontSize: '13px', boxSizing: 'border-box' }}
-/>
-<button
-onClick={() => geocodeAddress(form.address)}
-style={{ padding: '9px 12px', background: '#667eea', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', fontWeight: '700', whiteSpace: 'nowrap' }}
->
-Localizar
-</button>
-</div>
-{geoStatus && (
-<div style={{ fontSize: '11px', marginTop: '5px', color: sponsorLat ? '#15803d' : '#dc2626', fontWeight: '600' }}>
-{geoStatus}
-</div>)}
-{sponsorLat && sponsorLng && (
-<div style={{ fontSize: '11px', marginTop: '4px', color: '#15803d', background: '#f0fdf4', padding: '6px 10px', borderRadius: '6px' }}>
-Localizacao registrada com sucesso!
-</div>)}
-</div>
-<div style={{ marginBottom: '14px' }}>
-<label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#dc2626', marginBottom: '6px' }}>
-Ate 5 Super Ofertas
-</label>
-{form.offers.map((offer, i) => (
-<div key={i} style={{ marginBottom: '7px' }}>
-<input
-value={offer}
-onChange={e => {
-const newOffers = [...form.offers]
-newOffers[i] = e.target.value
-setForm(prev => ({ ...prev, offers: newOffers }))
-}}
-placeholder={'Oferta ' + (i + 1) + ': Ex: 10% OFF na primeira compra!'}
-style={{ width: '100%', padding: '8px 11px', border: '2px solid #fca5a5', borderRadius: '8px', fontSize: '12px', boxSizing: 'border-box' }}
-/>
-</div>))}
-</div>
-
-// Comprovante de pagamento
-<div style={{ marginBottom: '14px', background: '#f0fdf4', border: '2px solid #86efac', borderRadius: '12px', padding: '12px' }}>
-<label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#15803d', marginBottom: '6px' }}>
-🧾 Comprovante de pagamento (foto/print do Pix)
-</label>
-{voucherUrl && (
-<div style={{ marginBottom: '8px', textAlign: 'center' }}>
-<img src={voucherUrl} alt='comprovante' style={{ maxWidth: '100%', maxHeight: '120px', objectFit: 'contain', borderRadius: '8px', border: '2px solid #86efac' }} />
-<div style={{ fontSize: '11px', color: '#15803d', fontWeight: '700', marginTop: '4px' }}>✅ Comprovante enviado!</div>
+):(listType==='anuncio'?anuncios:leiloes).map(item=>{
+const tl=listType==='leilao'?getTimeLeft(item.ends_at):null
+return(
+<div key={item.id} className='cb-list-item' onClick={()=>{setShowList(false);navigate('/leilao/'+item.id)}}>
+{item.images&&item.images[0]?(
+<img src={item.images[0]} alt='' className='cb-list-item-img' onError={e=>{e.target.style.display='none'}}/>
+):(
+<div style={{width:'100px',minWidth:'100px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'28px',flexShrink:0}}>
+{listType==='anuncio'?'🖼️':'🔨'}
 </div>
 )}
-<input ref={voucherInputRef} type='file' accept='image/*,application/pdf' onChange={handleVoucherUpload} style={{ display: 'none' }} />
-<button onClick={() => voucherInputRef.current && voucherInputRef.current.click()} disabled={uploadingVoucher}
-style={{ width: '100%', padding: '9px', background: uploadingVoucher ? '#aaa' : voucherUrl ? '#16a34a' : '#0ea5e9', color: 'white', border: 'none', borderRadius: '8px', cursor: uploadingVoucher ? 'not-allowed' : 'pointer', fontSize: '13px', fontWeight: '700' }}>
-{uploadingVoucher ? 'Enviando...' : voucherUrl ? '🔄 Trocar comprovante' : '📸 Enviar foto do comprovante'}
-</button>
-<div style={{ fontSize: '11px', color: '#15803d', marginTop: '6px' }}>Envie a foto/print do comprovante Pix para agilizar a aprovacao.</div>
-</div>
-<div style={{ marginBottom: '14px', background: '#eff6ff', border: '2px solid #3b82f6', borderRadius: '12px', padding: '12px' }}>
-<label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#1e40af', marginBottom: '4px' }}>
-🤝 Código Associação Parceira (opcional)
-</label>
-<p style={{ fontSize: '11px', color: '#3b82f6', margin: '0 0 8px' }}>Se você foi indicado por uma associação de moradores, insira o código aqui.</p>
-<input
-value={form.assoc_code}
-onChange={e => setForm(prev => ({ ...prev, assoc_code: e.target.value.toUpperCase() }))}
-placeholder="Ex: ASSOC-AB12CD"
-style={{ width: '100%', padding: '9px 11px', border: '2px solid #93c5fd', borderRadius: '8px', fontSize: '13px', boxSizing: 'border-box', letterSpacing: '2px', fontFamily: 'monospace' }}
-/>
-</div>
-{isPending && !isOwner && (
-<div style={{ background: '#fef3c7', border: '2px solid #fbbf24', borderRadius: '10px', padding: '10px', marginBottom: '14px', textAlign: 'center' }}>
-<div style={{ fontSize: '13px', fontWeight: '800', color: '#d97706' }}>Pague o plano para publicar...</div>
-<div style={{ fontSize: '11px', color: '#92400e', marginTop: '3px' }}>Apos confirmacao do pagamento seu espaco sera ativado.</div>
-</div>)}
-{submitError && (
-<div style={{ background: '#fee2e2', border: '2px solid #f87171', borderRadius: '10px', padding: '10px', marginBottom: '14px', fontSize: '13px', color: '#b91c1c', fontWeight: '600', textAlign: 'center' }}>
-{'⚠️'} {submitError}
-</div>)}
-<div style={{ display: 'flex', gap: '12px', marginTop: '20px', paddingTop: '16px', borderTop: '2px solid #e2e8f0' }}>
-{!isOwner && (
-<button
-onClick={() => setStep('pix')}
-style={{ flex: 1, padding: '14px', background: 'white', color: '#374151', border: '2px solid #64748b', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', fontSize: '15px' }}
->
-{'←'} Voltar
-</button>)}
-<button
-onClick={handleSubmit}
-disabled={saving}
-style={{
-flex: 2, padding: '15px',
-background: saving ? '#94a3b8' : 'linear-gradient(135deg, #f97316, #ea580c)',
-color: 'white', border: 'none', borderRadius: '12px',
-cursor: saving ? 'not-allowed' : 'pointer',
-fontWeight: '800', fontSize: '17px',
-boxShadow: saving ? 'none' : '0 4px 16px rgba(249,115,22,0.45)',
-letterSpacing: '0.3px'
-}}
->
-{saving ? '⏳ Salvando...' : isOwner ? '💾 Salvar alteracoes' : '🤝 Enviar cadastro'}
-</button>
-</div>
-</div>)}
-
-{step === 'success' && (
-<div style={{ textAlign: 'center', padding: '20px 0' }}>
-<div style={{ fontSize: '56px', marginBottom: '14px' }}>{'🎉'}</div>
-<h2 style={{ color: '#15803d', marginBottom: '8px' }}>
-{isOwner ? 'Alteracoes salvas!' : 'Cadastro enviado!'}
-</h2>
-<p style={{ color: '#374151', fontSize: '13px', marginBottom: '20px', lineHeight: '1.6' }}>
-{successMsg}
+<div className='cb-list-item-body'>
+<p className='cb-list-item-title'>{item.title}</p>
+<p className='cb-list-item-price' style={{color:listType==='anuncio'?'#f97316':'#16a34a'}}>
+R$ {parseFloat(item.current_price||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}
 </p>
-{!isOwner && (
-<div style={{marginBottom:'12px'}}>
-<a href="https://wa.me/5542988880353?text=Ola!%20Fiz%20o%20cadastro%20no%20Conecty%20Bairro%20como%20patrocinador.%20Segue%20o%20comprovante." target="_blank" rel="noopener noreferrer" style={{ display:'inline-block', padding:'12px 20px', background:'linear-gradient(135deg,#25D366,#128C7E)', color:'white', borderRadius:'12px', fontSize:'14px', fontWeight:'800', textDecoration:'none' }}>
-{'📱'} Enviar Comprovante via WhatsApp
-</a>
-</div>)}
-<button
-onClick={() => setShowModal(false)}
-style={{ padding: '12px 28px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '12px', fontSize: '15px', fontWeight: '800', cursor: 'pointer' }}
->
-Fechar
-</button>
-</div>)}
+{tl&&<span className='cb-list-item-badge' style={{background:tl.urgent?'#dc2626':'#1e3a8a'}}>{tl.label}</span>}
+<span className='cb-list-item-badge' style={{background:listType==='anuncio'?'rgba(249,115,22,0.9)':'rgba(22,163,74,0.9)',color:'#fff',marginTop:'3px'}}>
+{listType==='anuncio'?'ANÚNCIO':'LEILÃO'}
+</span>
 </div>
-</div>
-, document.body)}
-
-{ownerModal && ReactDOM.createPortal(
-<div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.7)',zIndex:3000,display:'flex',alignItems:'center',justifyContent:'center',padding:'16px'}}
-onClick={e => {if(e.target===e.currentTarget){setOwnerModal(false);setOwnerVerified(false);setOwnerEmailInput('');setOwnerPassword('')}}}>
-<div style={{background:'white',borderRadius:'16px',padding:'28px 24px',maxWidth:'420px',width:'100%',boxShadow:'0 20px 60px rgba(0,0,0,0.3)'}}>
-<h3 style={{margin:'0 0 8px',color:'#1e3a8a',fontSize:'18px'}}>{'🟡'} Slot Reservado</h3>
-{!ownerVerified ? (
-<div>
-<p style={{color:'#374151',fontSize:'14px',marginBottom:'16px'}}>Para ver os detalhes e aprovar/rejeitar, confirme seu e-mail de administrador.</p>
-<input type="email" placeholder="E-mail do administrador" value={ownerEmailInput} onChange={e=>setOwnerEmailInput(e.target.value)} style={{width:'100%',padding:'10px 12px',borderRadius:'8px',border:'1.5px solid #d1d5db',fontSize:'14px',boxSizing:'border-box',marginBottom:'8px'}} />
-<input type="password" placeholder="Senha do administrador" value={ownerPassword} onChange={e=>setOwnerPassword(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleOwnerVerify()} style={{width:'100%',padding:'10px 12px',borderRadius:'8px',border:'1.5px solid #d1d5db',fontSize:'14px',boxSizing:'border-box',marginBottom:'12px'}} />
-<div style={{display:'flex',gap:'8px'}}>
-<button onClick={handleOwnerVerify} disabled={ownerApproving} style={{flex:1,padding:'10px',background:ownerApproving?'#94a3b8':'#1e3a8a',color:'white',border:'none',borderRadius:'8px',fontWeight:'700',cursor:ownerApproving?'not-allowed':'pointer'}}>{ownerApproving?'Verificando...':'Entrar como Admin'}</button>
-<button onClick={()=>{setOwnerModal(false);setOwnerEmailInput('');setOwnerPassword('')}} style={{padding:'10px 16px',background:'#f3f4f6',color:'#374151',border:'none',borderRadius:'8px',cursor:'pointer'}}>Cancelar</button>
-</div>
-</div>
-) : (
-<div>
-<div style={{background:'#f8fafc',borderRadius:'10px',padding:'14px',marginBottom:'16px',fontSize:'13px',color:'#374151',lineHeight:'1.8'}}>
-<div><strong>Negocio:</strong> {sponsorData && sponsorData.sponsor_name}</div>
-<div><strong>E-mail:</strong> {sponsorData && sponsorData.contact_email}</div>
-<div><strong>Telefone:</strong> {(sponsorData && sponsorData.contact_phone) || '—'}</div>
-<div><strong>Cidade:</strong> {city}</div>
-<div><strong>Slot:</strong> {slot}</div>
-<div><strong>Plano:</strong> {sponsorData && sponsorData.plan_type === 'monthly' ? 'Mensal R$ 50' : 'Anual R$ 400'}</div>
-<div><strong>Reservado em:</strong> {sponsorData && sponsorData.reserved_at ? new Date(sponsorData.reserved_at).toLocaleString('pt-BR') : '—'}</div>
-{sponsorData && sponsorData.voucher_url && (<div style={{marginTop:'8px'}}><strong>Comprovante: </strong><a href={sponsorData.voucher_url} target='_blank' rel='noopener noreferrer' style={{color:'#1e3a8a',fontWeight:'700'}}>Ver comprovante ↗</a></div>)}
-</div>
-<div style={{display:'flex',gap:'8px',flexDirection:'column'}}>
-<button onClick={handleOwnerApprove} disabled={ownerApproving} style={{padding:'12px',background:'linear-gradient(135deg,#16a34a,#15803d)',color:'white',border:'none',borderRadius:'10px',fontWeight:'800',cursor:'pointer',fontSize:'14px'}}>
-{ownerApproving ? 'Aprovando...' : '✅ Aprovar e Ativar Patrocinador'}
-</button>
-<button onClick={handleOwnerReject} disabled={ownerApproving} style={{padding:'12px',background:'linear-gradient(135deg,#dc2626,#b91c1c)',color:'white',border:'none',borderRadius:'10px',fontWeight:'800',cursor:'pointer',fontSize:'14px'}}>
-{'❌'} Rejeitar e Remover Reserva
-</button>
-<button onClick={()=>{setOwnerModal(false);setOwnerVerified(false);setOwnerEmailInput('');setOwnerPassword('')}} style={{padding:'10px',background:'#f3f4f6',color:'#374151',border:'none',borderRadius:'8px',cursor:'pointer'}}>Fechar</button>
-</div>
-</div>)}
-</div>
-</div>
-, document.body)}
-
-{appNotification && ReactDOM.createPortal(
-<div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.5)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center',padding:'16px'}}>
-<div style={{background:'white',borderRadius:'16px',padding:'24px',maxWidth:'380px',width:'100%',boxShadow:'0 20px 60px rgba(0,0,0,0.4)',textAlign:'center'}}>
-<div style={{fontSize:'48px',marginBottom:'12px'}}>{'📱'}</div>
-<h3 style={{color:'#15803d',marginBottom:'8px',fontSize:'18px'}}>Cadastro Enviado!</h3>
-<p style={{color:'#374151',fontSize:'13px',lineHeight:'1.6',marginBottom:'16px'}}>{appNotification}</p>
-<a href="https://wa.me/5542988880353?text=Ola!%20Fiz%20o%20cadastro%20no%20Conecty%20Bairro%20como%20patrocinador.%20Segue%20o%20comprovante." target="_blank" rel="noopener noreferrer" style={{display:'block',padding:'12px',background:'linear-gradient(135deg,#25D366,#128C7E)',color:'white',borderRadius:'10px',textDecoration:'none',fontWeight:'800',fontSize:'14px',marginBottom:'10px'}}>
-{'📲'} Enviar Comprovante via WhatsApp
-</a>
-<button onClick={()=>setAppNotification(null)} style={{padding:'10px 24px',background:'#667eea',color:'white',border:'none',borderRadius:'10px',cursor:'pointer',fontWeight:'700'}}>OK, Entendi!</button>
-</div>
-</div>
-, document.body)}
 </div>
 )
+})}
+</div>
+</div>
+</div>
+)}
+{showBusca&&(
+        <div className='cb-overlay' onClick={()=>setShowBusca(false)}>
+          <div className='cb-modal' onClick={e=>e.stopPropagation()}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}}>
+              <h2 style={{margin:0,fontSize:'19px',color:'#1e3a8a',fontWeight:'900'}}>🔍 Buscar</h2>
+              <button onClick={()=>setShowBusca(false)} style={{background:'none',border:'none',fontSize:'22px',cursor:'pointer',color:'#666'}}>×</button>
+            </div>
+            <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>O que você quer buscar?</p>
+            <div className='cb-cat-grid'>
+              {catList.map(t=>(
+                <button key={t.v} onClick={()=>setBuscaTab(t.v)} className={'cb-cat-btn'+(buscaTab===t.v?' active':'')}>
+                  {t.l}
+                </button>
+              ))}
+            </div>
+            <p style={{margin:'0 0 8px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>📍 Onde buscar?</p>
+            <div style={{display:'flex',gap:'8px',marginBottom:'14px'}}>
+              <button onClick={()=>handleBuscaApply('scope')}
+                style={{flex:1,padding:'10px',borderRadius:'12px',background:'#f0fdf4',border:'2px solid #16a34a',color:'#15803d',fontWeight:'700',fontSize:'13px',cursor:'pointer'}}>
+                🏘️ Meu Bairro{userNeighborhood?' ('+userNeighborhood+')':''}
+              </button>
+              <button onClick={()=>handleBuscaApply('scope')}
+                style={{flex:1,padding:'10px',borderRadius:'12px',background:'#eff6ff',border:'2px solid #3b82f6',color:'#1d4ed8',fontWeight:'700',fontSize:'13px',cursor:'pointer'}}>
+                🏙️ Cidade ({userCity})
+              </button>
+            </div>
+            <p style={{margin:'0 0 6px',fontWeight:'700',color:'#374151',fontSize:'14px'}}>🌎 Mudar cidade?</p>
+            <input value={searchCity} onChange={e=>setSearchCity(e.target.value)} placeholder='Digite a cidade...'
+              style={{width:'100%',padding:'10px 12px',border:'2px solid #e2e8f0',borderRadius:'12px',fontSize:'14px',boxSizing:'border-box'}}/>
+            {filteredCities.length>0&&(
+              <div style={{maxHeight:'160px',overflowY:'auto',border:'1px solid #e2e8f0',borderRadius:'8px',marginTop:'4px'}}>
+                {filteredCities.map(city=>(
+                  <div key={city.id} onClick={()=>handleCitySelect(city)}
+                    style={{padding:'9px 12px',cursor:'pointer',fontSize:'14px',color:'#1e3a8a',borderBottom:'1px solid #f1f5f9',background:'#fff',fontWeight:'500'}}
+                    onMouseEnter={e=>e.target.style.background='#eff6ff'}
+                    onMouseLeave={e=>e.target.style.background='#fff'}>
+                    {city.nome} - {city.microrregiao.mesorregiao.UF.sigla}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      {lightboxImg&&(
+        <div onClick={()=>setLightboxImg(null)} style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.95)',zIndex:9999,display:'flex',alignItems:'center',justifyContent:'center',cursor:'zoom-out'}}>
+          <img src={lightboxImg} alt='Foto ampliada' onClick={e=>e.stopPropagation()} style={{maxWidth:'100vw',maxHeight:'100vh',objectFit:'contain'}}/>
+          <button onClick={()=>setLightboxImg(null)} style={{position:'absolute',top:'16px',right:'16px',background:'rgba(255,255,255,0.15)',border:'none',color:'#fff',fontSize:'28px',width:'44px',height:'44px',borderRadius:'50%',cursor:'pointer',fontWeight:'bold'}}>X</button>
+        </div>
+      )}
+      <div className='cb-bus-bar'>
+<button className='cb-bus-btn' onClick={handleBus}>
+<span>🚌</span>
+<span>HORÁRIO DE ÔNIBUS{userNeighborhood?' • '+userNeighborhood:''}</span>
+</button>
+</div><BottomBar user={user} onLogout={handleLogout} onAdminOpen={()=>setShowAdmin(true)} showAdminBtn={showAdminBtn}/>
+      {showAdmin&&<AdminPanel onClose={()=>setShowAdmin(false)} adminUser={user}/>}
+{showAssoc&&<AssociacaoModal city={userCity} neighborhood={userNeighborhood} onClose={()=>setShowAssoc(false)}/>}
+    </div>
+  )
 }
 
-export default SponsorSlot
+export default Home
