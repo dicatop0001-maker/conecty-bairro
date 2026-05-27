@@ -38,7 +38,7 @@ const css = `
 .cb-busca-info {
   flex: 1;
   text-align: left;
-  font-size: clamp(14px,3vw,18px);
+  font-size: clamp(13px,2.8vw,18px);
   font-weight: 800;
   white-space: nowrap;
   overflow: hidden;
@@ -121,7 +121,7 @@ const css = `
 .cb-card:active { transform:scale(0.97); }
 .cb-card-img {
   width: 100%;
-  height: 174px;
+  height: 209px;
   object-fit: cover;
   display: block;
   flex-shrink: 0;
@@ -484,9 +484,9 @@ transition: transform 0.12s, box-shadow 0.12s;
 @media(max-width:600px){
   .cb-slots { grid-template-columns: repeat(3,1fr); }
   .cb-slots-main { grid-template-columns: repeat(3,1fr); }
-  .cb-strip { height: 252px; touch-action: pan-y; overscroll-behavior: contain; }
-  .cb-card { flex: 0 0 252px; height: 252px; }
-  .cb-card-img { height: 144px; }
+  .cb-strip { height: 302px; touch-action: pan-y; overscroll-behavior: contain; }
+  .cb-card { flex: 0 0 302px; height: 302px; }
+  .cb-card-img { height: 173px; }
 }
 `
 
@@ -650,7 +650,7 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
 <ProfissionaisBar userCity={userCity} />
         <img src='/logo-conecty.png' alt='Conecty Bairro' className='cb-logo' />
         <button className='cb-busca-btn' onClick={()=>setShowBusca(true)}>
-<span className='cb-busca-info'>{userCity}{userNeighborhood?' • '+userNeighborhood:''}</span>
+<span className='cb-busca-info'>{userCity||'Sua cidade'}{userNeighborhood?' • '+userNeighborhood:' • 📍 bairro'}</span>
 <span className='cb-busca-right'>🔍 BUSCA</span>
 </button>
       </div>
@@ -677,7 +677,7 @@ return(
                     {item.images&&item.images[0]?(
                       <img src={item.images[0]} alt='' className='cb-card-img' onError={e=>{e.target.style.display='none'}}/>
                     ):(
-                      <div style={{height:'174px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>{isLeilao?'🔨':'🖼️'}</div>
+                      <div style={{height:'209px',background:'#e2e8f0',display:'flex',alignItems:'center',justifyContent:'center',color:'#94a3b8',fontSize:'28px'}}>{isLeilao?'🔨':'🖼️'}</div>
                     )}
                   </div>
                   <div className='cb-card-body'>
