@@ -96,7 +96,7 @@ const css = `
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.5) rgba(255,255,255,0.1);
-  height: 360px;
+  height: 310px;
   touch-action: pan-y;
   overscroll-behavior: contain;
 }
@@ -104,8 +104,8 @@ const css = `
 .cb-strip::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 4px; }
 .cb-strip::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 4px; }
 .cb-card {
-  flex: 0 0 360px;
-  height: 360px;
+  flex: 0 0 auto;
+  height: auto;
   width: 100%;
   background: #fff;
   border-radius: 10px;
@@ -127,7 +127,7 @@ const css = `
   flex-shrink: 0;
   background: #e2e8f0;
 }
-.cb-card-body { padding: 5px 8px 6px; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 2px; }
+.cb-card-body { padding: 8px 10px 10px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 4px; }
 .cb-card-title {
   font-size: clamp(13px,2.5vw,16px);
   font-weight: 900;
@@ -484,8 +484,8 @@ transition: transform 0.12s, box-shadow 0.12s;
 @media(max-width:600px){
   .cb-slots { grid-template-columns: repeat(3,1fr); }
   .cb-slots-main { grid-template-columns: repeat(3,1fr); }
-  .cb-strip { height: 302px; touch-action: pan-y; overscroll-behavior: contain; }
-  .cb-card { flex: 0 0 302px; height: 302px; }
+  .cb-strip { height: 260px; touch-action: pan-y; overscroll-behavior: contain; }
+  .cb-card { flex: 0 0 auto; height: auto; }
   .cb-card-img { height: 173px; }
 }
 `
