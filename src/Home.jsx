@@ -18,7 +18,8 @@ const css = `
 .cb-busca-btn {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 0;
   width: 100%;
   background: linear-gradient(90deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 70%,#e0eaff 100%);
   color: #fff;
@@ -44,6 +45,33 @@ const css = `
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: 0.98;
+}
+.cb-busca-city {
+  font-size: clamp(12px,2.5vw,16px);
+  font-weight: 900;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 35%;
+  flex-shrink: 1;
+}
+.cb-busca-sep {
+  color: rgba(255,255,255,0.5);
+  font-size: clamp(14px,2.5vw,18px);
+  font-weight: 300;
+  margin: 0 6px;
+  flex-shrink: 0;
+}
+.cb-busca-neighborhood {
+  font-size: clamp(11px,2.2vw,15px);
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 .cb-busca-right {
   font-size: clamp(14px,2.5vw,17px);
@@ -650,7 +678,9 @@ const anuncios=activeAuctions.filter(a=>(a.tipo==='anuncio'||!a.ends_at)&&(selCa
 <ProfissionaisBar userCity={userCity} />
         <img src='/logo-conecty.png' alt='Conecty Bairro' className='cb-logo' />
         <button className='cb-busca-btn' onClick={()=>setShowBusca(true)}>
-<span className='cb-busca-info'>{userCity||'Sua cidade'}{userNeighborhood?' • '+userNeighborhood:' • 📍 bairro'}</span>
+<span className='cb-busca-city'>{userCity||'Sua cidade'}</span>
+<span className='cb-busca-sep'>|</span>
+<span className='cb-busca-neighborhood'>{userNeighborhood||'📍 bairro'}</span>
 <span className='cb-busca-right'>🔍 BUSCA</span>
 </button>
       </div>
