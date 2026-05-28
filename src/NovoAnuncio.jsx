@@ -7,6 +7,7 @@ function NovoAnuncio() {
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('outros')
   const [price, setPrice] = useState('')
+  const [whatsapp, setWhatsapp] = useState('')
   const [neighborhood, setNeighborhood] = useState('')
   const [city, setCity] = useState('Ponta Grossa')
   const [cityState, setCityState] = useState('PR')
@@ -114,6 +115,7 @@ function NovoAnuncio() {
       seller_id: user.id,
       status: 'active',
       tipo: 'anuncio',
+      whatsapp_number: whatsapp.trim() || null,
       latitude: -25.0916,
       longitude: -50.1668
     })
@@ -179,6 +181,21 @@ function NovoAnuncio() {
           <div>
             <label style={lbl}>Preço de Venda (R$) *</label>
             <input style={inp} type="number" min="1" step="0.01" value={price} onChange={e => setPrice(e.target.value)} placeholder="0.00" required />
+          </div>
+
+          {/* WHATSAPP */}
+          <div>
+            <label style={lbl}>📱 WhatsApp para contato</label>
+            <input
+              style={inp}
+              type="tel"
+              value={whatsapp}
+              onChange={e => setWhatsapp(e.target.value.replace(/[^0-9]/g,'').slice(0,15))}
+              placeholder="5541999990000 (DDI+DDD+número)"
+            />
+            <p style={{margin:'4px 0 0 0',fontSize:'12px',color:'#6b7280'}}>
+              Opcional • Quem ver seu anúncio poderá te chamar no WhatsApp
+            </p>
           </div>
 
           {/* BAIRRO */}
